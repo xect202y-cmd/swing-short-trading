@@ -109,12 +109,15 @@ def parse_stock_note(text: str, source_file: str | None = None) -> StockNote:
     if not note.ticker:
         mkt = (note.market or "").upper()
         is_kr_market = ("한국" in (note.market or "")) or any(k in mkt for k in ("KOSPI", "KOSDAQ", "KRX", "KR"))
+        # 시장:"기타"(중국/홍콩/일본 등 비미국 외국)는 영문 종목명을 US 티커로 오인 금지.
+        # 예: BYD(비야디, 중국 전기차)를 NYSE 'BYD'(Boyd Gaming, 카지노)로 잘못 잡던 버그.
+        is_other_market = "기타" in (note.market or "")
         for cand in (Path(source_file).stem if source_file else None, note.name):
             c = (cand or "").strip()
             if _KR_CODE_RE.match(c):
                 note.ticker = c
                 break
-            if _US_TICKER_RE.match(c) and not is_kr_market:
+            if _US_TICKER_RE.match(c) and not is_kr_market and not is_other_market:
                 note.ticker = c
                 break
 
