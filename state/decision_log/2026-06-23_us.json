@@ -63,130 +63,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 589105.68,
-          "stop": 544221.44,
+          "target": 588955.65,
+          "stop": 544082.84,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
           "atr_stop_mult": 0.26
         },
         "ATR": {
-          "target": 690535.81,
-          "stop": 463940.95,
+          "target": 690359.94,
+          "stop": 463822.79,
           "note": "+2.0ATR / -1.5ATR (ATR 11.54%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 693219.53,
-          "stop": 456909.3,
-          "note": "목표=20일고 693,220 / 손절=20일저 456,909",
+          "target": 693042.98,
+          "stop": 456792.93,
+          "note": "목표=20일고 693,043 / 손절=20일저 456,793",
           "rr": 1.27,
           "atr_stop_mult": 1.61
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 561053.03,
-        "stop": 544221.44,
-        "target1": 589105.68,
-        "target2": 608742.54,
-        "rr": 1.67
-      },
-      "methods": [],
-      "ai_verdict": null,
-      "ai_confidence": null,
-      "ai_reason": null,
-      "block_reasons": []
-    },
-    {
-      "ticker": "KLA",
-      "name": "KLA",
-      "kind": "BUY",
-      "score": 73.7,
-      "rank": 2,
-      "sector": null,
-      "atr_pct": 2.38,
-      "breakdown": [
-        {
-          "name": "섹터/테마 모멘텀",
-          "score": 10.0,
-          "max": 20,
-          "reason": "중립"
-        },
-        {
-          "name": "기술적 타점",
-          "score": 25,
-          "max": 25,
-          "reason": "20일선 근처(눌림), 전일고가 돌파, RSI 45.4(과열 전)"
-        },
-        {
-          "name": "상승여력",
-          "score": 6.4,
-          "max": 15,
-          "reason": "상승여력 +6.4%"
-        },
-        {
-          "name": "거래량/거래대금",
-          "score": 15.3,
-          "max": 20,
-          "reason": "거래량 5/20일 1.61배"
-        },
-        {
-          "name": "거시/이벤트 안전도",
-          "score": 7.0,
-          "max": 10,
-          "reason": "거시 중간·이벤트 중간"
-        },
-        {
-          "name": "손절 구조",
-          "score": 10.0,
-          "max": 10,
-          "reason": "손절까지 -3.0%(% 기반 -3%)"
-        }
-      ],
-      "rationale": {
-        "entry_type": "돌파",
-        "price_conditions": [
-          "5일선 위",
-          "전일고가 돌파"
-        ],
-        "volume_condition": "5/20일 평균 1.61배(증가)",
-        "trend_condition": "추세 약함",
-        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
-        "sector_state": "미상",
-        "market_state": "US · 거시 중간 · 이벤트 중간",
-        "exclusion_pass": "통과",
-        "matched_methods": []
-      },
-      "target_methods": {
-        "고정비율": {
-          "target": 181624.63,
-          "stop": 167786.56,
-          "note": "매수가 대비 +5.0% / -3.0%",
-          "rr": 1.67,
-          "atr_stop_mult": 1.26
-        },
-        "ATR": {
-          "target": 181192.58,
-          "stop": 166813.29,
-          "note": "+2.0ATR / -1.5ATR (ATR 2.38%)",
-          "rr": 1.33,
-          "atr_stop_mult": 1.5
-        },
-        "지지저항": {
-          "target": 184113.62,
-          "stop": 162487.07,
-          "note": "목표=20일고 184,114 / 손절=20일저 162,487",
-          "rr": 1.06,
-          "atr_stop_mult": 2.55
-        }
-      },
-      "target_method_used": "고정비율",
-      "plan": {
-        "entry": 172975.84,
-        "stop": 167786.56,
-        "target1": 181624.63,
-        "target2": 187678.79,
+        "entry": 560910.14,
+        "stop": 544082.84,
+        "target1": 588955.65,
+        "target2": 608587.5,
         "rr": 1.67
       },
       "methods": [],
@@ -194,17 +97,18 @@
       "ai_confidence": null,
       "ai_reason": null,
       "block_reasons": [
-        "섹터(기타) 비중 35.8% > 35.0% 초과"
+        "최대 보유 종목수(3) 도달",
+        "이미 보유 중 — 중복 매수 방지"
       ]
     },
     {
-      "ticker": "JTBC",
-      "name": "JTBC",
+      "ticker": "TSMC",
+      "name": "TSMC",
       "kind": "BUY",
-      "score": 72.7,
-      "rank": 3,
+      "score": 73.4,
+      "rank": 2,
       "sector": null,
-      "atr_pct": 2.73,
+      "atr_pct": 3.59,
       "breakdown": [
         {
           "name": "섹터/테마 모멘텀",
@@ -214,21 +118,21 @@
         },
         {
           "name": "기술적 타점",
-          "score": 25,
+          "score": 16.2,
           "max": 25,
-          "reason": "20일선 근처(눌림), 전일고가 돌파, RSI 56.7(과열 전)"
+          "reason": "20일선 근처(눌림), RSI 47.0(과열 전)"
         },
         {
           "name": "상승여력",
-          "score": 5.5,
+          "score": 10.7,
           "max": 15,
-          "reason": "상승여력 +5.5%"
+          "reason": "상승여력 +10.7%"
         },
         {
           "name": "거래량/거래대금",
-          "score": 9.2,
+          "score": 13.5,
           "max": 20,
-          "reason": "거래량 5/20일 1.10배"
+          "reason": "거래량 5/20일 1.46배"
         },
         {
           "name": "거시/이벤트 안전도",
@@ -238,19 +142,17 @@
         },
         {
           "name": "손절 구조",
-          "score": 10.0,
+          "score": 10,
           "max": 10,
           "reason": "손절까지 -3.0%(% 기반 -3%)"
         }
       ],
       "rationale": {
-        "entry_type": "돌파/눌림/추세추종",
+        "entry_type": "추세추종",
         "price_conditions": [
-          "5일선 위",
-          "20일선 위",
-          "전일고가 돌파"
+          "20일선 근처(지지)"
         ],
-        "volume_condition": "5/20일 평균 1.10배(증가)",
+        "volume_condition": "5/20일 평균 1.46배(증가)",
         "trend_condition": "정배열(단>중>장)",
         "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
         "sector_state": "미상",
@@ -260,33 +162,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 141075.04,
-          "stop": 130326.46,
+          "target": 171121.94,
+          "stop": 158084.08,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
-          "atr_stop_mult": 1.1
+          "atr_stop_mult": 0.84
         },
         "ATR": {
-          "target": 141700.58,
-          "stop": 128849.63,
-          "note": "+2.0ATR / -1.5ATR (ATR 2.73%)",
+          "target": 174682.44,
+          "stop": 154191.41,
+          "note": "+2.0ATR / -1.5ATR (ATR 3.59%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 141691.28,
-          "stop": 123675.2,
-          "note": "목표=20일고 141,691 / 손절=20일저 123,675",
-          "rr": 0.69,
-          "atr_stop_mult": 2.91
+          "target": 180396.07,
+          "stop": 150815.11,
+          "note": "목표=20일고 180,396 / 손절=20일저 150,815",
+          "rr": 1.43,
+          "atr_stop_mult": 2.08
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 134357.18,
-        "stop": 130326.46,
-        "target1": 141075.04,
-        "target2": 145777.54,
+        "entry": 162973.28,
+        "stop": 158084.08,
+        "target1": 171121.94,
+        "target2": 176826.01,
         "rr": 1.67
       },
       "methods": [],
@@ -294,7 +196,7 @@
       "ai_confidence": null,
       "ai_reason": null,
       "block_reasons": [
-        "섹터(기타) 비중 37.3% > 35.0% 초과"
+        "최대 보유 종목수(3) 도달"
       ]
     },
     {
@@ -302,7 +204,7 @@
       "name": "ASML",
       "kind": "BUY_WATCH",
       "score": 68.0,
-      "rank": 4,
+      "rank": 3,
       "sector": null,
       "atr_pct": 5.93,
       "breakdown": [
@@ -338,7 +240,7 @@
         },
         {
           "name": "손절 구조",
-          "score": 10,
+          "score": 10.0,
           "max": 10,
           "reason": "손절까지 -3.0%(% 기반 -3%)"
         }
@@ -359,33 +261,131 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 2859523.53,
-          "stop": 2641655.07,
+          "target": 2858795.25,
+          "stop": 2640982.28,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
           "atr_stop_mult": 0.51
         },
         "ATR": {
-          "target": 3046254.42,
-          "stop": 2481181.73,
+          "target": 3045478.58,
+          "stop": 2480549.81,
           "note": "+2.0ATR / -1.5ATR (ATR 5.93%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 2999878.01,
-          "stop": 2419454.0,
-          "note": "목표=20일고 2,999,878 / 손절=20일저 2,419,454",
+          "target": 2999113.99,
+          "stop": 2418837.8,
+          "note": "목표=20일고 2,999,114 / 손절=20일저 2,418,838",
           "rr": 0.91,
           "atr_stop_mult": 1.88
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 2723355.74,
-        "stop": 2641655.07,
-        "target1": 2859523.53,
-        "target2": 2954840.98,
+        "entry": 2722662.14,
+        "stop": 2640982.28,
+        "target1": 2858795.25,
+        "target2": 2954088.42,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "JTBC",
+      "name": "JTBC",
+      "kind": "BUY_WATCH",
+      "score": 67.0,
+      "rank": 4,
+      "sector": null,
+      "atr_pct": 2.9,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 20.0,
+          "max": 25,
+          "reason": "20일선 상회(상승추세), 전일고가 돌파, RSI 58.4(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 1.2,
+          "max": 15,
+          "reason": "상승여력 +1.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 12.8,
+          "max": 20,
+          "reason": "거래량 5/20일 1.40배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파/추세추종",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.40배(증가)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 169318.35,
+          "stop": 156417.9,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 1.04
+        },
+        "ATR": {
+          "target": 170596.61,
+          "stop": 154249.79,
+          "note": "+2.0ATR / -1.5ATR (ATR 2.9%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 163270.27,
+          "stop": 147996.39,
+          "note": "목표=20일고 163,270 / 손절=20일저 147,996",
+          "rr": 0.15,
+          "atr_stop_mult": 2.84
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 161255.57,
+        "stop": 156417.9,
+        "target1": 169318.35,
+        "target2": 174962.29,
         "rr": 1.67
       },
       "methods": [],
@@ -435,7 +435,7 @@
         },
         {
           "name": "손절 구조",
-          "score": 10,
+          "score": 10.0,
           "max": 10,
           "reason": "손절까지 -3.0%(% 기반 -3%)"
         }
@@ -456,33 +456,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 835848.58,
-          "stop": 772164.88,
+          "target": 835635.71,
+          "stop": 771968.22,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
           "atr_stop_mult": 0.41
         },
         "ATR": {
-          "target": 913435.75,
-          "stop": 708004.16,
+          "target": 913203.11,
+          "stop": 707823.84,
           "note": "+2.0ATR / -1.5ATR (ATR 7.37%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 862106.57,
-          "stop": 669530.32,
-          "note": "목표=20일고 862,107 / 손절=20일저 669,530",
+          "target": 861887.01,
+          "stop": 669359.8,
+          "note": "목표=20일고 861,887 / 손절=20일저 669,360",
           "rr": 0.52,
           "atr_stop_mult": 2.16
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 796046.27,
-        "stop": 772164.88,
-        "target1": 835848.58,
-        "target2": 863710.2,
+        "entry": 795843.53,
+        "stop": 771968.22,
+        "target1": 835635.71,
+        "target2": 863490.23,
         "rr": 1.67
       },
       "methods": [],
@@ -532,7 +532,7 @@
         },
         {
           "name": "손절 구조",
-          "score": 10.0,
+          "score": 10,
           "max": 10,
           "reason": "손절까지 -3.0%(% 기반 -3%)"
         }
@@ -553,33 +553,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 425987.76,
-          "stop": 393531.55,
+          "target": 425879.27,
+          "stop": 393431.32,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
           "atr_stop_mult": 0.62
         },
         "ATR": {
-          "target": 445046.11,
-          "stop": 376195.02,
+          "target": 444932.76,
+          "stop": 376099.2,
           "note": "+2.0ATR / -1.5ATR (ATR 4.85%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 509095.98,
-          "stop": 373147.17,
-          "note": "목표=20일고 509,096 / 손절=20일저 373,147",
+          "target": 508966.33,
+          "stop": 373052.14,
+          "note": "목표=20일고 508,966 / 손절=20일저 373,052",
           "rr": 3.18,
           "atr_stop_mult": 1.65
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 405702.63,
-        "stop": 393531.55,
-        "target1": 425987.76,
-        "target2": 440187.35,
+        "entry": 405599.3,
+        "stop": 393431.32,
+        "target1": 425879.27,
+        "target2": 440075.24,
         "rr": 1.67
       },
       "methods": [],
@@ -650,33 +650,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 24359.15,
-          "stop": 22503.21,
+          "target": 24352.95,
+          "stop": 22497.49,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
           "atr_stop_mult": 1.66
         },
         "ATR": {
-          "target": 24038.13,
-          "stop": 22569.98,
+          "target": 24032.01,
+          "stop": 22564.25,
           "note": "+2.0ATR / -1.5ATR (ATR 1.81%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 24087.35,
-          "stop": 22571.36,
-          "note": "목표=20일고 24,087 / 손절=20일저 22,571",
+          "target": 24081.21,
+          "stop": 22565.61,
+          "note": "목표=20일고 24,081 / 손절=20일저 22,566",
           "rr": 1.41,
           "atr_stop_mult": 1.5
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 23199.19,
-        "stop": 22503.21,
-        "target1": 24359.15,
-        "target2": 25171.12,
+        "entry": 23193.29,
+        "stop": 22497.49,
+        "target1": 24352.95,
+        "target2": 25164.72,
         "rr": 1.67
       },
       "methods": [],
@@ -686,13 +686,13 @@
       "block_reasons": []
     },
     {
-      "ticker": "TSMC",
-      "name": "TSMC",
+      "ticker": "KLA",
+      "name": "KLA",
       "kind": "BUY_WATCH",
-      "score": 62.9,
+      "score": 61.8,
       "rank": 8,
       "sector": null,
-      "atr_pct": 2.34,
+      "atr_pct": 2.28,
       "breakdown": [
         {
           "name": "섹터/테마 모멘텀",
@@ -702,21 +702,21 @@
         },
         {
           "name": "기술적 타점",
-          "score": 13.8,
+          "score": 16.2,
           "max": 25,
-          "reason": "20일선 상회(상승추세), 전일고가 돌파"
+          "reason": "20일선 근처(눌림), RSI 55.0(과열 전)"
         },
         {
           "name": "상승여력",
-          "score": 0.2,
+          "score": 4.6,
           "max": 15,
-          "reason": "상승여력 +0.2%"
+          "reason": "상승여력 +4.6%"
         },
         {
           "name": "거래량/거래대금",
-          "score": 15.9,
+          "score": 8.0,
           "max": 20,
-          "reason": "거래량 5/20일 1.66배"
+          "reason": "거래량 5/20일 0.93배"
         },
         {
           "name": "거시/이벤트 안전도",
@@ -732,13 +732,12 @@
         }
       ],
       "rationale": {
-        "entry_type": "돌파/추세추종",
+        "entry_type": "눌림/추세추종",
         "price_conditions": [
-          "5일선 위",
           "20일선 위",
-          "전일고가 돌파"
+          "20일선 근처(지지)"
         ],
-        "volume_condition": "5/20일 평균 1.66배(증가)",
+        "volume_condition": "5/20일 평균 0.93배(보통)",
         "trend_condition": "정배열(단>중>장)",
         "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
         "sector_state": "미상",
@@ -748,33 +747,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 195375.13,
-          "stop": 180489.4,
+          "target": 201329.29,
+          "stop": 185989.91,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
-          "atr_stop_mult": 1.28
+          "atr_stop_mult": 1.32
         },
         "ATR": {
-          "target": 194796.17,
-          "stop": 179528.08,
-          "note": "+2.0ATR / -1.5ATR (ATR 2.34%)",
+          "target": 200477.3,
+          "stop": 185190.84,
+          "note": "+2.0ATR / -1.5ATR (ATR 2.28%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 195375.13,
-          "stop": 162348.71,
-          "note": "목표=20일고 186,500 / 손절=20일저 162,349",
-          "rr": 0.39,
-          "atr_stop_mult": 5.44
+          "target": 200619.07,
+          "stop": 181819.62,
+          "note": "목표=20일고 200,619 / 손절=20일저 181,820",
+          "rr": 0.89,
+          "atr_stop_mult": 2.27
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 186071.55,
-        "stop": 180489.4,
-        "target1": 195375.13,
-        "target2": 201887.63,
+        "entry": 191742.18,
+        "stop": 185989.91,
+        "target1": 201329.29,
+        "target2": 208040.27,
         "rr": 1.67
       },
       "methods": [],
@@ -845,33 +844,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 212688.38,
-          "stop": 196483.55,
+          "target": 212634.21,
+          "stop": 196433.51,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
           "atr_stop_mult": 0.37
         },
         "ATR": {
-          "target": 235800.5,
-          "stop": 177630.25,
+          "target": 235740.45,
+          "stop": 177585.01,
           "note": "+2.0ATR / -1.5ATR (ATR 8.2%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 216602.38,
-          "stop": 150572.73,
-          "note": "목표=20일고 216,602 / 손절=20일저 150,573",
+          "target": 216547.21,
+          "stop": 150534.38,
+          "note": "목표=20일고 216,547 / 손절=20일저 150,534",
           "rr": 0.27,
           "atr_stop_mult": 3.13
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 202560.36,
-        "stop": 196483.55,
-        "target1": 212688.38,
-        "target2": 219777.99,
+        "entry": 202508.77,
+        "stop": 196433.51,
+        "target1": 212634.21,
+        "target2": 219722.02,
         "rr": 1.67
       },
       "methods": [],
@@ -921,7 +920,7 @@
         },
         {
           "name": "손절 구조",
-          "score": 10.0,
+          "score": 10,
           "max": 10,
           "reason": "손절까지 -3.0%(% 기반 -3%)"
         }
@@ -942,33 +941,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 299689.96,
-          "stop": 276856.44,
+          "target": 299613.63,
+          "stop": 276785.92,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
           "atr_stop_mult": 1.04
         },
         "ATR": {
-          "target": 301955.95,
-          "stop": 273016.3,
+          "target": 301879.05,
+          "stop": 272946.76,
           "note": "+2.0ATR / -1.5ATR (ATR 2.9%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 297332.52,
-          "stop": 264225.82,
-          "note": "목표=20일고 297,333 / 손절=20일저 264,226",
+          "target": 297256.79,
+          "stop": 264158.53,
+          "note": "목표=20일고 297,257 / 손절=20일저 264,159",
           "rr": 0.56,
           "atr_stop_mult": 2.56
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 285419.01,
-        "stop": 276856.44,
-        "target1": 299689.96,
-        "target2": 309679.63,
+        "entry": 285346.31,
+        "stop": 276785.92,
+        "target1": 299613.63,
+        "target2": 309600.75,
         "rr": 1.67
       },
       "methods": [],
@@ -1002,7 +1001,7 @@
           "name": "상승여력",
           "score": 15,
           "max": 15,
-          "reason": "상승여력 +177.3%"
+          "reason": "상승여력 +177.4%"
         },
         {
           "name": "거래량/거래대금",
@@ -1038,33 +1037,33 @@
       },
       "target_methods": {
         "고정비율": {
-          "target": 28587.85,
-          "stop": 26409.72,
+          "target": 28580.56,
+          "stop": 26402.99,
           "note": "매수가 대비 +5.0% / -3.0%",
           "rr": 1.67,
           "atr_stop_mult": 1.02
         },
         "ATR": {
-          "target": 28821.26,
-          "stop": 26030.47,
+          "target": 28813.92,
+          "stop": 26023.83,
           "note": "+2.0ATR / -1.5ATR (ATR 2.93%)",
           "rr": 1.33,
           "atr_stop_mult": 1.5
         },
         "지지저항": {
-          "target": 29186.58,
-          "stop": 26613.99,
-          "note": "목표=20일고 29,187 / 손절=20일저 26,614",
+          "target": 29179.14,
+          "stop": 26607.21,
+          "note": "목표=20일고 29,179 / 손절=20일저 26,607",
           "rr": 3.2,
           "atr_stop_mult": 0.77
         }
       },
       "target_method_used": "고정비율",
       "plan": {
-        "entry": 27226.52,
-        "stop": 26409.72,
-        "target1": 28587.85,
-        "target2": 29540.77,
+        "entry": 27219.58,
+        "stop": 26402.99,
+        "target1": 28580.56,
+        "target2": 29533.24,
         "rr": 1.67
       },
       "methods": [],
