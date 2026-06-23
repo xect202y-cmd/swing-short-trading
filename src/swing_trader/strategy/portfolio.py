@@ -5,6 +5,22 @@
 from __future__ import annotations
 
 
+def _scalar_price(v) -> float | None:
+    """price_fn 반환값을 스칼라 float 로 강제.
+
+    호출부마다 price_fn 이 다르다(broker.get_price=스칼라, provider=pandas Series 등).
+    Series 를 그대로 'or'/'if' 에 쓰면 ValueError(truth value ambiguous) → 브리핑/실행 크래시.
+    """
+    if v is None:
+        return None
+    try:
+        if hasattr(v, "iloc"):
+            v = v.iloc[-1]
+        return float(v)
+    except (TypeError, ValueError, IndexError):
+        return None
+
+
 class Exposure:
     def __init__(self, seed: float, positions, price_fn):
         self.seed = max(seed, 1.0)
@@ -12,7 +28,7 @@ class Exposure:
         self.per_stock: dict[str, float] = {}
         self.per_sector: dict[str, float] = {}
         for p in positions:
-            cur = price_fn(p.ticker) or p.avg_price
+            cur = _scalar_price(price_fn(p.ticker)) or p.avg_price
             val = cur * p.quantity
             self.holdings += val
             self.per_stock[p.ticker] = self.per_stock.get(p.ticker, 0.0) + val

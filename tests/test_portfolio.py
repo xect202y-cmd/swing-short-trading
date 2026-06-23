@@ -42,3 +42,14 @@ def test_exposure_with_series_price_fn_does_not_crash():
     b = _broker_with_position(lambda s: pd.Series([158_300.0]))
     exp = pf.Exposure(5_000_000.0, b.get_positions(), b.get_price)
     assert exp.holdings == 158_300.0 * 10
+
+
+def test_exposure_with_raw_series_price_fn_briefer_path():
+    # 브리핑 경로(briefer._portfolio_lines)는 broker.get_price 가 아니라
+    # provider 의 price_fn(pandas Series 반환)을 직접 Exposure 에 넘긴다 → 같은 크래시.
+    b = _broker_with_position(lambda s: None)
+    exp = pf.Exposure(5_000_000.0, b.get_positions(), lambda t: pd.Series([158_300.0]))
+    assert exp.holdings == 158_300.0 * 10
+    # None/빈 Series 도 avg_price 폴백으로 안전
+    exp2 = pf.Exposure(5_000_000.0, b.get_positions(), lambda t: None)
+    assert exp2.holdings == 158_379.0 * 10
