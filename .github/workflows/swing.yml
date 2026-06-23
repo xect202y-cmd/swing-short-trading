@@ -50,7 +50,9 @@ jobs:
           python-version: "3.12"
 
       - name: 의존성 설치(실데이터 소스 포함)
-        run: pip install -q ".[market]"
+        # editable(-e) 필수: config.py PROJECT_ROOT=PKG_ROOT.parents[1] 가 repo 루트를 가리켜야
+        # repo의 config.yaml(시드)·state/(실계좌)를 로드/저장한다. (non-editable이면 site-packages→빈 계좌)
+        run: pip install -q -e ".[market]"
 
       - name: 실행(시장별 best-effort)
         run: |
