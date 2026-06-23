@@ -1,0 +1,249 @@
+{
+  "date": "2026-06-24",
+  "orders": [
+    {
+      "order_id": "P-93b21ba8",
+      "ticker": "TSMC",
+      "side": "SELL",
+      "quantity": 4,
+      "price": 139173.77,
+      "order_type": "limit",
+      "status": "filled",
+      "filled_price": 139104.18,
+      "fee": 83.46,
+      "slippage": 278.36,
+      "created_at": "2026-06-24T06:00:55.280725",
+      "note": "가상 체결 · 실현손익 -2,752원 · [청산] 트레일링 스탑(142,595)",
+      "stop": 139771.26,
+      "target": 146686.48
+    },
+    {
+      "order_id": "P-c9b13090",
+      "ticker": "TSLA",
+      "side": "SELL",
+      "quantity": 1,
+      "price": 584821.12,
+      "order_type": "limit",
+      "status": "filled",
+      "filled_price": 584528.71,
+      "fee": 87.68,
+      "slippage": 292.41,
+      "created_at": "2026-06-24T06:00:56.251643",
+      "note": "가상 체결 · 실현손익 -36,961원 · [청산] 손절가 도달",
+      "stop": 602458.76,
+      "target": 652146.08
+    }
+  ],
+  "signals": [
+    {
+      "ticker": "AMD",
+      "name": "AMD",
+      "kind": "BLOCKED",
+      "score": 68.5,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "ARM",
+      "name": "ARM",
+      "kind": "BLOCKED",
+      "score": 67.3,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "ASML",
+      "name": "ASML",
+      "kind": "BLOCKED",
+      "score": 66.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "BYD",
+      "name": "BYD",
+      "kind": "BLOCKED",
+      "score": 58.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "GBTC",
+      "name": "GBTC",
+      "kind": "BLOCKED",
+      "score": 40.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "GE",
+      "name": "GE",
+      "kind": "BLOCKED",
+      "score": 42.2,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "IBM",
+      "name": "IBM",
+      "kind": "BLOCKED",
+      "score": 58.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "JTBC",
+      "name": "JTBC",
+      "kind": "BLOCKED",
+      "score": 56.8,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "KLA",
+      "name": "KLA",
+      "kind": "BLOCKED",
+      "score": 58.5,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "KT",
+      "name": "KT",
+      "kind": "BLOCKED",
+      "score": 53.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "MSTR",
+      "name": "MSTR",
+      "kind": "BLOCKED",
+      "score": 44.3,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "RTX",
+      "name": "RTX",
+      "kind": "BLOCKED",
+      "score": 58.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "STRC",
+      "name": "STRC",
+      "kind": "BLOCKED",
+      "score": 43.9,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "TSMC",
+      "name": "TSMC",
+      "kind": "BLOCKED",
+      "score": 55.8,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "UMH",
+      "name": "UMH",
+      "kind": "BLOCKED",
+      "score": 56.8,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "NFLX",
+      "name": "넷플릭스",
+      "kind": "BLOCKED",
+      "score": 49.8,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "MSFT",
+      "name": "마이크로소프트",
+      "kind": "BLOCKED",
+      "score": 43.9,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "MSTR",
+      "name": "마이크로스트래티지",
+      "kind": "BLOCKED",
+      "score": 44.3,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "MU",
+      "name": "마이크론",
+      "kind": "BLOCKED",
+      "score": 39.2,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "META",
+      "name": "메타",
+      "kind": "BLOCKED",
+      "score": 42.3,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "AVGO",
+      "name": "브로드컴",
+      "kind": "BLOCKED",
+      "score": 43.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "AMZN",
+      "name": "아마존",
+      "kind": "BLOCKED",
+      "score": 45.3,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "알파벳",
+      "kind": "BLOCKED",
+      "score": 42.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "AAPL",
+      "name": "애플",
+      "kind": "BLOCKED",
+      "score": 52.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "NVDA",
+      "name": "엔비디아",
+      "kind": "BLOCKED",
+      "score": 28.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "INTC",
+      "name": "인텔",
+      "kind": "BLOCKED",
+      "score": 53.3,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "COIN",
+      "name": "코인베이스",
+      "kind": "BLOCKED",
+      "score": 43.0,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "QCOM",
+      "name": "퀄컴",
+      "kind": "BLOCKED",
+      "score": 50.4,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "TSLA",
+      "name": "테슬라",
+      "kind": "BLOCKED",
+      "score": 43.1,
+      "event_risk": "높음"
+    },
+    {
+      "ticker": "PLTR",
+      "name": "팔란티어",
+      "kind": "BLOCKED",
+      "score": 43.3,
+      "event_risk": "높음"
+    }
+  ]
+}

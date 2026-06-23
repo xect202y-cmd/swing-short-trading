@@ -1,0 +1,33 @@
+# 자격증명/환경 — 절대 커밋 금지
+.env
+.env.*
+!.env.example
+*.key
+*.secret
+config/.env.swing
+
+# 상태/데이터
+*.db
+*.sqlite
+*.sqlite3
+data/
+state/
+positions.json
+orders.json
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.coverage
+
+# 런타임 로그/하트비트
+swing.log
+swing_heartbeat.txt
+*.log

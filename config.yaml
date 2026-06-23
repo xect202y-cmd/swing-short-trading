@@ -1,0 +1,108 @@
+# ─────────────────────────────────────────────────────────────
+# 스윙 트레이딩 설정. 경로/자금관리/점수/리스크 규칙.  민감정보(키)는 .env 로.
+# ─────────────────────────────────────────────────────────────
+
+paths:
+  # 실제 볼트 경로. .env OBSIDIAN_VAULT_ROOT 가 있으면 그쪽이 우선.
+  vault_root: "C:/Users/xect2/ObsidianVault/이용수_Wiki"
+  # 읽기 (볼트 루트 기준 상대경로)
+  read:
+    macro_dashboard: "금융뉴스/거시/📉 거시지표 대시보드.md"
+    macro_regime: "03_Ontology/Entities/Macro/📊 거시 국면.md"
+    event_calendar: "금융뉴스/이벤트캘린더/📅 시장 이벤트 캘린더.md"
+    rulebook: "03_Ontology/Rules/스윙_트레이딩_룰북.md"
+    stock_notes_glob: "02_투자_유튜브/종목/*.md"
+  # 쓰기 (볼트 루트 기준)
+  write:
+    logs_dir: "04_Trading/Logs"
+    signals_dir: "04_Trading/Signals"
+    reviews_dir: "04_Trading/Reviews"
+    backtests_dir: "04_Trading/Backtests"
+    briefs_dir: "04_Trading/Briefs"        # 일/주 브리핑
+    reports_dir: "04_Trading/Reports"      # 월간 로직 보고서
+    logic_dir: "04_Trading/Logic"          # 로직 변경 이력(버전·A/B)
+  # 로컬 상태(볼트 밖, gitignore)
+  state_dir: "state"
+
+capital:
+  seed: 5000000              # 시드 500만원 (페이퍼 — 정확한 데이터 수집용)
+  max_positions: 3           # 최대 동시 보유(자금↑로 분산 확대)
+  max_per_stock: 1250000     # 1종목 최대 진입금(=시드 25% 한도와 정합)
+  first_entry: 1000000       # 1차 진입금(시드 20% → 3종목이면 총 60% 한도에 정합)
+  weekly_target: 300000      # 주간 스윙 목표 30만원 (약 6%, 강제 아님·추적용)
+  # 포트폴리오 노출 제한(초과 시 신규매수 차단)
+  max_total_exposure_pct: 60   # 총 투자비중 상한(%)
+  max_per_stock_pct: 25        # 1종목 최대 비중(%)
+  max_sector_pct: 35           # 동일 섹터 최대 비중(%)
+  max_new_per_day: 3           # 하루 신규매수 최대 종목수
+
+risk:
+  default_stop_pct: -3.0     # 기본 손절 %
+  max_stop_pct: -5.0         # 변동성 종목 손절 하한
+  take1_pct: 5.0             # 1차 익절 %(3~5 상단; 손절 -3%와 손익비 ≥1.5 충족)
+  take2_pct: 8.5             # 2차 익절 %(7~10 중앙)
+  min_reward_risk: 1.5       # 최소 손익비
+  daily_loss_limit: -150000  # 1일 손실 한도(도달 시 신규매매 중지, 시드 5배 스케일)
+  account_loss_limit: -250000 # 주간 계좌 손실 한도(도달 시 그 주 중지)
+  min_trading_value_eok: 30  # 거래대금 최소(억) — 미만이면 매수금지
+  # 스윙 보유기간 규율 — 장기보유 금지(목표 도달 시 청산, 안 되면 강제 회전)
+  momentum_exit_days: 5      # 5거래일 초과 + 모멘텀 약화 시 청산
+  soft_hold_days: 10         # 2주 경과 + 수익 없으면 정리(자금 회전)
+  max_hold_days: 20          # 최대 4주 — 무조건 강제청산(스윙 상한)
+  # 승자를 달리게 — 1차 익절서 절반만 익절, 잔량은 트레일링으로 2차까지 추세 보유
+  partial_exit_pct: 0.5      # 1차 익절가 도달 시 매도 비율(절반)
+  trail_pct: 3.0             # 부분익절 후 잔량 트레일링 스탑(최고가 대비 %)
+  # 목표/손절 산출 방식: 고정비율 | ATR | 지지저항 (노트에 값 있으면 노트 우선)
+  target_stop_method: "고정비율"
+  atr_target_mult: 2.0       # ATR 방식 목표 = +n*ATR
+  atr_stop_mult: 1.5         # ATR 방식 손절 = -n*ATR
+
+scoring:
+  # 100점 만점 가중치
+  weights:
+    sector_momentum: 20
+    technical_setup: 25
+    upside_room: 15
+    volume_surge: 20
+    macro_event_risk: 10
+    short_stop_structure: 10
+  thresholds:
+    strong: 80     # 강한 후보
+    small_ok: 70   # 1차 소액 가능 / 매수신호 최소
+    watch: 60      # 관찰
+  live_min_score: 80  # 실전 주문 최소 점수
+  method_bonus_per: 5   # 부합 기법 1개당 가점
+  method_bonus_max: 12  # 기법 가점 상한
+
+# 매매 기법(playbook) 온톨로지 — 네 볼트 기법의 신호규칙으로 후보 가점/태깅
+methods:
+  # 비우면 obsidian-automation/methods_signals.json 자동 탐색
+  signals_path: null
+
+# AI 최종 판단(선택) — OPENAI_API_KEY 있을 때만 동작. 키 없으면 룰 기반만(안전).
+ai:
+  enabled: true          # 키 있으면 활성. false면 키 있어도 끔.
+  min_score: 75          # 이 점수 이상 BUY 후보만 AI 판단(API 호출 최소화)
+  veto_confidence: 70    # AI '회피' 확신도 ≥ 이 값이면 매수 보류(WATCH 강등)
+
+indicators:
+  ma_windows: [5, 20, 60]
+  rsi_period: 14
+  rsi_overbought: 70
+  vol_windows: [5, 20]
+
+event_filter:
+  # D-0~D-2 에 신규매수 제한할 대형 이벤트 키워드
+  block_keywords: ["FOMC", "CPI", "PCE", "고용", "금리결정", "옵션만기", "네마녀"]
+  block_window_days: 2       # D-2 까지 위험
+  vix_caution: 20.0          # VIX 이상이면 위험 가중
+
+paper:
+  fee_bps: 1.5               # 수수료(왕복 근사, bps) — 0.015%
+  slippage_bps: 5.0          # 슬리피지 bps
+  fill_mode: "next_open"     # 체결 가정(데모용)
+
+market_data:
+  provider: "auto"           # auto | pykrx | yfinance | synthetic
+  lookback_days: 120         # 지표 계산용 OHLCV 기간
+  fx_usdkrw: 1530            # USD→KRW 환산 폴백값(실시간 'KRW=X' 조회 실패 시에만 사용)
