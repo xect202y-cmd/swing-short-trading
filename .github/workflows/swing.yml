@@ -1,0 +1,94 @@
+name: 스윙 페이퍼 트레이딩 (Daily/Weekly)
+
+# 클라우드(GitHub Actions)에서 페이퍼 스윙 자동매매 + 디스코드 Swing Hook 발송.
+# 노트북과 무관하게 동작. 상태(state/)는 이 repo에, 리포트 MD는 볼트 repo에 커밋백.
+#
+# 시각: KR 09:05 KST = 00:05 UTC. 이 시각엔 미국장도 이미 마감이라 US도 같이 처리한다.
+#       (US는 --no-brief, KR 런이 통합 Daily 브리핑 1회 발송. 주간/월간은 금요일 자동.)
+on:
+  schedule:
+    - cron: "5 0 * * 1-5"   # 09:05 KST(월~금)
+  workflow_dispatch:
+    inputs:
+      markets:
+        description: "수동 실행(both=US+KR / kr / us)"
+        type: choice
+        options: [both, kr, us]
+        default: both
+
+concurrency:
+  group: swing-trading
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write          # state/ 를 이 repo 에 커밋백
+    env:
+      PAPER_TRADING: "true"
+      OBSIDIAN_VAULT_ROOT: ${{ github.workspace }}/vault
+      SWING_DISCORD_WEBHOOK_URL: ${{ secrets.SWING_DISCORD_WEBHOOK_URL }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+      PYTHONUTF8: "1"
+    steps:
+      - name: 스윙 repo 체크아웃
+        uses: actions/checkout@v4
+
+      - name: 볼트 체크아웃(리포트 MD 읽기/쓰기)
+        uses: actions/checkout@v4
+        with:
+          repository: xect202y-cmd/obsidian-vault
+          token: ${{ secrets.VAULT_TOKEN }}
+          path: vault
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 의존성 설치(실데이터 소스 포함)
+        run: pip install -q ".[market]"
+
+      - name: 실행(시장별 best-effort)
+        run: |
+          set +e
+          M="${{ github.event.inputs.markets }}"; M="${M:-both}"
+          if [ "$M" = "both" ] || [ "$M" = "us" ]; then
+            echo "::group::run-once US"; swing-trader run-once --market us --no-brief; echo "exit=$?"; echo "::endgroup::"
+          fi
+          if [ "$M" = "both" ] || [ "$M" = "kr" ]; then
+            echo "::group::run-once KR(+Daily 브리핑)"; swing-trader run-once --market kr; echo "exit=$?"; echo "::endgroup::"
+          fi
+          echo "::group::review"; swing-trader review; echo "exit=$?"; echo "::endgroup::"
+          echo "::group::brief auto(주간/월간)"; swing-trader brief --period auto; echo "exit=$?"; echo "::endgroup::"
+          echo "all steps attempted."
+
+      - name: 상태 커밋백(state/ → 이 repo)
+        run: |
+          git config user.name "swing-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f state/
+          if git diff --cached --quiet; then
+            echo "상태 변경 없음."
+          else
+            git commit -m "chore(state): 페이퍼 트레이딩 상태 갱신 [skip ci]"
+            git push
+          fi
+
+      - name: 리포트 커밋백(볼트 MD → obsidian-vault)
+        run: |
+          cd vault
+          git config user.name "swing-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "볼트 변경 없음."
+          else
+            git -c core.autocrlf=false commit -m "chore(swing): 스윙 리포트 갱신 [skip ci]"
+            git fetch origin main
+            git -c core.autocrlf=false rebase origin/main || git rebase --abort
+            git push origin HEAD:main
+          fi
