@@ -14,7 +14,7 @@
     "max_up": 2.88,
     "max_down": -3.19,
     "last_update": "2026-06-23",
-    "last_ret": -3.19,
+    "last_ret": -3.14,
     "ret_d1": 2.88,
     "ret_d3": -3.18
   },
@@ -33,7 +33,7 @@
     "max_up": 2.2,
     "max_down": 0.0,
     "last_update": "2026-06-23",
-    "last_ret": 2.1,
+    "last_ret": 2.15,
     "ret_d1": 2.2,
     "ret_d3": 2.12
   },
@@ -50,9 +50,9 @@
     "block_reason": null,
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -40.54,
+    "max_down": -46.56,
     "last_update": "2026-06-23",
-    "last_ret": -40.54,
+    "last_ret": -46.56,
     "ret_d1": -2.88,
     "ret_d3": -35.08
   },
@@ -71,7 +71,7 @@
     "max_up": 0.0,
     "max_down": -51.17,
     "last_update": "2026-06-23",
-    "last_ret": -51.17,
+    "last_ret": -19.77,
     "ret_d1": -10.8,
     "ret_d3": -14.58
   },
@@ -90,7 +90,7 @@
     "max_up": 7.06,
     "max_down": -7.19,
     "last_update": "2026-06-23",
-    "last_ret": -7.19,
+    "last_ret": -7.14,
     "ret_d1": 7.06,
     "ret_d3": -7.17
   },
@@ -109,7 +109,7 @@
     "max_up": 0.0,
     "max_down": -4.99,
     "last_update": "2026-06-23",
-    "last_ret": -4.99,
+    "last_ret": -4.94,
     "ret_d1": -0.75,
     "ret_d3": -4.97
   },
@@ -128,7 +128,7 @@
     "max_up": 5.42,
     "max_down": -1.21,
     "last_update": "2026-06-23",
-    "last_ret": -1.21,
+    "last_ret": -1.16,
     "ret_d1": 5.42,
     "ret_d3": -1.19
   },
@@ -147,7 +147,7 @@
     "max_up": 0.0,
     "max_down": -9.66,
     "last_update": "2026-06-23",
-    "last_ret": -9.66,
+    "last_ret": -9.61,
     "ret_d1": -1.65,
     "ret_d3": -9.64
   },
@@ -166,7 +166,7 @@
     "max_up": 0.0,
     "max_down": -10.27,
     "last_update": "2026-06-23",
-    "last_ret": -10.27,
+    "last_ret": -10.23,
     "ret_d1": -10.19
   },
   "RTX": {
@@ -184,7 +184,7 @@
     "max_up": 2.45,
     "max_down": 0.0,
     "last_update": "2026-06-23",
-    "last_ret": 2.35,
+    "last_ret": 2.4,
     "ret_d1": 2.45
   },
   "COIN": {
@@ -202,7 +202,7 @@
     "max_up": 0.0,
     "max_down": -4.19,
     "last_update": "2026-06-23",
-    "last_ret": -4.19,
+    "last_ret": -4.14,
     "ret_d1": -4.09
   },
   "ASML": {
@@ -220,7 +220,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "GBTC": {
@@ -238,7 +238,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "GE": {
@@ -256,7 +256,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "IBM": {
@@ -274,7 +274,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "KT": {
@@ -292,7 +292,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "MSTR": {
@@ -310,7 +310,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "STRC": {
@@ -328,7 +328,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "TSMC": {
@@ -344,9 +344,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 60.17,
-    "max_down": 0.0,
+    "max_down": -8.31,
     "last_update": "2026-06-23",
-    "last_ret": 1.85,
+    "last_ret": -8.31,
     "ret_d1": 33.7
   },
   "UMH": {
@@ -364,7 +364,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "NFLX": {
@@ -382,7 +382,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "MSFT": {
@@ -400,7 +400,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "META": {
@@ -418,7 +418,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "AVGO": {
@@ -436,7 +436,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "AMZN": {
@@ -454,7 +454,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "GOOGL": {
@@ -472,7 +472,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "AAPL": {
@@ -490,7 +490,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "TSLA": {
@@ -508,7 +508,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "PLTR": {
@@ -526,7 +526,7 @@
     "max_up": 0.0,
     "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.1,
+    "last_ret": -0.04,
     "ret_d1": -0.08
   },
   "403870": {
