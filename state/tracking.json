@@ -12,9 +12,9 @@
     "block_reason": null,
     "bars": 3,
     "max_up": 2.88,
-    "max_down": -3.18,
+    "max_down": -3.19,
     "last_update": "2026-06-23",
-    "last_ret": -3.18,
+    "last_ret": -3.19,
     "ret_d1": 2.88,
     "ret_d3": -3.18
   },
@@ -33,7 +33,7 @@
     "max_up": 2.2,
     "max_down": 0.0,
     "last_update": "2026-06-23",
-    "last_ret": 2.11,
+    "last_ret": 2.1,
     "ret_d1": 2.2,
     "ret_d3": 2.12
   },
@@ -50,9 +50,9 @@
     "block_reason": null,
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -35.08,
+    "max_down": -40.54,
     "last_update": "2026-06-23",
-    "last_ret": -28.86,
+    "last_ret": -40.54,
     "ret_d1": -2.88,
     "ret_d3": -35.08
   },
@@ -69,9 +69,9 @@
     "block_reason": null,
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -26.72,
+    "max_down": -51.17,
     "last_update": "2026-06-23",
-    "last_ret": -26.72,
+    "last_ret": -51.17,
     "ret_d1": -10.8,
     "ret_d3": -14.58
   },
@@ -88,9 +88,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 3,
     "max_up": 7.06,
-    "max_down": -7.18,
+    "max_down": -7.19,
     "last_update": "2026-06-23",
-    "last_ret": -7.18,
+    "last_ret": -7.19,
     "ret_d1": 7.06,
     "ret_d3": -7.17
   },
@@ -107,9 +107,9 @@
     "block_reason": null,
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -4.98,
+    "max_down": -4.99,
     "last_update": "2026-06-23",
-    "last_ret": -4.98,
+    "last_ret": -4.99,
     "ret_d1": -0.75,
     "ret_d3": -4.97
   },
@@ -126,9 +126,9 @@
     "block_reason": null,
     "bars": 3,
     "max_up": 5.42,
-    "max_down": -1.2,
+    "max_down": -1.21,
     "last_update": "2026-06-23",
-    "last_ret": -1.2,
+    "last_ret": -1.21,
     "ret_d1": 5.42,
     "ret_d3": -1.19
   },
@@ -145,9 +145,9 @@
     "block_reason": "AI 관망(72) — 매수 보류",
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -9.65,
+    "max_down": -9.66,
     "last_update": "2026-06-23",
-    "last_ret": -9.65,
+    "last_ret": -9.66,
     "ret_d1": -1.65,
     "ret_d3": -9.64
   },
@@ -164,9 +164,9 @@
     "block_reason": null,
     "bars": 2,
     "max_up": 0.0,
-    "max_down": -10.26,
+    "max_down": -10.27,
     "last_update": "2026-06-23",
-    "last_ret": -10.26,
+    "last_ret": -10.27,
     "ret_d1": -10.19
   },
   "RTX": {
@@ -184,7 +184,7 @@
     "max_up": 2.45,
     "max_down": 0.0,
     "last_update": "2026-06-23",
-    "last_ret": 2.36,
+    "last_ret": 2.35,
     "ret_d1": 2.45
   },
   "COIN": {
@@ -200,9 +200,9 @@
     "block_reason": null,
     "bars": 2,
     "max_up": 0.0,
-    "max_down": -4.17,
+    "max_down": -4.19,
     "last_update": "2026-06-23",
-    "last_ret": -4.17,
+    "last_ret": -4.19,
     "ret_d1": -4.09
   },
   "ASML": {
@@ -218,9 +218,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "GBTC": {
@@ -236,9 +236,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "GE": {
@@ -254,9 +254,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "IBM": {
@@ -272,9 +272,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "KT": {
@@ -290,9 +290,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "MSTR": {
@@ -308,9 +308,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "STRC": {
@@ -326,9 +326,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "TSMC": {
@@ -346,7 +346,7 @@
     "max_up": 60.17,
     "max_down": 0.0,
     "last_update": "2026-06-23",
-    "last_ret": 60.17,
+    "last_ret": 1.85,
     "ret_d1": 33.7
   },
   "UMH": {
@@ -362,9 +362,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "NFLX": {
@@ -380,9 +380,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "MSFT": {
@@ -398,9 +398,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "META": {
@@ -416,9 +416,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "AVGO": {
@@ -434,9 +434,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "AMZN": {
@@ -452,9 +452,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "GOOGL": {
@@ -470,9 +470,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "AAPL": {
@@ -488,9 +488,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "TSLA": {
@@ -506,9 +506,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "PLTR": {
@@ -524,9 +524,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.08,
+    "max_down": -0.1,
     "last_update": "2026-06-23",
-    "last_ret": -0.08,
+    "last_ret": -0.1,
     "ret_d1": -0.08
   },
   "403870": {
@@ -543,7 +543,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "079550": {
     "ticker": "079550",
@@ -559,7 +560,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "010120": {
     "ticker": "010120",
@@ -575,7 +577,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "035420.KS": {
     "ticker": "035420.KS",
@@ -591,7 +594,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "034730": {
     "ticker": "034730",
@@ -607,7 +611,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "000660": {
     "ticker": "000660",
@@ -623,7 +628,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "032830": {
     "ticker": "032830",
@@ -639,7 +645,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "005930": {
     "ticker": "005930",
@@ -655,7 +662,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "005935.KS": {
     "ticker": "005935.KS",
@@ -671,7 +679,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   },
   "005380.KS": {
     "ticker": "005380.KS",
@@ -687,6 +696,7 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-23"
+    "last_update": "2026-06-23",
+    "last_ret": 0.0
   }
 }

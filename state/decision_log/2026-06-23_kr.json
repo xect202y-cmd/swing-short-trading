@@ -96,7 +96,10 @@
       "ai_verdict": null,
       "ai_confidence": null,
       "ai_reason": null,
-      "block_reasons": []
+      "block_reasons": [
+        "최대 보유 종목수(3) 도달",
+        "이미 보유 중 — 중복 매수 방지"
+      ]
     },
     {
       "ticker": "105560",
