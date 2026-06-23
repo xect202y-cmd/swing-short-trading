@@ -10,12 +10,13 @@
     "target": 863284.89,
     "stop": 797510.81,
     "block_reason": null,
-    "bars": 2,
+    "bars": 3,
     "max_up": 2.88,
-    "max_down": -3.1,
-    "last_update": "2026-06-24",
-    "last_ret": -3.1,
-    "ret_d1": 2.88
+    "max_down": -3.18,
+    "last_update": "2026-06-23",
+    "last_ret": -3.18,
+    "ret_d1": 2.88,
+    "ret_d3": -3.18
   },
   "BYD": {
     "ticker": "BYD",
@@ -28,12 +29,13 @@
     "target": 136038.42,
     "stop": 125673.59,
     "block_reason": null,
-    "bars": 2,
+    "bars": 3,
     "max_up": 2.2,
     "max_down": 0.0,
-    "last_update": "2026-06-24",
-    "last_ret": 2.2,
-    "ret_d1": 2.2
+    "last_update": "2026-06-23",
+    "last_ret": 2.11,
+    "ret_d1": 2.2,
+    "ret_d3": 2.12
   },
   "JTBC": {
     "ticker": "JTBC",
@@ -46,12 +48,13 @@
     "target": 217293.54,
     "stop": 200737.84,
     "block_reason": null,
-    "bars": 2,
+    "bars": 3,
     "max_up": 0.0,
-    "max_down": -22.7,
-    "last_update": "2026-06-24",
-    "last_ret": -22.7,
-    "ret_d1": -2.88
+    "max_down": -35.08,
+    "last_update": "2026-06-23",
+    "last_ret": -28.86,
+    "ret_d1": -2.88,
+    "ret_d3": -35.08
   },
   "KLA": {
     "ticker": "KLA",
@@ -64,12 +67,13 @@
     "target": 212627.67,
     "stop": 196427.46,
     "block_reason": null,
-    "bars": 2,
+    "bars": 3,
     "max_up": 0.0,
-    "max_down": -18.95,
-    "last_update": "2026-06-24",
-    "last_ret": -18.95,
-    "ret_d1": -10.8
+    "max_down": -26.72,
+    "last_update": "2026-06-23",
+    "last_ret": -26.72,
+    "ret_d1": -10.8,
+    "ret_d3": -14.58
   },
   "MU": {
     "ticker": "MU",
@@ -82,12 +86,13 @@
     "target": 1821754.92,
     "stop": 1682954.55,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 2,
+    "bars": 3,
     "max_up": 7.06,
-    "max_down": -7.1,
-    "last_update": "2026-06-24",
-    "last_ret": -7.1,
-    "ret_d1": 7.06
+    "max_down": -7.18,
+    "last_update": "2026-06-23",
+    "last_ret": -7.18,
+    "ret_d1": 7.06,
+    "ret_d3": -7.17
   },
   "NVDA": {
     "ticker": "NVDA",
@@ -100,12 +105,13 @@
     "target": 338473.49,
     "stop": 312685.03,
     "block_reason": null,
-    "bars": 2,
+    "bars": 3,
     "max_up": 0.0,
-    "max_down": -4.9,
-    "last_update": "2026-06-24",
-    "last_ret": -4.9,
-    "ret_d1": -0.75
+    "max_down": -4.98,
+    "last_update": "2026-06-23",
+    "last_ret": -4.98,
+    "ret_d1": -0.75,
+    "ret_d3": -4.97
   },
   "INTC": {
     "ticker": "INTC",
@@ -118,12 +124,13 @@
     "target": 215254.95,
     "stop": 198854.57,
     "block_reason": null,
-    "bars": 2,
+    "bars": 3,
     "max_up": 5.42,
-    "max_down": -1.11,
-    "last_update": "2026-06-24",
-    "last_ret": -1.11,
-    "ret_d1": 5.42
+    "max_down": -1.2,
+    "last_update": "2026-06-23",
+    "last_ret": -1.2,
+    "ret_d1": 5.42,
+    "ret_d3": -1.19
   },
   "QCOM": {
     "ticker": "QCOM",
@@ -136,12 +143,13 @@
     "target": 363245.72,
     "stop": 335569.85,
     "block_reason": "AI 관망(72) — 매수 보류",
-    "bars": 2,
+    "bars": 3,
     "max_up": 0.0,
-    "max_down": -9.57,
-    "last_update": "2026-06-24",
-    "last_ret": -9.57,
-    "ret_d1": -1.65
+    "max_down": -9.65,
+    "last_update": "2026-06-23",
+    "last_ret": -9.65,
+    "ret_d1": -1.65,
+    "ret_d3": -9.64
   },
   "ARM": {
     "ticker": "ARM",
@@ -154,11 +162,11 @@
     "target": 656444.9,
     "stop": 606430.05,
     "block_reason": null,
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -10.19,
-    "last_update": "2026-06-24",
-    "last_ret": -10.19,
+    "max_down": -10.26,
+    "last_update": "2026-06-23",
+    "last_ret": -10.26,
     "ret_d1": -10.19
   },
   "RTX": {
@@ -172,11 +180,11 @@
     "target": 292753.3,
     "stop": 270448.29,
     "block_reason": null,
-    "bars": 1,
+    "bars": 2,
     "max_up": 2.45,
     "max_down": 0.0,
-    "last_update": "2026-06-24",
-    "last_ret": 2.45,
+    "last_update": "2026-06-23",
+    "last_ret": 2.36,
     "ret_d1": 2.45
   },
   "COIN": {
@@ -190,11 +198,11 @@
     "target": 265398.75,
     "stop": 245177.89,
     "block_reason": null,
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -4.09,
-    "last_update": "2026-06-24",
-    "last_ret": -4.09,
+    "max_down": -4.17,
+    "last_update": "2026-06-23",
+    "last_ret": -4.17,
     "ret_d1": -4.09
   },
   "ASML": {
@@ -208,10 +216,12 @@
     "target": 2861783.05,
     "stop": 2643742.44,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "GBTC": {
     "ticker": "GBTC",
@@ -224,10 +234,12 @@
     "target": 77801.7,
     "stop": 71873.95,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "GE": {
     "ticker": "GE",
@@ -240,10 +252,12 @@
     "target": 573608.53,
     "stop": 529905.02,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "IBM": {
     "ticker": "IBM",
@@ -256,10 +270,12 @@
     "target": 426324.36,
     "stop": 393842.5,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "KT": {
     "ticker": "KT",
@@ -272,10 +288,12 @@
     "target": 28610.43,
     "stop": 26430.59,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "MSTR": {
     "ticker": "MSTR",
@@ -288,10 +306,12 @@
     "target": 167092.62,
     "stop": 154361.76,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "STRC": {
     "ticker": "STRC",
@@ -304,10 +324,12 @@
     "target": 140493.61,
     "stop": 129789.34,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "TSMC": {
     "ticker": "TSMC",
@@ -320,10 +342,12 @@
     "target": 146132.46,
     "stop": 134998.56,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 60.17,
     "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "last_update": "2026-06-23",
+    "last_ret": 60.17,
+    "ret_d1": 33.7
   },
   "UMH": {
     "ticker": "UMH",
@@ -336,10 +360,12 @@
     "target": 24378.41,
     "stop": 22521.0,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "NFLX": {
     "ticker": "NFLX",
@@ -352,10 +378,12 @@
     "target": 117177.25,
     "stop": 108249.46,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "MSFT": {
     "ticker": "MSFT",
@@ -368,10 +396,12 @@
     "target": 601720.13,
     "stop": 555874.79,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "META": {
     "ticker": "META",
@@ -384,10 +414,12 @@
     "target": 904656.0,
     "stop": 835729.83,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "AVGO": {
     "ticker": "AVGO",
@@ -400,10 +432,12 @@
     "target": 611712.85,
     "stop": 565106.16,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "AMZN": {
     "ticker": "AMZN",
@@ -416,10 +450,12 @@
     "target": 376714.72,
     "stop": 348012.64,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "GOOGL": {
     "ticker": "GOOGL",
@@ -432,10 +468,12 @@
     "target": 556970.07,
     "stop": 514534.26,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "AAPL": {
     "ticker": "AAPL",
@@ -448,10 +486,12 @@
     "target": 473568.55,
     "stop": 437487.14,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "TSLA": {
     "ticker": "TSLA",
@@ -464,10 +504,12 @@
     "target": 614062.18,
     "stop": 567276.49,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
   },
   "PLTR": {
     "ticker": "PLTR",
@@ -480,9 +522,171 @@
     "target": 187786.11,
     "stop": 173478.59,
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
+    "bars": 1,
+    "max_up": 0.0,
+    "max_down": -0.08,
+    "last_update": "2026-06-23",
+    "last_ret": -0.08,
+    "ret_d1": -0.08
+  },
+  "403870": {
+    "ticker": "403870",
+    "name": "HPSP",
+    "kind": "BUY_WATCH",
+    "date": "2026-06-23",
+    "ref_price": 53000.0,
+    "score": 62.3,
+    "rank": 10,
+    "target": 55650.0,
+    "stop": 51410.0,
+    "block_reason": null,
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-06-24"
+    "last_update": "2026-06-23"
+  },
+  "079550": {
+    "ticker": "079550",
+    "name": "LIG넥스원",
+    "kind": "BUY_WATCH",
+    "date": "2026-06-23",
+    "ref_price": 809000.0,
+    "score": 66.2,
+    "rank": 7,
+    "target": 849450.0,
+    "stop": 784730.0,
+    "block_reason": null,
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
+  },
+  "010120": {
+    "ticker": "010120",
+    "name": "LS 일렉트릭",
+    "kind": "BUY_WATCH",
+    "date": "2026-06-23",
+    "ref_price": 232500.0,
+    "score": 62.6,
+    "rank": 9,
+    "target": 244125.0,
+    "stop": 225525.0,
+    "block_reason": null,
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
+  },
+  "035420.KS": {
+    "ticker": "035420.KS",
+    "name": "NAVER",
+    "kind": "BLOCKED",
+    "date": "2026-06-23",
+    "ref_price": 202500.0,
+    "score": 44.8,
+    "rank": 14,
+    "target": 212625.0,
+    "stop": 218025.0,
+    "block_reason": "손익비 -1.47 부족(<1.5)",
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
+  },
+  "034730": {
+    "ticker": "034730",
+    "name": "SK",
+    "kind": "BUY_WATCH",
+    "date": "2026-06-23",
+    "ref_price": 705000.0,
+    "score": 66.2,
+    "rank": 6,
+    "target": 740250.0,
+    "stop": 683850.0,
+    "block_reason": null,
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
+  },
+  "000660": {
+    "ticker": "000660",
+    "name": "SK하이닉스",
+    "kind": "BUY_WATCH",
+    "date": "2026-06-23",
+    "ref_price": 2555000.0,
+    "score": 63.7,
+    "rank": 8,
+    "target": 2682750.0,
+    "stop": 2478350.0,
+    "block_reason": null,
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
+  },
+  "032830": {
+    "ticker": "032830",
+    "name": "삼성생명",
+    "kind": "BUY_WATCH",
+    "date": "2026-06-23",
+    "ref_price": 425000.0,
+    "score": 67.2,
+    "rank": 5,
+    "target": 446250.0,
+    "stop": 412250.0,
+    "block_reason": null,
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
+  },
+  "005930": {
+    "ticker": "005930",
+    "name": "삼성전자",
+    "kind": "BUY_WATCH",
+    "date": "2026-06-23",
+    "ref_price": 310000.0,
+    "score": 62.2,
+    "rank": 11,
+    "target": 325500.0,
+    "stop": 300700.0,
+    "block_reason": null,
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
+  },
+  "005935.KS": {
+    "ticker": "005935.KS",
+    "name": "삼성전자우",
+    "kind": "BUY_WATCH",
+    "date": "2026-06-23",
+    "ref_price": 202500.0,
+    "score": 60.4,
+    "rank": 12,
+    "target": 212625.0,
+    "stop": 196425.0,
+    "block_reason": null,
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
+  },
+  "005380.KS": {
+    "ticker": "005380.KS",
+    "name": "현대차",
+    "kind": "BLOCKED",
+    "date": "2026-06-23",
+    "ref_price": 511000.0,
+    "score": 48.4,
+    "rank": 13,
+    "target": 536550.0,
+    "stop": 576650.0,
+    "block_reason": "손익비 -2.32 부족(<1.5)",
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-06-23"
   }
 }

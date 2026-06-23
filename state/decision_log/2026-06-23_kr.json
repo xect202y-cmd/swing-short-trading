@@ -1,0 +1,1362 @@
+{
+  "date": "2026-06-23",
+  "market": "kr",
+  "candidates": [
+    {
+      "ticker": "028260",
+      "name": "삼성물산",
+      "kind": "BUY",
+      "score": 73.2,
+      "rank": 1,
+      "sector": "건설/상사/지주사",
+      "atr_pct": 12.24,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 52.0(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +24.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 9.0,
+          "max": 20,
+          "reason": "거래량 5/20일 1.08배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 1.08배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "건설/상사/지주사",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 12.24% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 477750.0,
+          "stop": 441350.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.24
+        },
+        "ATR": {
+          "target": 566428.58,
+          "stop": 371428.57,
+          "note": "+2.0ATR / -1.5ATR (ATR 12.24%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 565000.0,
+          "stop": 384000.0,
+          "note": "목표=20일고 565,000 / 손절=20일저 384,000",
+          "rr": 1.55,
+          "atr_stop_mult": 1.27
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 455000.0,
+        "stop": 441350.0,
+        "target1": 477750.0,
+        "target2": 493675.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "105560",
+      "name": "KB금융",
+      "kind": "BUY",
+      "score": 72.2,
+      "rank": 2,
+      "sector": "금융/은행",
+      "atr_pct": 7.11,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 45.7(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +33.1%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.0,
+          "max": 20,
+          "reason": "거래량 5/20일 0.94배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 0.94배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "금융/은행",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 7.11% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 161385.0,
+          "stop": 149089.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.42
+        },
+        "ATR": {
+          "target": 175542.86,
+          "stop": 137317.86,
+          "note": "+2.0ATR / -1.5ATR (ATR 7.11%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 182700.0,
+          "stop": 146700.0,
+          "note": "목표=20일고 182,700 / 손절=20일저 146,700",
+          "rr": 4.14,
+          "atr_stop_mult": 0.64
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 153700.0,
+        "stop": 149089.0,
+        "target1": 161385.0,
+        "target2": 166764.5,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": [
+        "최대 보유 종목수(3) 도달"
+      ]
+    },
+    {
+      "ticker": "298040",
+      "name": "효성중공업",
+      "kind": "BUY",
+      "score": 72.2,
+      "rank": 3,
+      "sector": "전력설비/건설/에너지",
+      "atr_pct": 8.19,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 49.0(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +27.6%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.0,
+          "max": 20,
+          "reason": "거래량 5/20일 0.93배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "눌림/추세추종",
+        "price_conditions": [
+          "20일선 위",
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 0.93배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "전력설비/건설/에너지",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 8.19% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 3796800.0,
+          "stop": 3507520.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.37
+        },
+        "ATR": {
+          "target": 4208571.42,
+          "stop": 3171571.44,
+          "note": "+2.0ATR / -1.5ATR (ATR 8.19%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 4169000.0,
+          "stop": 2985000.0,
+          "note": "목표=20일고 4,169,000 / 손절=20일저 2,985,000",
+          "rr": 0.88,
+          "atr_stop_mult": 2.13
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 3616000.0,
+        "stop": 3507520.0,
+        "target1": 3796800.0,
+        "target2": 3923360.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": [
+        "최대 보유 종목수(3) 도달",
+        "진입 수량 0 — 자금 부족"
+      ]
+    },
+    {
+      "ticker": "055550",
+      "name": "신한지주",
+      "kind": "BUY",
+      "score": 70.6,
+      "rank": 4,
+      "sector": "금융/은행",
+      "atr_pct": 6.81,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 48.0(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 13.4,
+          "max": 15,
+          "reason": "상승여력 +13.4%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.0,
+          "max": 20,
+          "reason": "거래량 5/20일 0.84배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 0.84배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "금융/은행",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 6.81% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 102585.0,
+          "stop": 94769.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.44
+        },
+        "ATR": {
+          "target": 111014.28,
+          "stop": 87714.29,
+          "note": "+2.0ATR / -1.5ATR (ATR 6.81%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 110800.0,
+          "stop": 91000.0,
+          "note": "목표=20일고 110,800 / 손절=20일저 91,000",
+          "rr": 1.96,
+          "atr_stop_mult": 1.01
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 97700.0,
+        "stop": 94769.0,
+        "target1": 102585.0,
+        "target2": 106004.5,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": [
+        "최대 보유 종목수(3) 도달"
+      ]
+    },
+    {
+      "ticker": "032830",
+      "name": "삼성생명",
+      "kind": "BUY_WATCH",
+      "score": 67.2,
+      "rank": 5,
+      "sector": "금융/보험",
+      "atr_pct": 9.57,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 11.2,
+          "max": 25,
+          "reason": "20일선 상회(상승추세), RSI 55.8(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +21.5%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.0,
+          "max": 20,
+          "reason": "거래량 5/20일 0.98배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "20일선 위"
+        ],
+        "volume_condition": "5/20일 평균 0.98배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "금융/보험",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 9.57% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 446250.0,
+          "stop": 412250.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.31
+        },
+        "ATR": {
+          "target": 506357.14,
+          "stop": 363982.15,
+          "note": "+2.0ATR / -1.5ATR (ATR 9.57%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 516500.0,
+          "stop": 340000.0,
+          "note": "목표=20일고 516,500 / 손절=20일저 340,000",
+          "rr": 1.08,
+          "atr_stop_mult": 2.09
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 425000.0,
+        "stop": 412250.0,
+        "target1": 446250.0,
+        "target2": 461125.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "034730",
+      "name": "SK",
+      "kind": "BUY_WATCH",
+      "score": 66.2,
+      "rank": 6,
+      "sector": "지주사/에너지/화학/반도체/IT",
+      "atr_pct": 8.46,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 11.2,
+          "max": 25,
+          "reason": "20일선 상회(상승추세), RSI 63.6(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 9.6,
+          "max": 15,
+          "reason": "상승여력 +9.6%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 12.4,
+          "max": 20,
+          "reason": "거래량 5/20일 1.36배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "20일선 위"
+        ],
+        "volume_condition": "5/20일 평균 1.36배(증가)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "지주사/에너지/화학/반도체/IT",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: 갭 +4.4%, ATR 8.46% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 740250.0,
+          "stop": 683850.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.35
+        },
+        "ATR": {
+          "target": 824285.72,
+          "stop": 615535.71,
+          "note": "+2.0ATR / -1.5ATR (ATR 8.46%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 830000.0,
+          "stop": 535000.0,
+          "note": "목표=20일고 830,000 / 손절=20일저 535,000",
+          "rr": 0.74,
+          "atr_stop_mult": 2.85
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 705000.0,
+        "stop": 683850.0,
+        "target1": 740250.0,
+        "target2": 764925.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "079550",
+      "name": "LIG넥스원",
+      "kind": "BUY_WATCH",
+      "score": 66.2,
+      "rank": 7,
+      "sector": null,
+      "atr_pct": 9.33,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 47.3(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +35.7%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.0,
+          "max": 20,
+          "reason": "거래량 5/20일 0.81배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "기타",
+        "price_conditions": [
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 0.81배(보통)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 9.33% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 849450.0,
+          "stop": 784730.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.32
+        },
+        "ATR": {
+          "target": 960000.0,
+          "stop": 695750.0,
+          "note": "+2.0ATR / -1.5ATR (ATR 9.33%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 1098000.0,
+          "stop": 660000.0,
+          "note": "목표=20일고 1,098,000 / 손절=20일저 660,000",
+          "rr": 1.94,
+          "atr_stop_mult": 1.97
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 809000.0,
+        "stop": 784730.0,
+        "target1": 849450.0,
+        "target2": 877765.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "000660",
+      "name": "SK하이닉스",
+      "kind": "BUY_WATCH",
+      "score": 63.7,
+      "rank": 8,
+      "sector": "반도체/IT 하드웨어/AI 인프라",
+      "atr_pct": 8.41,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 11.2,
+          "max": 25,
+          "reason": "20일선 상회(상승추세), RSI 60.5(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 11.0,
+          "max": 15,
+          "reason": "상승여력 +11.0%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.5,
+          "max": 20,
+          "reason": "거래량 5/20일 1.05배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "20일선 위"
+        ],
+        "volume_condition": "5/20일 평균 1.05배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "반도체/IT 하드웨어/AI 인프라",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 8.41% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 2682750.0,
+          "stop": 2478350.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.36
+        },
+        "ATR": {
+          "target": 2984857.14,
+          "stop": 2232607.15,
+          "note": "+2.0ATR / -1.5ATR (ATR 8.41%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 2945000.0,
+          "stop": 1855000.0,
+          "note": "목표=20일고 2,945,000 / 손절=20일저 1,855,000",
+          "rr": 0.56,
+          "atr_stop_mult": 3.26
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 2555000.0,
+        "stop": 2478350.0,
+        "target1": 2682750.0,
+        "target2": 2772175.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "010120",
+      "name": "LS 일렉트릭",
+      "kind": "BUY_WATCH",
+      "score": 62.6,
+      "rank": 9,
+      "sector": null,
+      "atr_pct": 10.3,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 6.2,
+          "max": 25,
+          "reason": "RSI 46.4(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +25.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.4,
+          "max": 20,
+          "reason": "거래량 5/20일 1.04배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "조건 약함"
+        ],
+        "volume_condition": "5/20일 평균 1.04배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 10.3% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 244125.0,
+          "stop": 225525.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.29
+        },
+        "ATR": {
+          "target": 280414.28,
+          "stop": 196564.29,
+          "note": "+2.0ATR / -1.5ATR (ATR 10.3%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 291000.0,
+          "stop": 197600.0,
+          "note": "목표=20일고 291,000 / 손절=20일저 197,600",
+          "rr": 1.68,
+          "atr_stop_mult": 1.46
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 232500.0,
+        "stop": 225525.0,
+        "target1": 244125.0,
+        "target2": 252262.5,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "403870",
+      "name": "HPSP",
+      "kind": "BUY_WATCH",
+      "score": 62.3,
+      "rank": 10,
+      "sector": "반도체/반도체 장비",
+      "atr_pct": 20.42,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 6.2,
+          "max": 25,
+          "reason": "RSI 47.5(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +73.6%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.1,
+          "max": 20,
+          "reason": "거래량 5/20일 1.01배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "조건 약함"
+        ],
+        "volume_condition": "5/20일 평균 1.01배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "반도체/반도체 장비",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 20.42% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 55650.0,
+          "stop": 51410.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.15
+        },
+        "ATR": {
+          "target": 74650.0,
+          "stop": 36762.5,
+          "note": "+2.0ATR / -1.5ATR (ATR 20.42%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 92000.0,
+          "stop": 43200.0,
+          "note": "목표=20일고 92,000 / 손절=20일저 43,200",
+          "rr": 3.98,
+          "atr_stop_mult": 0.91
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 53000.0,
+        "stop": 51410.0,
+        "target1": 55650.0,
+        "target2": 57505.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "005930",
+      "name": "삼성전자",
+      "kind": "BUY_WATCH",
+      "score": 62.2,
+      "rank": 11,
+      "sector": "반도체/IT가전/기술 하드웨어",
+      "atr_pct": 8.25,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 6.2,
+          "max": 25,
+          "reason": "RSI 48.9(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +41.1%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.0,
+          "max": 20,
+          "reason": "거래량 5/20일 0.99배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "조건 약함"
+        ],
+        "volume_condition": "5/20일 평균 0.99배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "반도체/IT가전/기술 하드웨어",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 8.25% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 325500.0,
+          "stop": 300700.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.36
+        },
+        "ATR": {
+          "target": 361142.86,
+          "stop": 271642.85,
+          "note": "+2.0ATR / -1.5ATR (ATR 8.25%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 374500.0,
+          "stop": 287500.0,
+          "note": "목표=20일고 374,500 / 손절=20일저 287,500",
+          "rr": 2.87,
+          "atr_stop_mult": 0.88
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 310000.0,
+        "stop": 300700.0,
+        "target1": 325500.0,
+        "target2": 336350.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "005935.KS",
+      "name": "삼성전자우",
+      "kind": "BUY_WATCH",
+      "score": 60.4,
+      "rank": 12,
+      "sector": "반도체/IT/AI인프라",
+      "atr_pct": 7.88,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 6.2,
+          "max": 25,
+          "reason": "RSI 49.8(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +77.8%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 6.2,
+          "max": 20,
+          "reason": "거래량 5/20일 0.78배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "조건 약함"
+        ],
+        "volume_condition": "5/20일 평균 0.78배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "반도체/IT/AI인프라",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 7.88% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 212625.0,
+          "stop": 196425.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.38
+        },
+        "ATR": {
+          "target": 234400.0,
+          "stop": 178575.0,
+          "note": "+2.0ATR / -1.5ATR (ATR 7.88%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 243500.0,
+          "stop": 180900.0,
+          "note": "목표=20일고 243,500 / 손절=20일저 180,900",
+          "rr": 1.9,
+          "atr_stop_mult": 1.35
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 202500.0,
+        "stop": 196425.0,
+        "target1": 212625.0,
+        "target2": 400000.0,
+        "rr": 1.67
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "005380.KS",
+      "name": "현대차",
+      "kind": "BLOCKED",
+      "score": 48.4,
+      "rank": 13,
+      "sector": "자동차/운송장비",
+      "atr_pct": 9.24,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 0,
+          "max": 25,
+          "reason": "타점 불명확"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +43.6%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 6.4,
+          "max": 20,
+          "reason": "거래량 5/20일 0.80배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%"
+        }
+      ],
+      "rationale": {
+        "entry_type": "기타",
+        "price_conditions": [
+          "조건 약함"
+        ],
+        "volume_condition": "5/20일 평균 0.80배(보통)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "자동차/운송장비",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 9.24% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 536550.0,
+          "stop": 495670.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.32
+        },
+        "ATR": {
+          "target": 605428.58,
+          "stop": 440178.57,
+          "note": "+2.0ATR / -1.5ATR (ATR 9.24%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 783000.0,
+          "stop": 508000.0,
+          "note": "목표=20일고 783,000 / 손절=20일저 508,000",
+          "rr": 90.67,
+          "atr_stop_mult": 0.06
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 607000.0,
+        "stop": 576650.0,
+        "target1": 536550.0,
+        "target2": 1000000.0,
+        "rr": -2.32
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": [
+        "손익비 -2.32 부족(<1.5)"
+      ]
+    },
+    {
+      "ticker": "035420.KS",
+      "name": "NAVER",
+      "kind": "BLOCKED",
+      "score": 44.8,
+      "rank": 14,
+      "sector": "인터넷/플랫폼/AI",
+      "atr_pct": 12.15,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 0,
+          "max": 25,
+          "reason": "타점 불명확"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +33.3%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 2.8,
+          "max": 20,
+          "reason": "거래량 5/20일 0.35배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%"
+        }
+      ],
+      "rationale": {
+        "entry_type": "기타",
+        "price_conditions": [
+          "조건 약함"
+        ],
+        "volume_condition": "5/20일 평균 0.35배(보통)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "인터넷/플랫폼/AI",
+        "market_state": "KOSPI/KOSDAQ · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 12.15% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 212625.0,
+          "stop": 196425.0,
+          "note": "매수가 대비 +5.0% / -3.0%",
+          "rr": 1.67,
+          "atr_stop_mult": 0.25
+        },
+        "ATR": {
+          "target": 251714.28,
+          "stop": 165589.29,
+          "note": "+2.0ATR / -1.5ATR (ATR 12.15%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 304000.0,
+          "stop": 195800.0,
+          "note": "목표=20일고 304,000 / 손절=20일저 195,800",
+          "rr": 15.15,
+          "atr_stop_mult": 0.27
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 229500.0,
+        "stop": 218025.0,
+        "target1": 212625.0,
+        "target2": 300000.0,
+        "rr": -1.47
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": [
+        "손익비 -1.47 부족(<1.5)"
+      ]
+    }
+  ]
+}
