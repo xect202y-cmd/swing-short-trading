@@ -48,6 +48,7 @@ def main(argv: list[str] | None = None) -> int:
     br.add_argument("--period", choices=["auto", "daily", "weekly", "monthly"], default="auto")
     lg = sub.add_parser("logic", help="로직 버전 스냅샷 + 이전과 A/B 백테스트 → 변경이력 기록")
     lg.add_argument("--note", required=True, help="변경 사유(예: '익절 5→6%, 손절 -3→-3.5%')")
+    sub.add_parser("logic-review", help="AI 로직 진단(매매일지·로그 근거 문제점+수정안) → 04_Trading/Logic")
     sub.add_parser("doctor", help="환경/경로/키 점검")
 
     args = ap.parse_args(argv)
@@ -89,6 +90,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"✅ 로직 v{r['version']} 기록 → {r['path']} (변경 {len(r['changes'])}건)")
         if r["ab"] and r["ab"][0].avg_win_rate is not None:
             print(f"   A/B 백테스트 승률: v{r['prev_v']} {r['ab'][0].avg_win_rate}% → v{r['version']} {r['ab'][1].avg_win_rate}%")
+        return 0
+    if args.cmd == "logic-review":
+        r = M.run_logic_review(cfg)
+        print(f"✅ AI 로직 진단 → {r['path']}{' (디스코드 발송)' if r['sent'] else ''}")
         return 0
     return 1
 

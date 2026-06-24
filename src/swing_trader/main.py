@@ -262,6 +262,14 @@ def run_brief(cfg: Config, period: str = "auto") -> list[str]:
         notify_embeds(wh, [embed], md)
         writer.write_weekly(md)
         sent.append("weekly")
+        # 주간에 AI 로직 진단도 자동 포함(매매일지·로그 근거 → 로직 문제점+수정안)
+        from .notify.discord import notify
+        from .review import logic_reviewer as _LR
+        lr_discord, lr_md = _LR.run(cfg)
+        writer.write_logic_review(lr_md)
+        if lr_discord:
+            notify(wh, lr_discord)
+        sent.append("logic-review")
     if period == "monthly" or (period == "auto" and _is_last_friday(today)):
         embed, md = _B.monthly_report(cfg, broker, provider)
         notify_embeds(wh, [embed], md)
@@ -365,6 +373,19 @@ def run_logic(cfg: Config, note: str) -> dict:
     return {"version": vnum, "path": path, "changes": changes, "ab": ab, "prev_v": prev_v}
 
 
+def run_logic_review(cfg: Config) -> dict:
+    """AI 로직 진단 — 매매일지·의사결정로그·성과를 LLM에 주고 로직 문제점+수정안 도출 → 볼트 기록."""
+    from .notify.discord import notify
+    from .review import logic_reviewer as _LR
+    writer = VaultWriter(cfg)
+    discord, md = _LR.run(cfg)
+    path = writer.write_logic_review(md)
+    if discord:
+        notify(cfg.creds.discord_webhook_url, discord)
+    log.info("logic-review → %s (발송 %s)", path, bool(discord))
+    return {"path": path, "sent": bool(discord)}
+
+
 def run_doctor(cfg: Config) -> dict:
     reader = VaultReader(cfg)
     checks: list[tuple[str, bool, str]] = []
@@ -390,4 +411,4 @@ def run_doctor(cfg: Config) -> dict:
 
 
 __all__ = ["load_config", "run_scan", "run_once", "run_review", "run_backtest", "run_doctor",
-           "run_brief", "run_logic", "_setup_logging"]
+           "run_brief", "run_logic", "run_logic_review", "_setup_logging"]

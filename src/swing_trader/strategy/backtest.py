@@ -17,6 +17,15 @@ class BacktestSummary:
     real_ratio: float | None = None   # 실데이터(pykrx/yfinance) 비율
 
 
+def _col(df, name):
+    """OHLCV 컬럼을 1D 시리즈로 강제. provider df에 중복 컬럼(MultiIndex 등)이 있으면
+    df[name]이 DataFrame(2D)이 되어 .values가 2D → 스칼라화 실패하던 버그 방지."""
+    col = df[name]
+    if getattr(col, "ndim", 1) > 1:
+        col = col.iloc[:, 0]
+    return col
+
+
 def _exit_return(close, entry_idx: int, entry: float, take: float, stop: float, max_hold: int,
                  *, runner: bool, take2: float, trail: float) -> tuple[float, int]:
     """진입(entry_idx, entry가) 후 청산까지 수익률(소수) + 종료 인덱스."""
@@ -67,20 +76,20 @@ def simulate(cfg, provider, notes, days: int, take_pct=None, stop_pct=None,
             continue
         df, src = provider.get_ohlcv(n.ticker)
         df = df.tail(days)
-        close = df["close"].values
-        open_ = df["open"].values
-        vol = df["volume"].values
-        ma20 = df["close"].rolling(20, min_periods=1).mean().values
+        close = _col(df, "close").to_numpy(dtype=float)
+        open_ = _col(df, "open").to_numpy(dtype=float)
+        vol = _col(df, "volume").to_numpy(dtype=float)
+        ma20 = _col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
         rets: list[float] = []
         i = 20
         while i < len(close) - 2:                    # i+1 체결 가능해야(룩어헤드 방지)
             # 신호는 bar i 의 확정 데이터로만 판단 → 체결은 '다음 봉 시가'
             tv_eok = close[i] * vol[i] / 1e8
             if close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1] and tv_eok >= min_tv_eok:
-                entry = open_[i + 1]                  # 다음 봉 시가 체결(갭 반영)
+                entry = float(open_[i + 1])           # 다음 봉 시가 체결(갭 반영). float강제=numpy누수 차단
                 ret, jend = _exit_return(close, i + 1, entry, take, stop, max_hold,
                                          runner=runner, take2=take2, trail=trail)
-                rets.append(ret - cost)               # 수수료+슬리피지 차감
+                rets.append(float(ret) - cost)        # 수수료+슬리피지 차감(스칼라 보장)
                 i = max(jend, i + 1)
             i += 1
         trades = len(rets)

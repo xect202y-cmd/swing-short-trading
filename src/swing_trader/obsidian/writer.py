@@ -103,6 +103,13 @@ class VaultWriter:
         path.write_text(content, encoding="utf-8")
         return path
 
+    def write_logic_review(self, content: str) -> Path:
+        dpath = self.cfg.write_dir("logic_dir")
+        dpath.mkdir(parents=True, exist_ok=True)
+        path = dpath / f"{date.today().isoformat()}_AI진단.md"
+        path.write_text(content, encoding="utf-8")
+        return path
+
     def append_logic_changelog(self, line: str) -> Path:
         dpath = self.cfg.write_dir("logic_dir")
         dpath.mkdir(parents=True, exist_ok=True)
