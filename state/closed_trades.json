@@ -62,5 +62,21 @@
     "hold_days": 1,
     "exit_reason": "손절가 도달",
     "stop_respected": true
+  },
+  {
+    "ticker": "028260",
+    "name": "삼성물산",
+    "qty": 1,
+    "partial": true,
+    "entry": 455227.5,
+    "exit": 484757.5,
+    "pnl": 29457.0,
+    "return_pct": 6.49,
+    "entry_score": 73.2,
+    "entry_date": "2026-06-23",
+    "exit_date": "2026-06-24",
+    "hold_days": 1,
+    "exit_reason": "1차 익절가 도달 — 절반 익절·잔량 추세 보유",
+    "stop_respected": true
   }
 ]
