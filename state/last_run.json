@@ -6,119 +6,119 @@
       "ticker": "278470",
       "name": "APR",
       "kind": "BLOCKED",
-      "score": 66.4,
+      "score": 68.0,
       "event_risk": "높음"
     },
     {
       "ticker": "329180",
       "name": "HD현대중공업",
       "kind": "BLOCKED",
-      "score": 41.0,
+      "score": 41.2,
       "event_risk": "높음"
     },
     {
       "ticker": "403870",
       "name": "HPSP",
       "kind": "BLOCKED",
-      "score": 46.4,
+      "score": 46.5,
       "event_risk": "높음"
     },
     {
       "ticker": "105560",
       "name": "KB금융",
       "kind": "BLOCKED",
-      "score": 57.5,
+      "score": 59.2,
       "event_risk": "높음"
     },
     {
       "ticker": "373220",
       "name": "LG에너지솔루션",
       "kind": "BLOCKED",
-      "score": 40.5,
+      "score": 40.8,
       "event_risk": "높음"
     },
     {
       "ticker": "011070",
       "name": "LG이노텍",
       "kind": "BLOCKED",
-      "score": 45.5,
+      "score": 45.1,
       "event_risk": "높음"
     },
     {
       "ticker": "066570",
       "name": "LG전자",
       "kind": "BLOCKED",
-      "score": 24.3,
+      "score": 24.4,
       "event_risk": "높음"
     },
     {
       "ticker": "079550",
       "name": "LIG넥스원",
       "kind": "BLOCKED",
-      "score": 55.4,
+      "score": 55.7,
       "event_risk": "높음"
     },
     {
       "ticker": "010120",
       "name": "LS ELECTRIC",
       "kind": "BLOCKED",
-      "score": 43.1,
+      "score": 43.5,
       "event_risk": "높음"
     },
     {
       "ticker": "010120",
       "name": "LS 일렉트릭",
       "kind": "BLOCKED",
-      "score": 43.1,
+      "score": 43.5,
       "event_risk": "높음"
     },
     {
       "ticker": "010120",
       "name": "LS일렉트릭",
       "kind": "BLOCKED",
-      "score": 43.1,
+      "score": 43.5,
       "event_risk": "높음"
     },
     {
       "ticker": "035420.KS",
       "name": "NAVER",
       "kind": "BLOCKED",
-      "score": 37.5,
+      "score": 37.6,
       "event_risk": "높음"
     },
     {
       "ticker": "034730",
       "name": "SK",
       "kind": "BLOCKED",
-      "score": 52.6,
+      "score": 54.2,
       "event_risk": "높음"
     },
     {
       "ticker": "000660",
       "name": "SK하이닉스",
       "kind": "BLOCKED",
-      "score": 50.3,
+      "score": 49.1,
       "event_risk": "높음"
     },
     {
       "ticker": "010130",
       "name": "고려아연",
       "kind": "BLOCKED",
-      "score": 52.8,
+      "score": 53.4,
       "event_risk": "높음"
     },
     {
       "ticker": "000270",
       "name": "기아",
       "kind": "BLOCKED",
-      "score": 49.5,
+      "score": 41.0,
       "event_risk": "높음"
     },
     {
       "ticker": "035420",
       "name": "네이버",
       "kind": "BLOCKED",
-      "score": 37.5,
+      "score": 37.6,
       "event_risk": "높음"
     },
     {
@@ -132,14 +132,14 @@
       "ticker": "277810",
       "name": "레인보우로보틱스",
       "kind": "BLOCKED",
-      "score": 40.2,
+      "score": 40.4,
       "event_risk": "높음"
     },
     {
       "ticker": "058470",
       "name": "리노공업",
       "kind": "BLOCKED",
-      "score": 39.8,
+      "score": 40.0,
       "event_risk": "높음"
     },
     {
@@ -153,56 +153,56 @@
       "ticker": "028260",
       "name": "삼성물산",
       "kind": "BLOCKED",
-      "score": 62.0,
+      "score": 64.4,
       "event_risk": "높음"
     },
     {
       "ticker": "032830",
       "name": "삼성생명",
       "kind": "BLOCKED",
-      "score": 68.0,
+      "score": 67.2,
       "event_risk": "높음"
     },
     {
       "ticker": "005930",
       "name": "삼성전자",
       "kind": "BLOCKED",
-      "score": 69.4,
+      "score": 70.1,
       "event_risk": "높음"
     },
     {
       "ticker": "005935.KS",
       "name": "삼성전자우",
       "kind": "BLOCKED",
-      "score": 67.1,
+      "score": 69.0,
       "event_risk": "높음"
     },
     {
       "ticker": "003230",
       "name": "삼양식품",
       "kind": "BLOCKED",
-      "score": 53.0,
+      "score": 68.0,
       "event_risk": "높음"
     },
     {
       "ticker": "068270",
       "name": "셀트리온",
       "kind": "BLOCKED",
-      "score": 68.0,
+      "score": 68.4,
       "event_risk": "높음"
     },
     {
       "ticker": "055550",
       "name": "신한지주",
       "kind": "BLOCKED",
-      "score": 56.1,
+      "score": 47.2,
       "event_risk": "높음"
     },
     {
       "ticker": "086520",
       "name": "에코프로",
       "kind": "BLOCKED",
-      "score": 41.0,
+      "score": 41.3,
       "event_risk": "높음"
     },
     {
@@ -223,28 +223,28 @@
       "ticker": "035720",
       "name": "카카오",
       "kind": "BLOCKED",
-      "score": 48.3,
+      "score": 48.5,
       "event_risk": "높음"
     },
     {
       "ticker": "214150",
       "name": "클래시스",
       "kind": "BLOCKED",
-      "score": 48.7,
+      "score": 49.1,
       "event_risk": "높음"
     },
     {
       "ticker": "042700",
       "name": "한미 반도체",
       "kind": "BLOCKED",
-      "score": 58.0,
+      "score": 43.1,
       "event_risk": "높음"
     },
     {
       "ticker": "042700",
       "name": "한미반도체",
       "kind": "BLOCKED",
-      "score": 58.0,
+      "score": 43.1,
       "event_risk": "높음"
     },
     {
@@ -258,14 +258,14 @@
       "ticker": "064350",
       "name": "현대로템",
       "kind": "BLOCKED",
-      "score": 40.1,
+      "score": 40.6,
       "event_risk": "높음"
     },
     {
       "ticker": "012330",
       "name": "현대모비스",
       "kind": "BLOCKED",
-      "score": 39.9,
+      "score": 40.1,
       "event_risk": "높음"
     },
     {
@@ -279,7 +279,7 @@
       "ticker": "298040",
       "name": "효성중공업",
       "kind": "BLOCKED",
-      "score": 49.0,
+      "score": 49.8,
       "event_risk": "높음"
     }
   ]
