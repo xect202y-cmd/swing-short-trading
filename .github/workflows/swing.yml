@@ -6,8 +6,9 @@ name: 스윙 페이퍼 트레이딩 (Daily/Weekly)
 # 시각: KR 09:05 KST = 00:05 UTC. 이 시각엔 미국장도 이미 마감이라 US도 같이 처리한다.
 #       (US는 --no-brief, KR 런이 통합 Daily 브리핑 1회 발송. 주간/월간은 금요일 자동.)
 on:
-  schedule:
-    - cron: "5 0 * * 1-5"   # 09:05 KST(월~금)
+  # 발사 트리거는 gpt-api의 Vercel Cron(/api/swing-trigger)으로 이동 — GitHub 무료 cron이
+  # 인기 시간대(00:05 UTC) throttling으로 심하게 지연/누락되어(4h 지연·누락 관측) 정시 보장 불가.
+  # Vercel Cron이 09:05 KST에 이 워크플로를 dispatch 한다. (Captain Hook과 동일 패턴)
   workflow_dispatch:
     inputs:
       markets:
