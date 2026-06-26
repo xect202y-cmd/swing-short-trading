@@ -94,5 +94,21 @@
     "hold_days": 2,
     "exit_reason": "2차 익절가 도달 — 잔량 청산",
     "stop_respected": true
+  },
+  {
+    "ticker": "ARM",
+    "name": "ARM",
+    "qty": 1,
+    "partial": false,
+    "entry": 561333.56,
+    "exit": 537005.88,
+    "pnl": -24408.0,
+    "return_pct": -4.33,
+    "entry_score": 74.3,
+    "entry_date": "2026-06-23",
+    "exit_date": "2026-06-26",
+    "hold_days": 3,
+    "exit_reason": "손절가 도달",
+    "stop_respected": true
   }
 ]
