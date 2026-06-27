@@ -55,19 +55,33 @@ jobs:
         # repo의 config.yaml(시드)·state/(실계좌)를 로드/저장한다. (non-editable이면 site-packages→빈 계좌)
         run: pip install -q -e ".[market]"
 
-      - name: 실행(시장별 best-effort)
+      - name: 마커 확인 → 빠진 시장만 보충(페일오버)
         run: |
           set +e
-          M="${{ github.event.inputs.markets }}"; M="${M:-both}"
-          if [ "$M" = "both" ] || [ "$M" = "us" ]; then
-            echo "::group::run-once US"; swing-trader run-once --market us --no-brief; echo "exit=$?"; echo "::endgroup::"
+          ALERT=""
+          for M in us kr; do
+            if swing-trader check-done --market "$M"; then
+              echo "::notice::$M 로컬 완료 마커 존재 — skip"
+            else
+              echo "::group::run-once $M (클라우드 보충)"
+              if [ "$M" = "us" ]; then
+                swing-trader run-once --market us --no-brief; echo "exit=$?"
+              else
+                swing-trader run-once --market kr; echo "exit=$?"
+              fi
+              echo "::endgroup::"
+              ALERT="$ALERT $M"
+            fi
+          done
+          if [ -n "$ALERT" ]; then
+            echo "::group::review + 주간/월간 brief + 페일오버 경고"
+            swing-trader review; echo "review exit=$?"
+            swing-trader brief --period auto; echo "brief exit=$?"
+            swing-trader notify-failover --markets "$ALERT"; echo "notify exit=$?"
+            echo "::endgroup::"
+          else
+            echo "::notice::양 시장 로컬 완료 — 클라우드 no-op(커밋/발송 없음)"
           fi
-          if [ "$M" = "both" ] || [ "$M" = "kr" ]; then
-            echo "::group::run-once KR(+Daily 브리핑)"; swing-trader run-once --market kr; echo "exit=$?"; echo "::endgroup::"
-          fi
-          echo "::group::review"; swing-trader review; echo "exit=$?"; echo "::endgroup::"
-          echo "::group::brief auto(주간/월간)"; swing-trader brief --period auto; echo "exit=$?"; echo "::endgroup::"
-          echo "all steps attempted."
 
       - name: 상태 커밋백(state/ → 이 repo)
         run: |

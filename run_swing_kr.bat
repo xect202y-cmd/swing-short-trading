@@ -10,4 +10,7 @@ cd /d "%~dp0"
 "%~dp0.venv\Scripts\swing-trader.exe" review >> "%~dp0swing.log" 2>&1
 REM weekly(Fri, incl. backtest) / monthly(last Fri) briefings auto-fire by date
 "%~dp0.venv\Scripts\swing-trader.exe" brief --period auto >> "%~dp0swing.log" 2>&1
+REM push daily-done marker to swing repo so cloud failover can detect local ran
+git add -f state\daily_done.json
+git diff --cached --quiet || ( git commit -m "chore(state): local daily marker [skip ci]" && git push origin HEAD:main )
 echo %date% %time% SWING KR DONE> "%~dp0swing_heartbeat.txt"
