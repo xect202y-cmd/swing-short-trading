@@ -217,6 +217,9 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
     _save_run(cfg, signals, all_orders)
 
     log.info("run-once: 매수 %d · 매도 %d · 차단 %d", len(result.placed), len(exits), len(result.blocked))
+    # 페일오버 마커: 이 시장 런이 정상 완료됨을 기록(클라우드가 읽어 중복 방지)
+    from .state import daily_marker as _DM
+    _DM.record_done(cfg.state_dir, market, datetime.now(_DM.KST))
     return {
         "signals": sig_path, "trades": trade_path,
         "bought": len(result.placed), "sold": len(exits), "blocked": result.blocked,

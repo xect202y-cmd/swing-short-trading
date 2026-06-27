@@ -41,3 +41,12 @@ def test_corrupt_file_is_treated_as_empty(tmp_path: Path):
 def test_nondict_json_is_treated_as_empty(tmp_path):
     (tmp_path / "daily_done.json").write_text("[1,2,3]", encoding="utf-8")
     assert DM.is_done(tmp_path, "kr", date(2026, 6, 29)) is False
+
+
+def test_record_done_writes_iso_kst_timestamp(tmp_path):
+    from datetime import datetime
+    now = datetime(2026, 6, 29, 6, 0, tzinfo=DM.KST)
+    DM.record_done(tmp_path, "us", now)
+    data = json.loads((tmp_path / "daily_done.json").read_text(encoding="utf-8"))
+    assert data["2026-06-29"]["us"].startswith("2026-06-29T06:00")
+    assert "+09:00" in data["2026-06-29"]["us"]
