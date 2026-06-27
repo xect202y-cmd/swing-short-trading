@@ -27,3 +27,14 @@ def test_check_done_exit0_when_done(tmp_path, monkeypatch):
     _seed_cfg(tmp_path, monkeypatch)
     DM.record_done(tmp_path, "kr", datetime.now(DM.KST))
     assert cli_main(["check-done", "--market", "kr"]) == 0
+
+
+def test_notify_failover_sends_and_exits_0(tmp_path, monkeypatch):
+    _seed_cfg(tmp_path, monkeypatch)
+    sent = {}
+    def _fake_notify(url, content):
+        sent["url"] = url; sent["content"] = content; return True
+    monkeypatch.setattr("swing_trader.notify.discord.notify", _fake_notify)
+    rc = cli_main(["notify-failover", "--markets", "kr us"])
+    assert rc == 0
+    assert "KR" in sent["content"] and "US" in sent["content"]
