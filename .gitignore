@@ -11,7 +11,7 @@ config/.env.swing
 *.sqlite
 *.sqlite3
 data/
-state/
+/state/
 positions.json
 orders.json
 
