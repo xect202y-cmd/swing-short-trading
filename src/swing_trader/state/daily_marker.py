@@ -29,7 +29,8 @@ def _load(state_dir: Path) -> dict:
     if not p.exists():
         return {}
     try:
-        return json.loads(p.read_text(encoding="utf-8"))
+        it = json.loads(p.read_text(encoding="utf-8"))
+        return it if isinstance(it, dict) else {}
     except (json.JSONDecodeError, OSError):
         return {}
 

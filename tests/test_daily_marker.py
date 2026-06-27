@@ -36,3 +36,8 @@ def test_prune_drops_keys_older_than_7_days(tmp_path: Path):
 def test_corrupt_file_is_treated_as_empty(tmp_path: Path):
     (tmp_path / "daily_done.json").write_text("{not json", encoding="utf-8")
     assert DM.is_done(tmp_path, "kr", date(2026, 6, 29)) is False
+
+
+def test_nondict_json_is_treated_as_empty(tmp_path):
+    (tmp_path / "daily_done.json").write_text("[1,2,3]", encoding="utf-8")
+    assert DM.is_done(tmp_path, "kr", date(2026, 6, 29)) is False
