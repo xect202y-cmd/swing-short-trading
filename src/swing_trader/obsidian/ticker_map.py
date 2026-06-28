@@ -41,7 +41,12 @@ BUILTIN_US: dict[str, str] = {
     "소파이": "SOFI", "테이크투": "TTWO", "테이크-투 인터랙티브 소프트웨어": "TTWO",
     "소파이 테크놀로지스": "SOFI", "코인베이스": "COIN", "마이크로스트래티지": "MSTR",
     "디즈니": "DIS", "스타벅스": "SBUX", "AMD": "AMD",
+    # 야후 심볼 보정(노트 표기 ≠ 실제 티커): TSMC ADR=TSM, KLA Corp=KLAC.
+    "TSMC": "TSM", "TSM": "TSM", "KLA": "KLAC", "KLAC": "KLAC",
 }
+# 상장 종목이 아니어서 시세 조회 불가 → 유니버스에서 제외(yfinance 'delisted' 에러 방지).
+# JTBC(제이티비씨)는 별도 상장 법인이 아님(중앙그룹 비상장 자회사).
+BLOCKLIST: frozenset[str] = frozenset({"JTBC"})
 _KR_CODE_RE = re.compile(r"^\d{6}$")
 _US_RE = re.compile(r"^[A-Z]{1,5}$")
 
@@ -54,6 +59,8 @@ class TickerMap:
         if not name:
             return None
         key = name.strip()
+        if key.replace(" ", "").upper() in BLOCKLIST:
+            return None
         if key in self._map:
             return self._map[key]
         # 공백/접미사 정규화 재시도
