@@ -81,6 +81,62 @@ def split_oos(trades: list[Trade], frac: float = 0.3) -> tuple[list[Trade], list
     return is_, oos
 
 
+def simulate_trades(cfg, provider, notes, days: int, **params) -> list[Trade]:
+    """전 종목 백테스트 → 날짜 붙은 Trade 리스트. params 는 _resolve_params 오버라이드
+    (take_pct/stop_pct/runner/take2_pct/trail_pct)."""
+    from . import backtest as _BT
+    p = _BT._resolve_params(cfg, **params)
+    trades: list[Trade] = []
+    for n in notes:
+        if not n.ticker:
+            continue
+        df, _src = provider.get_ohlcv(n.ticker)
+        df = df.tail(days)
+        for d, r in _BT._stock_trades(df, take=p["take"], stop=p["stop"], max_hold=p["max_hold"],
+                                      runner=p["runner"], take2=p["take2"], trail=p["trail"],
+                                      cost=p["cost"], min_tv_eok=p["min_tv_eok"]):
+            trades.append(Trade(n.ticker, d, r))
+    return trades
+
+
+@dataclass
+class ABResult:
+    sample_ok: bool
+    n_oos: int
+    base_is: BacktestReport
+    base_oos: BacktestReport
+    cand_is: BacktestReport
+    cand_oos: BacktestReport
+    verdict: str   # improve | neutral | worse | insufficient
+
+
+def _judge(base: BacktestReport, cand: BacktestReport) -> str:
+    """OOS 기준 판정. 미세차이는 노이즈로 간주(기대값 ±0.02%p, Sharpe ±0.05 마진)."""
+    be, ce = base.expectancy or 0.0, cand.expectancy or 0.0
+    bs, cs = base.sharpe or 0.0, cand.sharpe or 0.0
+    better = (ce > be + 0.02) or (cs > bs + 0.05)
+    worse = (ce < be - 0.02) and (cs < bs - 0.05)
+    if worse:
+        return "worse"
+    if better:
+        return "improve"
+    return "neutral"
+
+
+def compare(cfg, provider, notes, days: int, baseline: dict, candidate: dict,
+            oos_fraction=None, min_oos=None) -> ABResult:
+    frac = oos_fraction if oos_fraction is not None else float(cfg.get("backtest", "oos_fraction", default=0.3))
+    floor = min_oos if min_oos is not None else int(cfg.get("backtest", "min_oos_trades", default=100))
+    b_is, b_oos = split_oos(simulate_trades(cfg, provider, notes, days, **baseline), frac)
+    c_is, c_oos = split_oos(simulate_trades(cfg, provider, notes, days, **candidate), frac)
+    base_is, base_oos = report_from_trades(b_is), report_from_trades(b_oos)
+    cand_is, cand_oos = report_from_trades(c_is), report_from_trades(c_oos)
+    n_oos = min(base_oos.n_trades, cand_oos.n_trades)
+    if n_oos < floor:
+        return ABResult(False, n_oos, base_is, base_oos, cand_is, cand_oos, "insufficient")
+    return ABResult(True, n_oos, base_is, base_oos, cand_is, cand_oos, _judge(base_oos, cand_oos))
+
+
 def backtest_provider(cfg) -> DataProvider:
     """백테스트 전용 provider — backtest.lookback_days(기본 500)로 더 긴 히스토리 fetch."""
     from ..market.fx import get_usdkrw

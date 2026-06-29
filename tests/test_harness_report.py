@@ -35,3 +35,22 @@ def test_split_oos_by_date():
 
 def test_split_oos_empty():
     assert H.split_oos([], 0.3) == ([], [])
+
+
+def test_judge_improve_and_worse():
+    base = H.BacktestReport(n_trades=200, expectancy=0.50, sharpe=0.10)
+    better = H.BacktestReport(n_trades=200, expectancy=0.80, sharpe=0.20)
+    worse = H.BacktestReport(n_trades=200, expectancy=0.30, sharpe=0.02)
+    same = H.BacktestReport(n_trades=200, expectancy=0.505, sharpe=0.101)
+    assert H._judge(base, better) == "improve"
+    assert H._judge(base, worse) == "worse"
+    assert H._judge(base, same) == "neutral"
+
+
+def test_compare_sample_guard(monkeypatch):
+    # 거래 수가 적으면 insufficient. simulate_trades를 가짜로 대체.
+    few = [H.Trade("X", "2026-01-05", 0.01), H.Trade("X", "2026-06-05", -0.01)]
+    monkeypatch.setattr(H, "simulate_trades", lambda *a, **k: few)
+    ab = H.compare(cfg=None, provider=None, notes=[], days=500,
+                   baseline={}, candidate={"runner": True}, oos_fraction=0.3, min_oos=100)
+    assert ab.verdict == "insufficient" and ab.sample_ok is False
