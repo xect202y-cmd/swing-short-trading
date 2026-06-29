@@ -448,7 +448,8 @@ def run_harness(cfg: Config) -> Path:
     days = int(cfg.get("backtest", "lookback_days", default=500))
     trades = _HN.simulate_trades(cfg, provider, notes, days)
     is_t, oos_t = _HN.split_oos(trades, float(cfg.get("backtest", "oos_fraction", default=0.3)))
-    is_rep, oos_rep = _HN.report_from_trades(is_t), _HN.report_from_trades(oos_t)
+    pf = float(cfg.get("backtest", "position_frac", default=0.2))   # MDD 복리곡선의 거래당 자본분율
+    is_rep, oos_rep = _HN.report_from_trades(is_t, pf), _HN.report_from_trades(oos_t, pf)
     writer = VaultWriter(cfg)
     ver = _HN.logic_version_id(cfg)   # 결과를 현재 로직 버전으로 태깅(나중 버전별 A/B 키) → 옵시디언에 무조건 기록
     md = _HN.render_report_md("기준 로직 성과 측정", is_rep, oos_rep, date.today().isoformat(), version=ver)

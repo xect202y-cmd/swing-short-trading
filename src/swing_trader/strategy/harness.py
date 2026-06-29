@@ -36,7 +36,7 @@ class BacktestReport:
     end: str | None = None
 
 
-def report_from_trades(trades: list[Trade]) -> BacktestReport:
+def report_from_trades(trades: list[Trade], position_frac: float = 1.0) -> BacktestReport:
     r = BacktestReport(n_trades=len(trades))
     if not trades:
         return r
@@ -49,13 +49,16 @@ def report_from_trades(trades: list[Trade]) -> BacktestReport:
     r.expectancy = round(sum(rets) / len(rets) * 100, 3)
     gross_win, gross_loss = sum(wins), -sum(losses)
     r.profit_factor = round(gross_win / gross_loss, 2) if gross_loss > 0 else None
+    # MDD: 거래마다 자본의 고정분율(position_frac)을 태우는 복리 자산곡선의 최대낙폭(%).
+    # 모든 변형에 같은 분율을 적용해 사이징-중립 비교를 유지하되, 결과는 유계(-100%~0)·해석가능.
+    # (순수 가산 flat-bet은 수백~수천 거래 누적 시 단위베팅 대비 -300% 같은 비유계값이 나와 폐기.)
     ordered = sorted(trades, key=lambda t: t.entry)
-    cum = peak = 0.0
+    eq = peak = 1.0
     mdd = 0.0
     for t in ordered:
-        cum += t.ret                  # flat-bet(동일 베팅): 가산 누적, 복리 아님(Phase4 사이징 전까지)
-        peak = max(peak, cum)
-        mdd = min(mdd, cum - peak)
+        eq *= (1 + position_frac * t.ret)   # 롱·손절 전제라 1+frac*ret>0 (frac≤1)
+        peak = max(peak, eq)
+        mdd = min(mdd, eq / peak - 1)
     r.max_drawdown = round(mdd * 100, 2)
     if len(rets) >= 2:
         sd = st.pstdev(rets)
@@ -126,13 +129,14 @@ def _judge(base: BacktestReport, cand: BacktestReport) -> str:
 
 
 def compare(cfg, provider, notes, days: int, baseline: dict, candidate: dict,
-            oos_fraction=None, min_oos=None) -> ABResult:
+            oos_fraction=None, min_oos=None, position_frac=None) -> ABResult:
     frac = oos_fraction if oos_fraction is not None else float(cfg.get("backtest", "oos_fraction", default=0.3))
     floor = min_oos if min_oos is not None else int(cfg.get("backtest", "min_oos_trades", default=100))
+    pf = position_frac if position_frac is not None else float(cfg.get("backtest", "position_frac", default=0.2))
     b_is, b_oos = split_oos(simulate_trades(cfg, provider, notes, days, **baseline), frac)
     c_is, c_oos = split_oos(simulate_trades(cfg, provider, notes, days, **candidate), frac)
-    base_is, base_oos = report_from_trades(b_is), report_from_trades(b_oos)
-    cand_is, cand_oos = report_from_trades(c_is), report_from_trades(c_oos)
+    base_is, base_oos = report_from_trades(b_is, pf), report_from_trades(b_oos, pf)
+    cand_is, cand_oos = report_from_trades(c_is, pf), report_from_trades(c_oos, pf)
     n_oos = min(base_oos.n_trades, cand_oos.n_trades)
     if n_oos < floor:
         return ABResult(False, n_oos, base_is, base_oos, cand_is, cand_oos, "insufficient")

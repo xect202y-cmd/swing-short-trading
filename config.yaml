@@ -107,6 +107,7 @@ backtest:
   oos_fraction: 0.3      # 뒤 30%를 아웃오브샘플 홀드아웃
   min_oos_trades: 100    # OOS 거래 < 이 값이면 판정 보류(표본부족)
   universe: all          # all | kr | us
+  position_frac: 0.2     # MDD 복리 자산곡선의 거래당 자본분율(사이징-중립 비교용 고정값, 결과 유계 -100%~0)
 
 market_data:
   provider: "auto"           # auto | pykrx | yfinance | synthetic
