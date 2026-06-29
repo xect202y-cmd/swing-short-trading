@@ -10,15 +10,17 @@ from collections import Counter
 from datetime import date, datetime
 
 from ..strategy import logic_version as LV
-from ..strategy.ai_judge import chat_text
+from ..strategy.ai_judge import chat_json
 from . import analytics as A
 
 _SYS = (
     "너는 단기 스윙 트레이딩 시스템의 퀀트 로직 감사관이다. 사용자(이용수)는 롱온리 추세추종 스윙 트레이더이고 "
     "목표는 40세 전 순자산 50억, 손절 철저·분할·확률기반이다. 아래 '실제 매매 데이터·의사결정 로그·성과지표'를 "
-    "근거로 현재 로직의 문제점과 구체적 수정안을 도출하라. 추측 금지(데이터에 있는 사실만). "
-    "각 제안은 'config 키 · 현재값 → 제안값 · 근거(데이터)'로. 표본이 적으면 '데이터 부족'을 명시하고 무리한 결론 금지. "
-    "마지막에 '다음 액션'을 1줄로(예: 'config의 scoring.thresholds.small_ok를 70→75로 바꾸고 logic 명령으로 A/B 검증')."
+    "근거로 현재 로직의 문제점과 구체적 수정안을 도출하라. 추측 금지(데이터에 있는 사실만). 표본이 적으면 무리한 결론 금지. "
+    "반드시 JSON만 출력: "
+    '{"suggestions":[{"title":"짧은 제목","insight":"평이한 근거 1~2문장(한국어)",'
+    '"config_key":"점표기 config 키 또는 null","current":현재값_또는_null,"suggested":제안값_또는_null}],'
+    '"next_action":"한 줄 권장 액션(한국어)"}'
 )
 
 
@@ -75,23 +77,55 @@ def _evidence_text(cfg) -> tuple[str, A.Metrics, dict]:
     return "\n".join(lines), m, agg
 
 
-def run(cfg) -> tuple[str | None, str]:
-    """(discord_text, obsidian_md). 키 없으면 룰 기반 요약."""
+def build_review(cfg) -> tuple[dict, str]:
+    """(state, evidence). state는 대시보드/MD 공용 단일 소스."""
     d = date.today().isoformat()
     evidence, m, agg = _evidence_text(cfg)
+    if m.n_closed < 3:
+        return {"ok": False, "date": d, "n_closed": m.n_closed,
+                "reason": "청산 3건 미만 — 데이터 축적 중"}, evidence
+    user = f"{evidence}\n\n위 데이터로 현재 스윙 로직의 문제점과 구체적 config 수정안을 진단해줘."
+    ai = chat_json(cfg, _SYS, user)
+    if not ai or not isinstance(ai.get("suggestions"), list):
+        return {"ok": False, "date": d, "n_closed": m.n_closed,
+                "reason": "AI 키 없음 또는 응답 파싱 실패"}, evidence
+    return {
+        "ok": True, "date": d, "n_closed": m.n_closed,
+        "headline": {"win_rate": m.win_rate, "profit_factor": m.profit_factor,
+                     "return_pct": m.return_pct},
+        "suggestions": ai["suggestions"],
+        "next_action": str(ai.get("next_action", "")),
+    }, evidence
+
+
+def render_md(state: dict, evidence: str) -> str:
+    d = state.get("date", date.today().isoformat())
     fm = (f"---\ntype: 스윙AI로직진단\n날짜: {d}\ntags: [스윙, 로직, AI진단]\n---\n"
           f"> 생성 {datetime.now():%Y-%m-%d %H:%M}\n\n")
+    if not state.get("ok"):
+        body = (f"## 🤖 AI 로직 진단 · {d}\n{state.get('reason', '진단 보류')}.\n\n"
+                f"**근거 데이터**\n```\n{evidence}\n```")
+        return fm + body
+    lines = [f"## 🤖 AI 로직 진단 · {d}\n"]
+    for i, s in enumerate(state["suggestions"], 1):
+        cfg_line = ""
+        if s.get("config_key"):
+            cfg_line = f" · config `{s['config_key']}` 현재값 {s.get('current')} → 제안값 {s.get('suggested')}"
+        lines.append(f"{i}. **{s.get('title', '')}**{cfg_line}\n   - {s.get('insight', '')}")
+    lines.append(f"\n**다음 액션**: {state.get('next_action', '')}")
+    body = "\n".join(lines)
+    return (fm + body
+            + f"\n\n---\n<details><summary>근거 데이터</summary>\n\n```\n{evidence}\n```\n</details>\n")
 
-    if m.n_closed < 3:
-        body = ("## 🤖 AI 로직 진단\n청산 거래 3건 미만 — 통계적 진단 보류. 데이터 더 축적 후 재실행.\n\n"
-                "**현재 수집 현황**\n```\n" + evidence + "\n```")
-        return None, fm + body
 
-    user = f"{evidence}\n\n위 데이터로 현재 스윙 로직의 문제점과 구체적 config 수정안을 진단해줘."
-    ai = chat_text(cfg, _SYS, user)
-    if not ai:
-        body = ("## 🤖 AI 로직 진단\n(OpenAI 키 없음 — 룰 기반 요약만)\n\n**근거 데이터**\n```\n" + evidence + "\n```")
-        return None, fm + body
-    discord = "🧠 **스윙 AI 로직 진단**\n" + ai[:1800]
-    md = fm + f"## 🤖 AI 로직 진단 · {d}\n\n{ai}\n\n---\n<details><summary>근거 데이터</summary>\n\n```\n{evidence}\n```\n</details>\n"
-    return discord, md
+def render_discord(state: dict) -> str | None:
+    if not state.get("ok"):
+        return None
+    titles = " · ".join(s.get("title", "") for s in state["suggestions"][:4])
+    return f"🧠 **스윙 AI 로직 진단**\n{titles}\n다음 액션: {state.get('next_action', '')}"[:1800]
+
+
+def run(cfg) -> tuple[str | None, str, dict]:
+    """(discord, md, state). 키 없으면 discord=None."""
+    state, evidence = build_review(cfg)
+    return render_discord(state), render_md(state, evidence), state
