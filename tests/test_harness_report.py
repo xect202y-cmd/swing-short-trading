@@ -21,3 +21,17 @@ def test_report_basic_metrics():
 def test_report_empty_is_safe():
     r = H.report_from_trades([])
     assert r.n_trades == 0 and r.expectancy is None and r.max_drawdown is None
+
+
+def test_split_oos_by_date():
+    trades = [H.Trade("X", f"2026-{m:02d}-05", 0.01) for m in range(1, 11)]  # 1~10월
+    is_, oos = H.split_oos(trades, frac=0.3)
+    assert is_ and oos
+    # 분할 경계는 날짜 스팬 기준 — OOS 첫 거래가 IS 마지막보다 늦다
+    assert is_[-1].entry < oos[0].entry
+    # 전체 보존
+    assert len(is_) + len(oos) == 10
+
+
+def test_split_oos_empty():
+    assert H.split_oos([], 0.3) == ([], [])

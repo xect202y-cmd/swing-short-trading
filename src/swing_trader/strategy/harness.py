@@ -9,6 +9,8 @@ import statistics as st
 from dataclasses import dataclass
 from datetime import date, timedelta
 
+from ..market.data_provider import DataProvider
+
 
 @dataclass
 class Trade:
@@ -61,3 +63,28 @@ def report_from_trades(trades: list[Trade]) -> BacktestReport:
     if span > 0:
         r.trades_per_year = round(len(trades) / span * 365, 1)
     return r
+
+
+def split_oos(trades: list[Trade], frac: float = 0.3) -> tuple[list[Trade], list[Trade]]:
+    """entry 날짜 기준 시간순 분할 → (인샘플, 아웃오브샘플). 뒤 frac 기간이 OOS 홀드아웃."""
+    if not trades:
+        return [], []
+    ordered = sorted(trades, key=lambda t: t.entry)
+    start = date.fromisoformat(ordered[0].entry)
+    end = date.fromisoformat(ordered[-1].entry)
+    span = (end - start).days
+    if span <= 0:
+        return ordered, []
+    cut = (start + timedelta(days=int(span * (1 - frac)))).isoformat()
+    is_ = [t for t in ordered if t.entry < cut]
+    oos = [t for t in ordered if t.entry >= cut]
+    return is_, oos
+
+
+def backtest_provider(cfg) -> DataProvider:
+    """백테스트 전용 provider — backtest.lookback_days(기본 500)로 더 긴 히스토리 fetch."""
+    from ..market.fx import get_usdkrw
+    md = cfg.get("market_data", default={})
+    look = int(cfg.get("backtest", "lookback_days", default=500))
+    fx = get_usdkrw(float(md.get("fx_usdkrw", 1400)))
+    return DataProvider(provider=md.get("provider", "auto"), lookback_days=look, fx_usdkrw=fx)

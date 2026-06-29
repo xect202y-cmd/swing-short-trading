@@ -102,6 +102,12 @@ paper:
   slippage_bps: 5.0          # 슬리피지 bps
   fill_mode: "next_open"     # 체결 가정(데모용)
 
+backtest:
+  lookback_days: 500     # 백테스트 전용 히스토리(약 2년). 라이브 지표용 market_data.lookback_days(120)와 분리
+  oos_fraction: 0.3      # 뒤 30%를 아웃오브샘플 홀드아웃
+  min_oos_trades: 100    # OOS 거래 < 이 값이면 판정 보류(표본부족)
+  universe: all          # all | kr | us
+
 market_data:
   provider: "auto"           # auto | pykrx | yfinance | synthetic
   lookback_days: 120         # 지표 계산용 OHLCV 기간
