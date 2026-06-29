@@ -450,7 +450,8 @@ def run_harness(cfg: Config) -> Path:
     is_t, oos_t = _HN.split_oos(trades, float(cfg.get("backtest", "oos_fraction", default=0.3)))
     is_rep, oos_rep = _HN.report_from_trades(is_t), _HN.report_from_trades(oos_t)
     writer = VaultWriter(cfg)
-    md = _HN.render_report_md("기준 로직 성과 측정", is_rep, oos_rep, date.today().isoformat())
+    ver = _HN.logic_version_id(cfg)   # 결과를 현재 로직 버전으로 태깅(나중 버전별 A/B 키) → 옵시디언에 무조건 기록
+    md = _HN.render_report_md("기준 로직 성과 측정", is_rep, oos_rep, date.today().isoformat(), version=ver)
     path = writer.write_harness(md)
     from .notify import health as _H
     hz = _H.assess([provider.sources.get(n.ticker) for n in notes])
@@ -460,7 +461,7 @@ def run_harness(cfg: Config) -> Path:
     floor = int(cfg.get("backtest", "min_oos_trades", default=100))
     guard = "" if oos_rep.n_trades >= floor else f" ⚠️표본부족(OOS {oos_rep.n_trades}<{floor})"
     notify(cfg.creds.discord_webhook_url,
-           f"🧪 하니스 측정 — 종목 {len(notes)} · OOS 거래 {oos_rep.n_trades} · "
+           f"🧪 하니스 측정 — 로직 `{ver}` · 종목 {len(notes)} · OOS 거래 {oos_rep.n_trades} · "
            f"기대값 IS {_HN._fmt(is_rep.expectancy)}→OOS {_HN._fmt(oos_rep.expectancy)} · "
            f"MDD {_HN._fmt(oos_rep.max_drawdown)}{guard}")
     log.info("harness → %s (종목 %d · OOS거래 %d · OOS기대값 %s)",

@@ -85,6 +85,30 @@ def test_compare_happy_path_improve(monkeypatch):
     assert ab.verdict == "improve"
 
 
+def test_render_report_md_stamps_logic_version():
+    is_rep = H.report_from_trades([H.Trade("X", "2026-01-05", 0.05)])
+    oos_rep = H.report_from_trades([H.Trade("X", "2026-05-05", 0.05)])
+    md = H.render_report_md("기준 로직 성과 측정", is_rep, oos_rep, "2026-06-30", version="ab12cd34")
+    assert "로직버전: ab12cd34" in md
+
+
+def test_logic_version_id_deterministic_and_changes():
+    class _Cfg:
+        def __init__(self, take):
+            self._take = take
+
+        def get(self, *keys, default=None):
+            # logic_version.snapshot 이 읽는 섹션만 흉내(risk.take1_pct 만 가변)
+            if keys[0] == "risk":
+                return {"take1_pct": self._take}
+            return default
+
+    a = H.logic_version_id(_Cfg(5.0))
+    assert isinstance(a, str) and len(a) == 8
+    assert a == H.logic_version_id(_Cfg(5.0))      # 결정적
+    assert a != H.logic_version_id(_Cfg(6.0))      # 설정 바뀌면 ID 바뀜
+
+
 def test_render_report_md_has_both_windows():
     is_rep = H.report_from_trades([H.Trade("X", "2026-01-05", 0.05), H.Trade("X", "2026-02-05", -0.03)])
     oos_rep = H.report_from_trades([H.Trade("X", "2026-05-05", 0.05), H.Trade("X", "2026-06-05", -0.03)])

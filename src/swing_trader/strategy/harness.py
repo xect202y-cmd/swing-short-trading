@@ -5,6 +5,8 @@ simulate(요약·표)와 분리: 여기선 개별 거래(날짜 포함)를 모�
 """
 from __future__ import annotations
 
+import hashlib
+import json
 import statistics as st
 from dataclasses import dataclass
 from datetime import date, timedelta
@@ -147,13 +149,28 @@ def _report_row(label: str, r: BacktestReport) -> str:
             f"{_fmt(r.trades_per_year, '')} |")
 
 
-def render_report_md(title: str, is_rep: BacktestReport, oos_rep: BacktestReport, d: str) -> str:
+def logic_version_id(cfg) -> str:
+    """현재 로직(설정) 스냅샷의 결정적 8자 해시 — 백테스트 결과를 버전별로 묶기 위한 ID.
+    설정이 같으면 같은 ID, 한 군데라도 바뀌면 새 ID(나중 버전별 A/B 의 키)."""
+    from . import logic_version as _LV
+    snap = _LV.snapshot(cfg)
+    blob = json.dumps(snap, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:8]
+
+
+def render_report_md(title: str, is_rep: BacktestReport, oos_rep: BacktestReport, d: str,
+                     version: str | None = None) -> str:
     gap = None
     if is_rep.expectancy is not None and oos_rep.expectancy is not None:
         gap = round(oos_rep.expectancy - is_rep.expectancy, 3)
     lines = [
-        "---", "type: 스윙백테스트하니스", f"날짜: {d}", "tags: [스윙, 백테스트, 검증]", "---",
-        f"# 🧪 {title} · {d}",
+        "---", "type: 스윙백테스트하니스", f"날짜: {d}",
+    ]
+    if version:
+        lines.append(f"로직버전: {version}")   # 버전별 A/B 를 위한 결정적 로직 ID
+    lines += [
+        "tags: [스윙, 백테스트, 검증]", "---",
+        f"# 🧪 {title} · {d}" + (f"  ·  로직 `{version}`" if version else ""),
         "> 규칙: 20일선 눌림 후 반등 진입 → 익절/손절·트레일링. 비용(수수료+슬리피지) 차감.",
         "> 판정은 **아웃오브샘플(OOS)** 기준. IS↔OOS 기대값 격차가 크면 과최적화 신호.", "",
         "| 구간 | 거래수 | 승률 | 기대값 | PF | MDD | Sharpe | 연거래 |",
