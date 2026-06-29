@@ -96,6 +96,12 @@ class VaultWriter:
         path.write_text(content, encoding="utf-8")
         return path
 
+    def write_harness(self, content: str, d: date | None = None) -> Path:
+        d = d or date.today()
+        path = self._path("backtests_dir", "Harness", d)
+        path.write_text(content, encoding="utf-8")
+        return path
+
     def write_logic(self, content: str, vnum: int) -> Path:
         dpath = self.cfg.write_dir("logic_dir")
         dpath.mkdir(parents=True, exist_ok=True)

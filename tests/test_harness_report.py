@@ -54,3 +54,12 @@ def test_compare_sample_guard(monkeypatch):
     ab = H.compare(cfg=None, provider=None, notes=[], days=500,
                    baseline={}, candidate={"runner": True}, oos_fraction=0.3, min_oos=100)
     assert ab.verdict == "insufficient" and ab.sample_ok is False
+
+
+def test_render_report_md_has_both_windows():
+    is_rep = H.report_from_trades([H.Trade("X", "2026-01-05", 0.05), H.Trade("X", "2026-02-05", -0.03)])
+    oos_rep = H.report_from_trades([H.Trade("X", "2026-05-05", 0.05), H.Trade("X", "2026-06-05", -0.03)])
+    md = H.render_report_md("기준 로직 측정", is_rep, oos_rep, "2026-06-30")
+    assert "인샘플" in md and "아웃오브샘플" in md
+    assert "기대값" in md and "MDD" in md
+    assert "type: 스윙백테스트하니스" in md

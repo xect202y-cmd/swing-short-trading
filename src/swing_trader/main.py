@@ -438,5 +438,35 @@ def run_doctor(cfg: Config) -> dict:
     return {"checks": checks, "live_allowed": s.live_allowed}
 
 
+def run_harness(cfg: Config) -> Path:
+    """현재 로직 baseline 을 full 유니버스·장기 히스토리로 IS/OOS 측정 → 볼트+디스코드."""
+    from .strategy import harness as _HN
+    reader = VaultReader(cfg)
+    provider = _HN.backtest_provider(cfg)
+    market = str(cfg.get("backtest", "universe", default="all"))
+    notes = [n for n in _load_notes(cfg, reader, None, market) if n.ticker]
+    days = int(cfg.get("backtest", "lookback_days", default=500))
+    trades = _HN.simulate_trades(cfg, provider, notes, days)
+    is_t, oos_t = _HN.split_oos(trades, float(cfg.get("backtest", "oos_fraction", default=0.3)))
+    is_rep, oos_rep = _HN.report_from_trades(is_t), _HN.report_from_trades(oos_t)
+    writer = VaultWriter(cfg)
+    md = _HN.render_report_md("기준 로직 성과 측정", is_rep, oos_rep, date.today().isoformat())
+    path = writer.write_harness(md)
+    from .notify import health as _H
+    hz = _H.assess([provider.sources.get(n.ticker) for n in notes])
+    if not hz.ok:
+        _H.alert(cfg.creds.discord_webhook_url, "하니스 측정", hz.reason)
+    from .notify.discord import notify
+    floor = int(cfg.get("backtest", "min_oos_trades", default=100))
+    guard = "" if oos_rep.n_trades >= floor else f" ⚠️표본부족(OOS {oos_rep.n_trades}<{floor})"
+    notify(cfg.creds.discord_webhook_url,
+           f"🧪 하니스 측정 — 종목 {len(notes)} · OOS 거래 {oos_rep.n_trades} · "
+           f"기대값 IS {_HN._fmt(is_rep.expectancy)}→OOS {_HN._fmt(oos_rep.expectancy)} · "
+           f"MDD {_HN._fmt(oos_rep.max_drawdown)}{guard}")
+    log.info("harness → %s (종목 %d · OOS거래 %d · OOS기대값 %s)",
+             path, len(notes), oos_rep.n_trades, oos_rep.expectancy)
+    return path
+
+
 __all__ = ["load_config", "run_scan", "run_once", "run_review", "run_backtest", "run_doctor",
-           "run_brief", "run_logic", "run_logic_review", "_setup_logging"]
+           "run_brief", "run_logic", "run_logic_review", "_setup_logging", "run_harness"]

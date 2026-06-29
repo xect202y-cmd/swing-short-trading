@@ -137,6 +137,36 @@ def compare(cfg, provider, notes, days: int, baseline: dict, candidate: dict,
     return ABResult(True, n_oos, base_is, base_oos, cand_is, cand_oos, _judge(base_oos, cand_oos))
 
 
+def _fmt(v, suffix="%"):
+    return "—" if v is None else f"{v:g}{suffix}"
+
+
+def _report_row(label: str, r: BacktestReport) -> str:
+    return (f"| {label} | {r.n_trades} | {_fmt(r.win_rate)} | {_fmt(r.expectancy)} | "
+            f"{_fmt(r.profit_factor, '')} | {_fmt(r.max_drawdown)} | {_fmt(r.sharpe, '')} | "
+            f"{_fmt(r.trades_per_year, '')} |")
+
+
+def render_report_md(title: str, is_rep: BacktestReport, oos_rep: BacktestReport, d: str) -> str:
+    gap = None
+    if is_rep.expectancy is not None and oos_rep.expectancy is not None:
+        gap = round(oos_rep.expectancy - is_rep.expectancy, 3)
+    lines = [
+        "---", "type: 스윙백테스트하니스", f"날짜: {d}", "tags: [스윙, 백테스트, 검증]", "---",
+        f"# 🧪 {title} · {d}",
+        "> 규칙: 20일선 눌림 후 반등 진입 → 익절/손절·트레일링. 비용(수수료+슬리피지) 차감.",
+        "> 판정은 **아웃오브샘플(OOS)** 기준. IS↔OOS 기대값 격차가 크면 과최적화 신호.", "",
+        "| 구간 | 거래수 | 승률 | 기대값 | PF | MDD | Sharpe | 연거래 |",
+        "|---|---|---|---|---|---|---|---|",
+        _report_row("인샘플(IS)", is_rep),
+        _report_row("아웃오브샘플(OOS)", oos_rep),
+    ]
+    if gap is not None:
+        sign = "✅ 견고" if gap >= -0.2 else "⚠️ 과최적화 의심"
+        lines += ["", f"**IS→OOS 기대값 격차**: {gap:+g}%p · {sign}"]
+    return "\n".join(lines)
+
+
 def backtest_provider(cfg) -> DataProvider:
     """백테스트 전용 provider — backtest.lookback_days(기본 500)로 더 긴 히스토리 fetch."""
     from ..market.fx import get_usdkrw

@@ -54,6 +54,7 @@ def main(argv: list[str] | None = None) -> int:
     cd.add_argument("--market", choices=["kr", "us"], required=True)
     nf = sub.add_parser("notify-failover", help="로컬 미실행 → 클라우드 대체 경고를 swing 채널로 발송")
     nf.add_argument("--markets", required=True, help='공백 구분, 예: "kr us"')
+    sub.add_parser("harness", help="현재 로직 IS/OOS 성과 측정(검증 하니스) → 볼트+디스코드")
 
     args = ap.parse_args(argv)
     _utf8_console()
@@ -102,6 +103,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "check-done":
         from .state import daily_marker as DM
         return 0 if DM.is_done(cfg.state_dir, args.market, DM.today_kst()) else 1
+    if args.cmd == "harness":
+        path = M.run_harness(cfg)
+        print(f"✅ 하니스 측정 → {path}")
+        return 0
     if args.cmd == "notify-failover":
         from .notify.discord import notify
         from .state import daily_marker as DM
