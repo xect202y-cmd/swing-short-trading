@@ -44,6 +44,12 @@ def record_closed_trades(state_dir: Path, trades: list[dict]) -> None:
     _save(path, rows)
 
 
+def record_logic_review(state_dir: Path, review: dict) -> None:
+    state_dir.mkdir(parents=True, exist_ok=True)
+    (state_dir / "logic_review.json").write_text(
+        json.dumps(review, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def load_equity(state_dir: Path) -> list[dict]:
     return _load(state_dir / "equity_history.json")
 

@@ -95,3 +95,28 @@ def judge(cfg, sig, note, tech, methods: list[dict]) -> dict | None:
     except (requests.RequestException, KeyError, ValueError, json.JSONDecodeError) as e:
         log.warning("AI 판단 실패(%s): %s", sig.ticker, e)
         return None
+
+
+def chat_json(cfg, system: str, user: str) -> dict | None:
+    """범용 LLM JSON 호출(response_format=json_object). 키 없음/실패/파싱오류 시 None."""
+    key = cfg.creds.openai_api_key
+    if not key:
+        return None
+    base = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
+    try:
+        r = requests.post(
+            f"{base}/chat/completions",
+            headers={"Authorization": f"Bearer {key}"},
+            json={"model": cfg.creds.openai_model,
+                  "messages": [{"role": "system", "content": system},
+                               {"role": "user", "content": user}],
+                  "response_format": {"type": "json_object"}},
+            timeout=30,
+        )
+        if not r.ok:
+            log.warning("LLM JSON 응답 %s: %s", r.status_code, r.text[:160])
+            return None
+        return json.loads(r.json()["choices"][0]["message"]["content"])
+    except (requests.RequestException, KeyError, ValueError, json.JSONDecodeError) as e:
+        log.warning("LLM JSON 실패: %s", e)
+        return None

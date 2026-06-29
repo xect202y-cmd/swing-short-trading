@@ -284,9 +284,11 @@ def run_brief(cfg: Config, period: str = "auto") -> list[str]:
         sent.append("weekly")
         # 주간에 AI 로직 진단도 자동 포함(매매일지·로그 근거 → 로직 문제점+수정안)
         from .notify.discord import notify
+        from .review import analytics as _A
         from .review import logic_reviewer as _LR
-        lr_discord, lr_md = _LR.run(cfg)
+        lr_discord, lr_md, lr_state = _LR.run(cfg)
         writer.write_logic_review(lr_md)
+        _A.record_logic_review(cfg.state_dir, lr_state)
         if lr_discord:
             notify(wh, lr_discord)
         sent.append("logic-review")
@@ -400,10 +402,12 @@ def run_logic(cfg: Config, note: str) -> dict:
 def run_logic_review(cfg: Config) -> dict:
     """AI 로직 진단 — 매매일지·의사결정로그·성과를 LLM에 주고 로직 문제점+수정안 도출 → 볼트 기록."""
     from .notify.discord import notify
+    from .review import analytics as _A
     from .review import logic_reviewer as _LR
     writer = VaultWriter(cfg)
-    discord, md = _LR.run(cfg)
+    discord, md, state = _LR.run(cfg)
     path = writer.write_logic_review(md)
+    _A.record_logic_review(cfg.state_dir, state)
     if discord:
         notify(cfg.creds.discord_webhook_url, discord)
     log.info("logic-review → %s (발송 %s)", path, bool(discord))
