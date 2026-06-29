@@ -454,6 +454,13 @@ def run_harness(cfg: Config) -> Path:
     ver = _HN.logic_version_id(cfg)   # 결과를 현재 로직 버전으로 태깅(나중 버전별 A/B 키) → 옵시디언에 무조건 기록
     md = _HN.render_report_md("기준 로직 성과 측정", is_rep, oos_rep, date.today().isoformat(), version=ver)
     path = writer.write_harness(md)
+    # 대시보드용 compact JSON(헤르메스 대시보드가 readSwingState 로 GitHub raw 읽음). 버전 누적 시 A/B 화면도 이걸로.
+    gap = (round(oos_rep.expectancy - is_rep.expectancy, 3)
+           if oos_rep.expectancy is not None and is_rep.expectancy is not None else None)
+    (cfg.state_dir / "harness_latest.json").write_text(json.dumps({
+        "version": ver, "date": date.today().isoformat(), "n_stocks": len(notes),
+        "position_frac": pf, "is": asdict(is_rep), "oos": asdict(oos_rep), "gap": gap,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
     from .notify import health as _H
     hz = _H.assess([provider.sources.get(n.ticker) for n in notes])
     if not hz.ok:
