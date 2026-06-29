@@ -104,3 +104,16 @@ def test_build_review_ai_none(monkeypatch):
     monkeypatch.setattr(LR, "chat_json", lambda *a, **k: None)
     state, _ = LR.build_review(_Cfg)
     assert state["ok"] is False
+
+
+# ── Task 3: record_logic_review JSON 기록 ────────────────────────────────────
+import json as _json
+from pathlib import Path
+from swing_trader.review import analytics as A
+
+
+def test_record_logic_review_writes_json(tmp_path: Path):
+    review = {"ok": True, "date": "2026-06-26", "suggestions": []}
+    A.record_logic_review(tmp_path, review)
+    out = _json.loads((tmp_path / "logic_review.json").read_text(encoding="utf-8"))
+    assert out == review
