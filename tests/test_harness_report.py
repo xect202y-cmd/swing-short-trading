@@ -56,6 +56,35 @@ def test_compare_sample_guard(monkeypatch):
     assert ab.verdict == "insufficient" and ab.sample_ok is False
 
 
+def test_report_mdd_is_flat_bet_not_compounding():
+    # flat-bet(가산)과 복리(곱)가 값이 달라지는 시퀀스로 곡선종류를 고정.
+    # 가산: cum 1.0,2.0,1.5,1.0 → peak 2.0 → MDD = 1.0-2.0 = -1.0 → -100%
+    # (복리였다면 -75%가 나옴)
+    trades = [H.Trade("X", f"2026-{m:02d}-15", r)
+              for m, r in [(1, 1.0), (2, 1.0), (3, -0.5), (4, -0.5)]]
+    assert H.report_from_trades(trades).max_drawdown == -100.0
+
+
+def test_compare_happy_path_improve(monkeypatch):
+    # 날짜를 2년에 고루 분포시켜 OOS(뒤30%)에 100건 이상 들어가게 한다.
+    def mk(n, ret):
+        out = []
+        for i in range(n):
+            mo = 1 + (i % 24)               # 1..24 → 2024-01..2025-12
+            y, m = 2024 + (mo - 1) // 12, (mo - 1) % 12 + 1
+            out.append(H.Trade("X", f"{y}-{m:02d}-15", ret))
+        return out
+    base = mk(600, 0.004)                   # 기대값 +0.4%
+    cand = mk(600, 0.010)                   # 기대값 +1.0% (> base + 0.02%p)
+    monkeypatch.setattr(H, "simulate_trades",
+                        lambda cfg, prov, notes, days, **p: cand if p.get("runner") else base)
+    ab = H.compare(cfg=None, provider=None, notes=[], days=500,
+                   baseline={}, candidate={"runner": True}, oos_fraction=0.3, min_oos=100)
+    assert ab.sample_ok is True
+    assert ab.n_oos >= 100
+    assert ab.verdict == "improve"
+
+
 def test_render_report_md_has_both_windows():
     is_rep = H.report_from_trades([H.Trade("X", "2026-01-05", 0.05), H.Trade("X", "2026-02-05", -0.03)])
     oos_rep = H.report_from_trades([H.Trade("X", "2026-05-05", 0.05), H.Trade("X", "2026-06-05", -0.03)])

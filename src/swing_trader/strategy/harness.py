@@ -48,12 +48,12 @@ def report_from_trades(trades: list[Trade]) -> BacktestReport:
     gross_win, gross_loss = sum(wins), -sum(losses)
     r.profit_factor = round(gross_win / gross_loss, 2) if gross_loss > 0 else None
     ordered = sorted(trades, key=lambda t: t.entry)
-    eq = peak = 1.0
+    cum = peak = 0.0
     mdd = 0.0
     for t in ordered:
-        eq *= (1 + t.ret)
-        peak = max(peak, eq)
-        mdd = min(mdd, eq / peak - 1)
+        cum += t.ret                  # flat-bet(동일 베팅): 가산 누적, 복리 아님(Phase4 사이징 전까지)
+        peak = max(peak, cum)
+        mdd = min(mdd, cum - peak)
     r.max_drawdown = round(mdd * 100, 2)
     if len(rets) >= 2:
         sd = st.pstdev(rets)
