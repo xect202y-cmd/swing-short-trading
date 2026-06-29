@@ -177,7 +177,8 @@ def _review_position(pos: Position, cur: float, tech) -> str:
 
 
 def _positions_data(cfg: Config, broker, provider: DataProvider):
-    """보유 종목 dict 리스트 + 평가금. dict: flag/mkt/name/ticker/avg/cur/ret/days/stop/target/review/fx."""
+    """보유 종목 dict 리스트 + 평가금. dict: flag/mkt/name/ticker/avg/cur/ret/pnl/qty/days/stop/target/review/fx.
+    겸사겸사 state/open_positions.json 스냅샷도 저장 → 헤르메스 대시보드 성과탭이 페이퍼 보유종목·수익률을 읽음."""
     out, holdings_value = [], 0.0
     ind = cfg.get("indicators", default={})
     from ..market.fx import get_usdkrw
@@ -189,10 +190,29 @@ def _positions_data(cfg: Config, broker, provider: DataProvider):
         holdings_value += cur * p.quantity
         out.append({
             "flag": _flag(p.ticker), "mkt": _mkt(p.ticker), "name": p.name, "ticker": p.ticker,
-            "avg": p.avg_price, "cur": cur, "ret": p.unrealized_pct(cur), "days": p.bars_held,
-            "stop": p.stop, "target": p.target1, "review": _review_position(p, cur, tech), "fx": fx,
+            "avg": p.avg_price, "cur": cur, "ret": p.unrealized_pct(cur), "pnl": p.unrealized_pnl(cur),
+            "qty": p.quantity, "days": p.bars_held, "stop": p.stop, "target": p.target1,
+            "entry_date": p.entry_date, "entry_score": p.entry_score,
+            "review": _review_position(p, cur, tech), "fx": fx,
         })
+    _save_open_positions(cfg, broker, out, holdings_value)
     return out, holdings_value
+
+
+def _save_open_positions(cfg: Config, broker, positions: list[dict], holdings_value: float) -> None:
+    """대시보드용 보유종목 스냅샷. 현재가/평가손익이 담긴 유일한 영속 파일(paper_state.json엔 평단가만 있음)."""
+    import json
+    snapshot = {
+        "asOf": date.today().isoformat(),
+        "cash": round(broker.get_cash_balance(), 0),
+        "holdingsValue": round(holdings_value, 0),
+        "positions": positions,
+    }
+    try:
+        (cfg.state_dir / "open_positions.json").write_text(
+            json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception:
+        pass  # 스냅샷 저장 실패가 브리핑을 막지 않도록
 
 
 def _holdings_fields(pos: list[dict]) -> list[dict]:
