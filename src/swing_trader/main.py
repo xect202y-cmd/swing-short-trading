@@ -157,6 +157,13 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
     signals = engine.scan(notes, macro, events)
     sig_path = writer.write_signals(signals)
 
+    # 데이터 수집 건전성 점검(브로커가 보유종목으로 sources 오염시키기 전 스냅샷).
+    # 종목노트 0건·전부 synthetic 폴백이면 조용히 넘기지 않고 Swing 디스코드로 ⚠️ 경고.
+    from .notify import health as _H
+    _hz = _H.assess([provider.sources.get(n.ticker) for n in notes])
+    if not _hz.ok:
+        _H.alert(cfg.creds.discord_webhook_url, f"일일 스캔[{market}]", _hz.reason)
+
     broker = PaperBroker(
         seed_cash=float(cfg.get("capital", "seed", default=1_000_000)),
         state_path=cfg.state_dir / "paper_state.json",
@@ -255,12 +262,22 @@ def run_brief(cfg: Config, period: str = "auto") -> list[str]:
         writer.write_daily(md)
         sent.append("daily")
     if period == "weekly" or (period == "auto" and today.weekday() == 4):
-        # 주 1회 백테스트(과거 검증) 자동 실행 → Backtest.md 기록 + 주간 브리핑에 요약 포함
+        # 주 1회 백테스트(과거 검증) 자동 실행 → Backtest.md 기록 + 주간 브리핑에 요약 포함.
+        # 수집 실패(예외·노트 0건·전부 synthetic)는 조용히 누락하지 않고 Swing 디스코드로 ⚠️ 경고.
+        from .notify import health as _H
         from .obsidian.reader import VaultReader
         from .strategy import backtest as _BT
         notes = [n for n in VaultReader(cfg).stock_notes(limit=15) if n.ticker]
-        rows, bt_summary, take, stop = _BT.simulate(cfg, provider, notes, 60)
-        writer.write_backtest(_BT.render_md(rows, 60, take, stop, today.isoformat()))
+        bt_summary = None
+        try:
+            rows, bt_summary, take, stop = _BT.simulate(cfg, provider, notes, 60)
+            writer.write_backtest(_BT.render_md(rows, 60, take, stop, today.isoformat()))
+            hz = _H.assess([provider.sources.get(n.ticker) for n in notes])
+            if not hz.ok:
+                _H.alert(wh, "주간 백테스트", hz.reason)
+        except Exception as e:  # noqa: BLE001 — 백테스트가 죽어도 주간 브리핑은 계속, 대신 경고
+            log.exception("주간 백테스트 실패")
+            _H.alert(wh, "주간 백테스트", f"시뮬레이션 예외: {type(e).__name__}: {e}")
         embed, md = _B.weekly_brief(cfg, broker, provider, bt_summary)
         notify_embeds(wh, [embed], md)
         writer.write_weekly(md)
@@ -338,6 +355,10 @@ def run_backtest(cfg: Config, days: int = 60, limit: int | None = 8) -> Path:
     path = writer.write_backtest(_BT.render_md(rows, days, take, stop, date.today().isoformat()))
     log.info("backtest → %s (종목 %d·거래 %d·평균승률 %s)",
              path, summary.n_stocks, summary.total_trades, summary.avg_win_rate)
+    from .notify import health as _H
+    hz = _H.assess([provider.sources.get(n.ticker) for n in notes])
+    if not hz.ok:
+        _H.alert(cfg.creds.discord_webhook_url, f"백테스트({days}일)", hz.reason)
     return path
 
 

@@ -85,6 +85,7 @@ class DataProvider:
         self.provider = provider
         self.lookback = lookback_days
         self.fx = fx_usdkrw  # 미국주(USD) → KRW 환산(100만원 KRW 시드 기준 사이징 일관성)
+        self.sources: dict[str, str] = {}  # ticker→마지막 수집 출처(pykrx/yfinance/synthetic). 건전성 점검용
 
     def _to_krw(self, df: pd.DataFrame, ticker: str) -> pd.DataFrame:
         if _is_kr(ticker):
@@ -96,6 +97,12 @@ class DataProvider:
 
     def get_ohlcv(self, ticker: str) -> tuple[pd.DataFrame, str]:
         """(df, source) 반환. 가격은 KRW 기준(미국주는 환산). source: pykrx|yfinance|synthetic."""
+        df, source = self._fetch(ticker)
+        if ticker:
+            self.sources[ticker] = source  # 건전성 점검(전부 synthetic=수집 실패) 판정용
+        return df, source
+
+    def _fetch(self, ticker: str) -> tuple[pd.DataFrame, str]:
         if not ticker:
             return self._to_krw(_synthetic("UNKNOWN", self.lookback), "UNKNOWN"), "synthetic"
         if self.provider in ("auto", "pykrx"):
