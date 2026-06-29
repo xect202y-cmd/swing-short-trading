@@ -57,47 +57,63 @@ def _exit_return(close, entry_idx: int, entry: float, take: float, stop: float, 
     return (locked + 0.5 * r) if partial else r, j
 
 
-def simulate(cfg, provider, notes, days: int, take_pct=None, stop_pct=None,
-             runner: bool = False, take2_pct=None, trail_pct=None):
-    """(rows, summary, take, stop). runner=True면 부분익절+트레일링(승자를 달리게)."""
+def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_tv_eok):
+    """단일 종목 df에서 (진입일 'YYYY-MM-DD', 청산수익률 소수, 비용차감) 리스트."""
+    close = _col(df, "close").to_numpy(dtype=float)
+    open_ = _col(df, "open").to_numpy(dtype=float)
+    vol = _col(df, "volume").to_numpy(dtype=float)
+    ma20 = _col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
+    dates = [d.strftime("%Y-%m-%d") for d in df.index]
+    out: list[tuple[str, float]] = []
+    i = 20
+    while i < len(close) - 2:                    # i+1 체결 가능해야(룩어헤드 방지)
+        tv_eok = close[i] * vol[i] / 1e8
+        if close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1] and tv_eok >= min_tv_eok:
+            entry = float(open_[i + 1])           # 다음 봉 시가 체결
+            ret, jend = _exit_return(close, i + 1, entry, take, stop, max_hold,
+                                     runner=runner, take2=take2, trail=trail)
+            out.append((dates[i + 1], float(ret) - cost))
+            i = max(jend, i + 1)
+        i += 1
+    return out
+
+
+def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool = False,
+                    take2_pct=None, trail_pct=None) -> dict:
+    """config + 오버라이드 → simulate/_stock_trades 공용 파라미터."""
     take = float(take_pct if take_pct is not None else cfg.get("risk", "take1_pct", default=5.0)) / 100
     stop = float(stop_pct if stop_pct is not None else cfg.get("risk", "default_stop_pct", default=-3.0)) / 100
     take2 = float(take2_pct if take2_pct is not None else cfg.get("risk", "take2_pct", default=8.5)) / 100
     trail = float(trail_pct if trail_pct is not None else cfg.get("risk", "trail_pct", default=3.0))
     max_hold = int(cfg.get("risk", "max_hold_days", default=20))
-    # 현실성: 왕복 수수료+슬리피지(소수) · 거래량(거래대금) 필터
     fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
     slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
-    cost = 2 * (fee + slip)
     min_tv_eok = float(cfg.get("risk", "min_trading_value_eok", default=30))
+    return {"take": take, "stop": stop, "take2": take2, "trail": trail, "max_hold": max_hold,
+            "cost": 2 * (fee + slip), "min_tv_eok": min_tv_eok, "runner": runner}
+
+
+def simulate(cfg, provider, notes, days: int, take_pct=None, stop_pct=None,
+             runner: bool = False, take2_pct=None, trail_pct=None):
+    """(rows, summary, take, stop). runner=True면 부분익절+트레일링(승자를 달리게)."""
+    p = _resolve_params(cfg, take_pct=take_pct, stop_pct=stop_pct, runner=runner,
+                        take2_pct=take2_pct, trail_pct=trail_pct)
     rows, real, all_rets = [], 0, []
     for n in notes:
         if not n.ticker:
             continue
         df, src = provider.get_ohlcv(n.ticker)
         df = df.tail(days)
-        close = _col(df, "close").to_numpy(dtype=float)
-        open_ = _col(df, "open").to_numpy(dtype=float)
-        vol = _col(df, "volume").to_numpy(dtype=float)
-        ma20 = _col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
-        rets: list[float] = []
-        i = 20
-        while i < len(close) - 2:                    # i+1 체결 가능해야(룩어헤드 방지)
-            # 신호는 bar i 의 확정 데이터로만 판단 → 체결은 '다음 봉 시가'
-            tv_eok = close[i] * vol[i] / 1e8
-            if close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1] and tv_eok >= min_tv_eok:
-                entry = float(open_[i + 1])           # 다음 봉 시가 체결(갭 반영). float강제=numpy누수 차단
-                ret, jend = _exit_return(close, i + 1, entry, take, stop, max_hold,
-                                         runner=runner, take2=take2, trail=trail)
-                rets.append(float(ret) - cost)        # 수수료+슬리피지 차감(스칼라 보장)
-                i = max(jend, i + 1)
-            i += 1
-        trades = len(rets)
-        wr = (sum(1 for r in rets if r > 0) / trades * 100) if trades else 0
+        trades = _stock_trades(df, take=p["take"], stop=p["stop"], max_hold=p["max_hold"],
+                               runner=p["runner"], take2=p["take2"], trail=p["trail"],
+                               cost=p["cost"], min_tv_eok=p["min_tv_eok"])
+        rets = [r for _, r in trades]
+        trades_n = len(rets)
+        wr = (sum(1 for r in rets if r > 0) / trades_n * 100) if trades_n else 0
         all_rets += rets
         if src in ("pykrx", "yfinance"):
             real += 1
-        rows.append((n.display_name, n.ticker, src, trades, wr))
+        rows.append((n.display_name, n.ticker, src, trades_n, wr))
 
     summary = BacktestSummary(n_stocks=len(rows))
     if rows:
@@ -106,7 +122,7 @@ def simulate(cfg, provider, notes, days: int, take_pct=None, stop_pct=None,
         summary.avg_win_rate = round(sum(traded) / len(traded), 1) if traded else None
         summary.avg_return = round(sum(all_rets) / len(all_rets) * 100, 3) if all_rets else None
         summary.real_ratio = round(real / len(rows) * 100, 0)
-    return rows, summary, take, stop
+    return rows, summary, p["take"], p["stop"]
 
 
 def render_md(rows, days: int, take: float, stop: float, d: str) -> str:
