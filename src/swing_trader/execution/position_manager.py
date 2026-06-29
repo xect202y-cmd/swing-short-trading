@@ -63,6 +63,7 @@ class PositionManager:
                 "pnl": round((exit_px - entry) * qty - order.fee, 0),
                 "return_pct": round((exit_px - entry) / entry * 100, 2) if entry else None,
                 "entry_score": pos.entry_score, "entry_date": pos.entry_date,
+                "entry_reasons": pos.entry_reasons, "sector": pos.sector,
                 "exit_date": _today(), "hold_days": pos.bars_held,
                 "exit_reason": "; ".join(reasons),
                 "stop_respected": True,
