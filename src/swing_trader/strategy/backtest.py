@@ -57,18 +57,24 @@ def _exit_return(close, entry_idx: int, entry: float, take: float, stop: float, 
     return (locked + 0.5 * r) if partial else r, j
 
 
-def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_tv_eok):
-    """단일 종목 df에서 (진입일 'YYYY-MM-DD', 청산수익률 소수, 비용차감) 리스트."""
+def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_tv_eok,
+                  require_uptrend=False):
+    """단일 종목 df에서 (진입일 'YYYY-MM-DD', 청산수익률 소수, 비용차감) 리스트.
+
+    require_uptrend=True 면 종가>60일선 AND 20일선>60일선(상승배열)에서만 진입(Phase3 필터)."""
     close = _col(df, "close").to_numpy(dtype=float)
     open_ = _col(df, "open").to_numpy(dtype=float)
     vol = _col(df, "volume").to_numpy(dtype=float)
     ma20 = _col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
+    ma60 = _col(df, "close").rolling(60, min_periods=1).mean().to_numpy(dtype=float)
     dates = [d.strftime("%Y-%m-%d") for d in df.index]
     out: list[tuple[str, float]] = []
     i = 20
     while i < len(close) - 2:                    # i+1 체결 가능해야(룩어헤드 방지)
         tv_eok = close[i] * vol[i] / 1e8
-        if close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1] and tv_eok >= min_tv_eok and open_[i + 1] > 0:
+        uptrend = (not require_uptrend) or (close[i] > ma60[i] and ma20[i] > ma60[i])
+        if (close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1]
+                and tv_eok >= min_tv_eok and open_[i + 1] > 0 and uptrend):
             entry = float(open_[i + 1])           # 다음 봉 시가 체결(0/결측가 방어)
             ret, jend = _exit_return(close, i + 1, entry, take, stop, max_hold,
                                      runner=runner, take2=take2, trail=trail)
@@ -94,8 +100,10 @@ def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool | None = 
     fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
     slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
     min_tv_eok = float(cfg.get("risk", "min_trading_value_eok", default=30))
+    require_uptrend = bool(cfg.get("risk", "require_uptrend", default=False))
     return {"take": take, "stop": stop, "take2": take2, "trail": trail, "max_hold": max_hold,
-            "cost": 2 * (fee + slip), "min_tv_eok": min_tv_eok, "runner": runner}
+            "cost": 2 * (fee + slip), "min_tv_eok": min_tv_eok, "runner": runner,
+            "require_uptrend": require_uptrend}
 
 
 def simulate(cfg, provider, notes, days: int, take_pct=None, stop_pct=None,
@@ -111,7 +119,8 @@ def simulate(cfg, provider, notes, days: int, take_pct=None, stop_pct=None,
         df = df.tail(days)
         trades = _stock_trades(df, take=p["take"], stop=p["stop"], max_hold=p["max_hold"],
                                runner=p["runner"], take2=p["take2"], trail=p["trail"],
-                               cost=p["cost"], min_tv_eok=p["min_tv_eok"])
+                               cost=p["cost"], min_tv_eok=p["min_tv_eok"],
+                               require_uptrend=p["require_uptrend"])
         rets = [r for _, r in trades]
         trades_n = len(rets)
         wr = (sum(1 for r in rets if r > 0) / trades_n * 100) if trades_n else 0

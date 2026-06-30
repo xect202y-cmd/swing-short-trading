@@ -24,9 +24,15 @@ def buy_blocks(
     macro_risk: RiskLevel,
     event_risk: RiskLevel,
     min_trading_value_eok: float,
+    require_uptrend: bool = False,
 ) -> list[str]:
     """매수 차단 사유(있으면 BLOCKED)."""
     b: list[str] = []
+    if require_uptrend:
+        # Phase3 진입 필터: 종가>60일선 AND 20일선>60일선(상승배열)에서만. 백테스트와 동일 정의.
+        ma20v, ma60v = tech.ma.get(20), tech.ma.get(60)
+        if ma20v and ma60v and not (tech.price > ma60v and ma20v > ma60v):
+            b.append("추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입")
     if event_risk == RiskLevel.HIGH:
         b.append("대형 이벤트 임박(D-0~1) — 신규매수 제한")
     if macro_risk == RiskLevel.HIGH:

@@ -60,7 +60,8 @@ class SignalEngine:
             total = min(100.0, round(total + min(len(methods) * per, cap), 1))
 
         reasons = rules.buy_reasons(note, tech)
-        blocks = rules.buy_blocks(note, tech, macro.risk, ev_risk, min_tv)
+        blocks = rules.buy_blocks(note, tech, macro.risk, ev_risk, min_tv,
+                                  require_uptrend=bool(self.cfg.get("risk", "require_uptrend", default=False)))
 
         # 목표/손절 산출 방식 — 고정/ATR/지지저항 후보 모두 계산(비교·저장), 채택값으로 플랜
         rk = self.cfg.get("risk", default={})

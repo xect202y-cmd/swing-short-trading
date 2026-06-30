@@ -99,7 +99,8 @@ def simulate_trades(cfg, provider, notes, days: int, **params) -> list[Trade]:
         df = df.tail(days)
         for d, r in _BT._stock_trades(df, take=p["take"], stop=p["stop"], max_hold=p["max_hold"],
                                       runner=p["runner"], take2=p["take2"], trail=p["trail"],
-                                      cost=p["cost"], min_tv_eok=p["min_tv_eok"]):
+                                      cost=p["cost"], min_tv_eok=p["min_tv_eok"],
+                                      require_uptrend=p["require_uptrend"]):
             trades.append(Trade(n.ticker, d, r))
     return trades
 
