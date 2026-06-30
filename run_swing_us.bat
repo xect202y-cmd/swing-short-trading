@@ -10,7 +10,7 @@ cd /d "%~dp0"
 REM sync local main to origin so the marker commit fast-forwards (self-heal after a cloud fallback day)
 git fetch origin main
 git merge --ff-only origin/main
-REM push daily-done marker to swing repo so cloud failover can detect local ran
-git add -f state\daily_done.json state\harness_latest.json state\logic_versions.json state\version_compare.json
-git diff --cached --quiet || ( git commit -m "chore(state): local daily marker + harness/logic [skip ci]" && git push origin HEAD:main )
+REM push full state/ (계좌·포지션·하니스 등) so 대시보드/Discord/클라우드가 같은 진실 공유 (클라우드와 동일)
+git add -f state
+git diff --cached --quiet || ( git commit -m "chore(state): local run state sync [skip ci]" && git push origin HEAD:main )
 echo %date% %time% SWING US DONE> "%~dp0swing_heartbeat.txt"
