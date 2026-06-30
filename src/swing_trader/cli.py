@@ -55,6 +55,7 @@ def main(argv: list[str] | None = None) -> int:
     nf = sub.add_parser("notify-failover", help="로컬 미실행 → 클라우드 대체 경고를 swing 채널로 발송")
     nf.add_argument("--markets", required=True, help='공백 구분, 예: "kr us"')
     sub.add_parser("harness", help="현재 로직 IS/OOS 성과 측정(검증 하니스) → 볼트+디스코드")
+    sub.add_parser("versions", help="버전별 백테스트 리플레이 → state/version_compare.json(대시보드 비교화면)")
 
     args = ap.parse_args(argv)
     _utf8_console()
@@ -106,6 +107,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "harness":
         path = M.run_harness(cfg)
         print(f"✅ 하니스 측정 → {path}")
+        return 0
+    if args.cmd == "versions":
+        path = M.run_version_compare(cfg)
+        print(f"✅ 버전 비교 데이터 → {path}")
         return 0
     if args.cmd == "notify-failover":
         from .notify.discord import notify

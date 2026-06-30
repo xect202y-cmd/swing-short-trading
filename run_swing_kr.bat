@@ -14,6 +14,6 @@ REM sync local main to origin so the marker commit fast-forwards (self-heal afte
 git fetch origin main
 git merge --ff-only origin/main
 REM push daily-done marker to swing repo so cloud failover can detect local ran
-git add -f state\daily_done.json state\harness_latest.json state\logic_versions.json
+git add -f state\daily_done.json state\harness_latest.json state\logic_versions.json state\version_compare.json
 git diff --cached --quiet || ( git commit -m "chore(state): local daily marker + harness/logic [skip ci]" && git push origin HEAD:main )
 echo %date% %time% SWING KR DONE> "%~dp0swing_heartbeat.txt"

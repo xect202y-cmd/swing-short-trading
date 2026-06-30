@@ -296,6 +296,7 @@ def run_brief(cfg: Config, period: str = "auto") -> list[str]:
         try:
             run_harness(cfg)
             sent.append("harness")
+            run_version_compare(cfg)   # 버전비교 데이터(version_compare.json)도 갱신
         except Exception as e:  # noqa: BLE001 — 하니스 실패해도 나머지 브리핑 영향 없음, 대신 경고
             log.exception("주간 하니스 실패")
             _H.alert(wh, "주간 하니스", f"예외: {type(e).__name__}: {e}")
@@ -484,5 +485,83 @@ def run_harness(cfg: Config) -> Path:
     return path
 
 
+def _params_from_snapshot(snap: dict, cfg: Config) -> dict:
+    """logic_versions 스냅샷(평탄 dict) → _stock_trades 파라미터(과거 버전 리플레이용)."""
+    def g(k, d):
+        v = snap.get(f"risk.{k}")
+        return d if v is None else v
+    take = float(g("take1_pct", 5.0)) / 100
+    stop = float(g("default_stop_pct", -3.0)) / 100
+    take2 = float(g("take2_pct", 8.5)) / 100
+    trail = float(g("trail_pct", 3.0))
+    max_hold = int(g("max_hold_days", 20))
+    partial = float(g("partial_exit_pct", 0.5) or 0)
+    fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
+    slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
+    return {"take": take, "stop": stop, "take2": take2, "trail": trail, "max_hold": max_hold,
+            "runner": partial > 0, "require_uptrend": bool(g("require_uptrend", False)),
+            "cost": 2 * (fee + slip), "min_tv_eok": float(g("min_trading_value_eok", 30))}
+
+
+def _core_logic(p: dict) -> list[str]:
+    """스냅샷 파라미터 → 사람이 읽는 핵심로직 불릿."""
+    return [
+        "상승배열(>60일선·정배열)에서만 눌림목 매수" if p["require_uptrend"] else "20일선 눌림목 매수(추세 무관)",
+        f"+{p['take']*100:.0f}% 익절 / {p['stop']*100:.1f}% 손절",
+        "절반 익절 후 트레일링(승자 달리게)" if p["runner"] else "전량 익절",
+    ]
+
+
+def run_version_compare(cfg: Config) -> Path:
+    """각 로직 버전을 백테스트 리플레이 → 가상 시드계좌 OOS 곡선+핵심로직 → state/version_compare.json.
+
+    대시보드 버전비교 화면용. 72종목 1회 fetch 후 버전별 파라미터로 OOS 거래 재생성·복리 곡선."""
+    from .strategy import backtest as _BT
+    from .strategy import harness as _HN
+    from .strategy import logic_version as _LV
+    reader = VaultReader(cfg)
+    provider = _HN.backtest_provider(cfg)
+    notes = [n for n in _load_notes(cfg, reader, None, str(cfg.get("backtest", "universe", default="all")))
+             if n.ticker]
+    days = int(cfg.get("backtest", "lookback_days", default=500))
+    frac = float(cfg.get("backtest", "oos_fraction", default=0.3))
+    pfrac = float(cfg.get("backtest", "position_frac", default=0.2))
+    seed = float(cfg.get("capital", "seed", default=5_000_000))
+    dfs = {n.ticker: provider.get_ohlcv(n.ticker)[0].tail(days) for n in notes}
+
+    out = []
+    for v in _LV.load_versions(cfg.state_dir):
+        p = _params_from_snapshot(v.get("snapshot", {}), cfg)
+        trades = []
+        for n in notes:
+            for d, r in _BT._stock_trades(dfs[n.ticker], take=p["take"], stop=p["stop"],
+                                          max_hold=p["max_hold"], runner=p["runner"], take2=p["take2"],
+                                          trail=p["trail"], cost=p["cost"], min_tv_eok=p["min_tv_eok"],
+                                          require_uptrend=p["require_uptrend"]):
+                trades.append(_HN.Trade(n.ticker, d, r))
+        _is, oos = _HN.split_oos(trades, frac)
+        rep = _HN.report_from_trades(oos, pfrac)
+        eq, curve = seed, []
+        for t in sorted(oos, key=lambda t: t.entry):
+            eq *= (1 + pfrac * t.ret)
+            curve.append({"date": t.entry, "equity": round(eq)})
+        note = (v.get("note") or "").strip()
+        out.append({
+            "label": f"v{v.get('version')}",
+            "title": (note.split(":")[0] if ":" in note else note)[:40] or f"버전 {v.get('version')}",
+            "core_logic": _core_logic(p),
+            "oos": {"expectancy": rep.expectancy, "profit_factor": rep.profit_factor,
+                    "max_drawdown": rep.max_drawdown, "sharpe": rep.sharpe, "win_rate": rep.win_rate,
+                    "n_trades": rep.n_trades, "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},
+            "equity": curve,
+        })
+    path = cfg.state_dir / "version_compare.json"
+    path.write_text(json.dumps({"as_of": date.today().isoformat(), "seed": seed, "versions": out},
+                               ensure_ascii=False, indent=2), encoding="utf-8")
+    log.info("version_compare → %s (버전 %d개)", path, len(out))
+    return path
+
+
 __all__ = ["load_config", "run_scan", "run_once", "run_review", "run_backtest", "run_doctor",
-           "run_brief", "run_logic", "run_logic_review", "_setup_logging", "run_harness"]
+           "run_brief", "run_logic", "run_logic_review", "_setup_logging", "run_harness",
+           "run_version_compare"]
