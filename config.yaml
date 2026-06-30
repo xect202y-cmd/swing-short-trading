@@ -37,9 +37,9 @@ capital:
   max_new_per_day: 3           # 하루 신규매수 최대 종목수
 
 risk:
-  default_stop_pct: -3.0     # 기본 손절 %
+  default_stop_pct: -2.5     # 기본 손절 %(Phase2: -3→-2.5, OOS 검증 개선)
   max_stop_pct: -5.0         # 변동성 종목 손절 하한
-  take1_pct: 5.0             # 1차 익절 %(3~5 상단; 손절 -3%와 손익비 ≥1.5 충족)
+  take1_pct: 6.0             # 1차 익절 %(Phase2: 5→6, 승자 달리게; 손절 -2.5와 손익비 2.4)
   take2_pct: 8.5             # 2차 익절 %(7~10 중앙)
   min_reward_risk: 1.5       # 최소 손익비
   daily_loss_limit: -150000  # 1일 손실 한도(도달 시 신규매매 중지, 시드 5배 스케일)
