@@ -509,6 +509,7 @@ def _core_logic(p: dict) -> list[str]:
         "상승배열(>60일선·정배열)에서만 눌림목 매수" if p["require_uptrend"] else "20일선 눌림목 매수(추세 무관)",
         f"+{p['take']*100:.0f}% 익절 / {p['stop']*100:.1f}% 손절",
         "절반 익절 후 트레일링(승자 달리게)" if p["runner"] else "전량 익절",
+        f"진입 후 최대 {p['max_hold']}거래일 보유(미래 {p['max_hold']}일 내 익절/손절 평가)",
     ]
 
 
@@ -555,10 +556,18 @@ def run_version_compare(cfg: Config) -> Path:
                     "n_trades": rep.n_trades, "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},
             "equity": curve,
         })
+    # OOS 검증기간(곡선 커버 범위) — 버전 통합 최소~최대 진입일.
+    dates = [pt["date"] for v in out for pt in v["equity"]]
+    oos_start, oos_end = (min(dates), max(dates)) if dates else (None, None)
+    oos_days = (date.fromisoformat(oos_end) - date.fromisoformat(oos_start)).days if dates else None
+    lookback = int(cfg.get("backtest", "lookback_days", default=500))
     path = cfg.state_dir / "version_compare.json"
-    path.write_text(json.dumps({"as_of": date.today().isoformat(), "seed": seed, "versions": out},
-                               ensure_ascii=False, indent=2), encoding="utf-8")
-    log.info("version_compare → %s (버전 %d개)", path, len(out))
+    path.write_text(json.dumps({
+        "as_of": date.today().isoformat(), "seed": seed,
+        "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days, "lookback_days": lookback,
+        "versions": out,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    log.info("version_compare → %s (버전 %d개, OOS %s~%s)", path, len(out), oos_start, oos_end)
     return path
 
 
