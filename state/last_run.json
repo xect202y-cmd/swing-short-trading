@@ -1,37 +1,37 @@
 {
-  "date": "2026-06-29",
+  "date": "2026-06-30",
   "orders": [
     {
-      "order_id": "P-2656adce",
+      "order_id": "P-e360b798",
       "ticker": "028260",
-      "side": "BUY",
+      "side": "SELL",
       "quantity": 2,
-      "price": 467500.0,
+      "price": 450500.0,
       "order_type": "limit",
       "status": "filled",
-      "filled_price": 467733.75,
-      "fee": 140.32,
-      "slippage": 467.5,
-      "created_at": "2026-06-29T00:36:40.896439",
-      "note": "점수 73 · 가상 체결",
+      "filled_price": 450274.75,
+      "fee": 135.08,
+      "slippage": 450.5,
+      "created_at": "2026-06-30T00:36:42.949146",
+      "note": "가상 체결 · 실현손익 -35,053원 · [청산] 손절가 도달",
       "stop": 453475.0,
       "target": 490875.0
     },
     {
-      "order_id": "P-841b9efc",
-      "ticker": "403870",
+      "order_id": "P-5ce6fb89",
+      "ticker": "005930",
       "side": "BUY",
-      "quantity": 18,
-      "price": 55200.0,
+      "quantity": 3,
+      "price": 326000.0,
       "order_type": "limit",
       "status": "filled",
-      "filled_price": 55227.6,
-      "fee": 149.11,
-      "slippage": 496.8,
-      "created_at": "2026-06-29T00:36:40.896516",
-      "note": "점수 70 · 가상 체결",
-      "stop": 53544.0,
-      "target": 57960.0
+      "filled_price": 326163.0,
+      "fee": 146.77,
+      "slippage": 489.0,
+      "created_at": "2026-06-30T00:36:44.161926",
+      "note": "점수 73 · 가상 체결",
+      "stop": 316220.0,
+      "target": 342300.0
     }
   ],
   "signals": [
@@ -46,91 +46,91 @@
       "ticker": "329180",
       "name": "HD현대중공업",
       "kind": "HOLD",
-      "score": 47.2,
+      "score": 47.1,
       "event_risk": "중간"
     },
     {
       "ticker": "403870",
       "name": "HPSP",
-      "kind": "BUY",
-      "score": 70.4,
+      "kind": "BUY_WATCH",
+      "score": 61.8,
       "event_risk": "중간"
     },
     {
       "ticker": "105560",
       "name": "KB금융",
-      "kind": "HOLD",
-      "score": 47.6,
+      "kind": "BUY",
+      "score": 72.2,
       "event_risk": "중간"
     },
     {
       "ticker": "373220",
       "name": "LG에너지솔루션",
       "kind": "HOLD",
-      "score": 48.3,
+      "score": 50.0,
       "event_risk": "중간"
     },
     {
       "ticker": "011070",
       "name": "LG이노텍",
       "kind": "HOLD",
-      "score": 46.8,
+      "score": 46.5,
       "event_risk": "중간"
     },
     {
       "ticker": "066570",
       "name": "LG전자",
       "kind": "HOLD",
-      "score": 30.3,
+      "score": 39.2,
       "event_risk": "중간"
     },
     {
       "ticker": "079550",
       "name": "LIG넥스원",
       "kind": "HOLD",
-      "score": 46.7,
+      "score": 46.5,
       "event_risk": "중간"
     },
     {
       "ticker": "010120",
       "name": "LS ELECTRIC",
-      "kind": "HOLD",
-      "score": 48.1,
+      "kind": "BUY",
+      "score": 71.2,
       "event_risk": "중간"
     },
     {
       "ticker": "010120",
       "name": "LS 일렉트릭",
-      "kind": "HOLD",
-      "score": 48.1,
+      "kind": "BUY",
+      "score": 72.7,
       "event_risk": "중간"
     },
     {
       "ticker": "010120",
       "name": "LS일렉트릭",
-      "kind": "HOLD",
-      "score": 48.1,
+      "kind": "BUY",
+      "score": 71.2,
       "event_risk": "중간"
     },
     {
       "ticker": "035420",
       "name": "NAVER",
       "kind": "HOLD",
-      "score": 44.6,
+      "score": 44.8,
       "event_risk": "중간"
     },
     {
       "ticker": "034730",
       "name": "SK",
-      "kind": "BUY_WATCH",
-      "score": 62.1,
+      "kind": "HOLD",
+      "score": 59.4,
       "event_risk": "중간"
     },
     {
       "ticker": "000660",
       "name": "SK하이닉스",
       "kind": "BUY_WATCH",
-      "score": 65.9,
+      "score": 67.3,
       "event_risk": "중간"
     },
     {
@@ -144,14 +144,14 @@
       "ticker": "000270",
       "name": "기아",
       "kind": "HOLD",
-      "score": 47.8,
+      "score": 47.4,
       "event_risk": "중간"
     },
     {
       "ticker": "035420",
       "name": "네이버",
       "kind": "HOLD",
-      "score": 44.6,
+      "score": 44.8,
       "event_risk": "중간"
     },
     {
@@ -165,14 +165,14 @@
       "ticker": "277810",
       "name": "레인보우로보틱스",
       "kind": "HOLD",
-      "score": 47.0,
+      "score": 47.2,
       "event_risk": "중간"
     },
     {
       "ticker": "058470",
       "name": "리노공업",
       "kind": "HOLD",
-      "score": 45.8,
+      "score": 45.9,
       "event_risk": "중간"
     },
     {
@@ -185,43 +185,43 @@
     {
       "ticker": "028260",
       "name": "삼성물산",
-      "kind": "BUY",
-      "score": 72.9,
+      "kind": "BUY_WATCH",
+      "score": 62.4,
       "event_risk": "중간"
     },
     {
       "ticker": "207940",
       "name": "삼성바이오로직스",
       "kind": "HOLD",
-      "score": 51.4,
+      "score": 50.5,
       "event_risk": "중간"
     },
     {
       "ticker": "032830",
       "name": "삼성생명",
-      "kind": "BUY_WATCH",
-      "score": 62.2,
+      "kind": "HOLD",
+      "score": 56.2,
       "event_risk": "중간"
     },
     {
       "ticker": "005930",
       "name": "삼성전자",
-      "kind": "HOLD",
-      "score": 57.0,
+      "kind": "BUY",
+      "score": 72.7,
       "event_risk": "중간"
     },
     {
       "ticker": "005935.KS",
       "name": "삼성전자우",
-      "kind": "BUY_WATCH",
-      "score": 62.2,
+      "kind": "BUY",
+      "score": 72.2,
       "event_risk": "중간"
     },
     {
       "ticker": "003230",
       "name": "삼양식품",
       "kind": "BUY_WATCH",
-      "score": 75.0,
+      "score": 61.2,
       "event_risk": "중간"
     },
     {
@@ -234,43 +234,43 @@
     {
       "ticker": "055550",
       "name": "신한지주",
-      "kind": "HOLD",
-      "score": 47.4,
+      "kind": "BUY_WATCH",
+      "score": 62.5,
       "event_risk": "중간"
     },
     {
       "ticker": "086520",
       "name": "에코프로",
-      "kind": "HOLD",
-      "score": 58.8,
+      "kind": "BUY_WATCH",
+      "score": 68.2,
       "event_risk": "중간"
     },
     {
       "ticker": "247540",
       "name": "에코프로비엠",
       "kind": "HOLD",
-      "score": 58.8,
+      "score": 50.0,
       "event_risk": "중간"
     },
     {
       "ticker": "000100",
       "name": "유한양행",
       "kind": "HOLD",
-      "score": 50.6,
+      "score": 50.7,
       "event_risk": "중간"
     },
     {
       "ticker": "035720",
       "name": "카카오",
       "kind": "HOLD",
-      "score": 46.8,
+      "score": 47.9,
       "event_risk": "중간"
     },
     {
       "ticker": "214150",
       "name": "클래시스",
       "kind": "HOLD",
-      "score": 52.9,
+      "score": 48.9,
       "event_risk": "중간"
     },
     {
@@ -284,21 +284,21 @@
       "ticker": "042700",
       "name": "한미 반도체",
       "kind": "HOLD",
-      "score": 46.5,
+      "score": 46.2,
       "event_risk": "중간"
     },
     {
       "ticker": "042700",
       "name": "한미반도체",
       "kind": "HOLD",
-      "score": 46.5,
+      "score": 46.2,
       "event_risk": "중간"
     },
     {
       "ticker": "012450",
       "name": "한화에어로스페이스",
       "kind": "HOLD",
-      "score": 48.3,
+      "score": 50.0,
       "event_risk": "중간"
     },
     {
@@ -319,14 +319,14 @@
       "ticker": "005380.KS",
       "name": "현대차",
       "kind": "BLOCKED",
-      "score": 50.0,
+      "score": 48.4,
       "event_risk": "중간"
     },
     {
       "ticker": "298040",
       "name": "효성중공업",
       "kind": "HOLD",
-      "score": 50.1,
+      "score": 58.8,
       "event_risk": "중간"
     }
   ]
