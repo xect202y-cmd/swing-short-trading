@@ -131,5 +131,27 @@
     "hold_days": 1,
     "exit_reason": "손절가 도달",
     "stop_respected": true
+  },
+  {
+    "ticker": "BYD",
+    "name": "BYD",
+    "qty": 7,
+    "partial": false,
+    "entry": 132472.7,
+    "exit": 136112.92,
+    "pnl": 25339.0,
+    "return_pct": 2.75,
+    "entry_score": 79.9,
+    "entry_date": "2026-06-23",
+    "entry_reasons": [
+      "20일선 근처 반등 구간",
+      "🎯 기법 부합: 눌림목매매, 스윙트레이딩",
+      "🤖 AI 매수(85): 주가는 20일 이평선 위에 있으며, RSI가 50 이상으로 중립적인 상태를 유지하고 있어 매수 진입에 적합하다."
+    ],
+    "sector": null,
+    "exit_date": "2026-07-01",
+    "hold_days": 8,
+    "exit_reason": "보유 8일 초과 + 모멘텀 약화",
+    "stop_respected": true
   }
 ]
