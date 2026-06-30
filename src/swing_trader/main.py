@@ -292,6 +292,13 @@ def run_brief(cfg: Config, period: str = "auto") -> list[str]:
         if lr_discord:
             notify(wh, lr_discord)
         sent.append("logic-review")
+        # 주간 검증 하니스(IS/OOS 측정) — 옵시디언·디스코드·대시보드(harness_latest.json) 자동 갱신.
+        try:
+            run_harness(cfg)
+            sent.append("harness")
+        except Exception as e:  # noqa: BLE001 — 하니스 실패해도 나머지 브리핑 영향 없음, 대신 경고
+            log.exception("주간 하니스 실패")
+            _H.alert(wh, "주간 하니스", f"예외: {type(e).__name__}: {e}")
     if period == "monthly" or (period == "auto" and _is_last_friday(today)):
         embed, md = _B.monthly_report(cfg, broker, provider)
         notify_embeds(wh, [embed], md)
