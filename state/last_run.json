@@ -1,23 +1,6 @@
 {
   "date": "2026-07-01",
-  "orders": [
-    {
-      "order_id": "P-ad3c66c1",
-      "ticker": "BYD",
-      "side": "SELL",
-      "quantity": 7,
-      "price": 136181.01,
-      "order_type": "limit",
-      "status": "filled",
-      "filled_price": 136112.92,
-      "fee": 142.92,
-      "slippage": 476.63,
-      "created_at": "2026-07-01T08:13:58.633406",
-      "note": "가상 체결 · 실현손익 25,339원 · [청산] 보유 8일 초과 + 모멘텀 약화",
-      "stop": 128434.3,
-      "target": 139026.83
-    }
-  ],
+  "orders": [],
   "signals": [
     {
       "ticker": "AMD",
@@ -72,14 +55,14 @@
       "ticker": "JTBC",
       "name": "JTBC",
       "kind": "BLOCKED",
-      "score": 47.8,
+      "score": 67.9,
       "event_risk": "높음"
     },
     {
       "ticker": "KLA",
       "name": "KLA",
       "kind": "BLOCKED",
-      "score": 43.8,
+      "score": 54.0,
       "event_risk": "높음"
     },
     {
@@ -114,14 +97,14 @@
       "ticker": "TLB",
       "name": "TLB",
       "kind": "BLOCKED",
-      "score": 48.5,
+      "score": 60.9,
       "event_risk": "높음"
     },
     {
       "ticker": "TSMC",
       "name": "TSMC",
       "kind": "BLOCKED",
-      "score": 43.9,
+      "score": 59.9,
       "event_risk": "높음"
     },
     {

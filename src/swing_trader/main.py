@@ -212,6 +212,10 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
         daily_embed, daily_md = _B.daily_brief(cfg, broker, provider, signals, activity)
         notify_embeds(wh, [daily_embed], daily_md)
         writer.write_daily(daily_md)
+    else:
+        # 브리핑 생략(US 런)이어도 대시보드용 open_positions.json 은 항상 갱신 — 매도/매수 즉시 앱 반영.
+        # (daily_brief 가 내부에서 _positions_data 로 저장하므로 do_brief 시엔 중복 불필요.)
+        _B._positions_data(cfg, broker, provider)
 
     all_orders = [o for o, _, _ in exits] + result.placed
     # 빈 날에도 Trade.md 를 남겨 '왜 매매하지 않았는지'를 기록(조용히 넘기지 않는다).

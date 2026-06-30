@@ -146,7 +146,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "COIN": {
     "ticker": "COIN",
@@ -162,7 +163,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "ASML": {
     "ticker": "ASML",
@@ -178,7 +180,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "GBTC": {
     "ticker": "GBTC",
@@ -194,7 +197,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "GE": {
     "ticker": "GE",
@@ -210,7 +214,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "IBM": {
     "ticker": "IBM",
@@ -226,7 +231,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "KT": {
     "ticker": "KT",
@@ -242,7 +248,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "MSTR": {
     "ticker": "MSTR",
@@ -258,7 +265,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "STRC": {
     "ticker": "STRC",
@@ -274,7 +282,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "UMH": {
     "ticker": "UMH",
@@ -290,7 +299,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "NFLX": {
     "ticker": "NFLX",
@@ -306,7 +316,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "MSFT": {
     "ticker": "MSFT",
@@ -322,7 +333,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "META": {
     "ticker": "META",
@@ -338,7 +350,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "AVGO": {
     "ticker": "AVGO",
@@ -354,7 +367,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "AMZN": {
     "ticker": "AMZN",
@@ -370,7 +384,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "GOOGL": {
     "ticker": "GOOGL",
@@ -386,7 +401,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "AAPL": {
     "ticker": "AAPL",
@@ -402,7 +418,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 0.0
   },
   "TSLA": {
     "ticker": "TSLA",
@@ -418,7 +435,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "PLTR": {
     "ticker": "PLTR",
@@ -434,7 +452,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": -0.0
   },
   "403870": {
     "ticker": "403870",
@@ -1257,8 +1276,9 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "max_down": -16.7,
+    "last_update": "2026-07-01",
+    "last_ret": -16.7
   },
   "KLA": {
     "ticker": "KLA",
@@ -1273,8 +1293,9 @@
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "max_down": -27.4,
+    "last_update": "2026-07-01",
+    "last_ret": -27.4
   },
   "TLB": {
     "ticker": "TLB",
@@ -1288,9 +1309,10 @@
     "stop": 163909.5,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 0,
-    "max_up": 0.0,
+    "max_up": 48.29,
     "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "last_update": "2026-07-01",
+    "last_ret": 48.29
   },
   "TSMC": {
     "ticker": "TSMC",
@@ -1305,7 +1327,8 @@
     "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-01"
+    "max_down": -12.15,
+    "last_update": "2026-07-01",
+    "last_ret": -12.15
   }
 }
