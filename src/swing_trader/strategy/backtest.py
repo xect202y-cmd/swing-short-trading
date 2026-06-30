@@ -68,8 +68,8 @@ def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_t
     i = 20
     while i < len(close) - 2:                    # i+1 체결 가능해야(룩어헤드 방지)
         tv_eok = close[i] * vol[i] / 1e8
-        if close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1] and tv_eok >= min_tv_eok:
-            entry = float(open_[i + 1])           # 다음 봉 시가 체결
+        if close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1] and tv_eok >= min_tv_eok and open_[i + 1] > 0:
+            entry = float(open_[i + 1])           # 다음 봉 시가 체결(0/결측가 방어)
             ret, jend = _exit_return(close, i + 1, entry, take, stop, max_hold,
                                      runner=runner, take2=take2, trail=trail)
             out.append((dates[i + 1], float(ret) - cost))
@@ -78,13 +78,18 @@ def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_t
     return out
 
 
-def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool = False,
+def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool | None = None,
                     take2_pct=None, trail_pct=None) -> dict:
-    """config + 오버라이드 → simulate/_stock_trades 공용 파라미터."""
+    """config + 오버라이드 → simulate/_stock_trades 공용 파라미터.
+
+    runner 미지정(None)이면 라이브 청산과 동기화 — position_manager 가 partial_exit_pct>0 일 때
+    항상 부분익절+트레일링을 쓰므로, 백테스트도 그때 runner=on 으로 맞춘다(베이스라인=실제 로직)."""
     take = float(take_pct if take_pct is not None else cfg.get("risk", "take1_pct", default=5.0)) / 100
     stop = float(stop_pct if stop_pct is not None else cfg.get("risk", "default_stop_pct", default=-3.0)) / 100
     take2 = float(take2_pct if take2_pct is not None else cfg.get("risk", "take2_pct", default=8.5)) / 100
     trail = float(trail_pct if trail_pct is not None else cfg.get("risk", "trail_pct", default=3.0))
+    if runner is None:
+        runner = float(cfg.get("risk", "partial_exit_pct", default=0.5)) > 0
     max_hold = int(cfg.get("risk", "max_hold_days", default=20))
     fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
     slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
@@ -94,8 +99,8 @@ def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool = False,
 
 
 def simulate(cfg, provider, notes, days: int, take_pct=None, stop_pct=None,
-             runner: bool = False, take2_pct=None, trail_pct=None):
-    """(rows, summary, take, stop). runner=True면 부분익절+트레일링(승자를 달리게)."""
+             runner: bool | None = None, take2_pct=None, trail_pct=None):
+    """(rows, summary, take, stop). runner 미지정이면 config(partial_exit_pct>0)로 라이브와 동기화."""
     p = _resolve_params(cfg, take_pct=take_pct, stop_pct=stop_pct, runner=runner,
                         take2_pct=take2_pct, trail_pct=trail_pct)
     rows, real, all_rets = [], 0, []
