@@ -10,6 +10,8 @@ from dataclasses import asdict, is_dataclass
 from datetime import date, datetime
 from pathlib import Path
 
+import pandas as pd
+
 from .broker.paper import PaperBroker
 from .config import Config, load_config, redact
 from .execution.order_manager import OrderManager
@@ -604,6 +606,139 @@ def run_version_compare(cfg: Config) -> Path:
     return path
 
 
+# ── 단타(데이트레이딩) ──
+def _scalp_bar(df, d: str):
+    sub = df[df.index.normalize() == pd.Timestamp(d)]
+    return None if sub.empty else sub.iloc[-1]
+
+
+def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float):
+    """저장된 계획을 확정 일봉으로 정산. 계획 종목의 봉이 하나도 없으면 (None, None)=보류."""
+    from .scalp.strategy import settle_item
+    items = plan.get("items", [])
+    if not items:
+        return ({m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")},
+                {"v1": [], "v2": []})
+    bars = {i.ticker: _scalp_bar(dfs[i.ticker], plan["date"]) for i in items if i.ticker in dfs}
+    if not any(b is not None for b in bars.values()):
+        return None, None
+    results = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")}
+    rows: dict = {"v1": [], "v2": []}
+    for i in items:
+        bar = bars.get(i.ticker)
+        if bar is None:
+            continue
+        f = settle_item(i, bar, fee_bps, slip_bps)
+        if f is None:
+            continue
+        if i.shadow:
+            results[i.model]["shadow_pnl"] += f.pnl
+            continue
+        results[i.model]["pnl"] += f.pnl
+        row = {"ticker": i.ticker, "name": i.name, "qty": i.qty, "entry": round(f.entry, 2),
+               "exit": round(f.exit, 2), "pnl": round(f.pnl, 0), "ret_pct": f.ret_pct,
+               "reason": f.reason, "why": i.why}
+        results[i.model]["trades"].append(row)
+        rows[i.model].append(row)
+    return results, rows
+
+
+def run_scalp(cfg: Config, market: str) -> dict:
+    """단타 페이퍼 1사이클: 이전 계획 정산 → 오늘 계획 수립 → 발송/저장/마커."""
+    from .market.realtime import get_quote
+    from .notify import health as _H
+    from .notify.discord import notify_embeds
+    from .scalp import planner as _P
+    from .scalp.account import ScalpState
+    from .scalp.briefer import scalp_brief
+    reader = VaultReader(cfg)
+    provider = _provider(cfg)
+    notes = [n for n in _load_notes(cfg, reader, None, market) if n.ticker]
+    fee = float(cfg.get("paper", "fee_bps", default=1.5))
+    slip = float(cfg.get("paper", "slippage_bps", default=5.0))
+    today = _DM.today_kst().isoformat()
+    state = ScalpState.load(cfg.state_dir)
+    warned = False
+
+    # 후보 지표(전일 확정봉) — 유동성 하한: scalp.min_tv_eok(기본 50억)
+    min_tv = float(cfg.get("scalp", "min_tv_eok", default=50))
+    cands, dfs = [], {}
+    for n in notes:
+        try:
+            df, _src = provider.get_ohlcv(n.ticker)
+        except Exception:  # noqa: BLE001 — 종목 하나 실패가 전체를 못 막게
+            continue
+        if df is None or len(df) < 61:
+            continue
+        dfs[n.ticker] = df
+        prev = df.iloc[-1]
+        tv_eok = float(prev["close"]) * float(prev.get("volume", 0)) / 1e8
+        if tv_eok < min_tv:
+            continue
+        ma20 = float(df["close"].tail(20).mean())
+        ma60 = float(df["close"].tail(60).mean())
+        cands.append({"ticker": n.ticker, "name": n.name or n.ticker,
+                      "prev_close": float(prev["close"]),
+                      "prev_range": float(prev["high"]) - float(prev["low"]),
+                      "prev_tv_eok": round(tv_eok, 1), "uptrend": ma20 > ma60,
+                      "why": f"거래대금 {tv_eok:,.0f}억"})
+
+    # 1) 이전 계획 정산(확정 일봉이 정본)
+    plans = _P.load_plans(cfg.state_dir)
+    prev_plan = plans.get(market)
+    settled_rows = {"v1": [], "v2": []}
+    settled_date = "—"
+    n_settled = 0
+    if prev_plan and prev_plan["date"] < today:
+        results, rows = _settle_scalp_plan(prev_plan, dfs, fee, slip)
+        if results is None:
+            warned = True
+            _H.alert(cfg.creds.scalp_webhook, f"단타 정산[{market}]",
+                     f"{prev_plan['date']} 확정 일봉 미도착 — 정산 보류(다음 런 재시도)")
+        else:
+            state.apply_day(prev_plan["date"], market, results)
+            state.save(cfg.state_dir)
+            settled_rows, settled_date = rows, prev_plan["date"]
+            n_settled = sum(len(v) for v in rows.values())
+
+    # 2) 오늘 계획(실시간가로 수량/트리거 표시 — 정산은 어차피 확정봉)
+    from .market.fx import get_usdkrw
+    fx = get_usdkrw(float(cfg.get("market_data", "fx_usdkrw", default=1400)))
+    scenario = _P.build_scenario(cfg, reader)
+    quote_objs: dict = {}
+    for c in cands[:20]:
+        q = get_quote(c["ticker"], fx)
+        if q:
+            quote_objs[c["ticker"]] = q
+    quotes = {t: q.price for t, q in quote_objs.items()}
+    if cands and not quotes:
+        warned = True
+        _H.alert(cfg.creds.scalp_webhook, f"단타 계획[{market}]",
+                 "실시간 시세 전부 실패 — 전일 종가로 수량 산정(트리거 표시 생략)")
+    cash_by = {m: state.models[m]["cash"] for m in ("v1", "v2")}
+    plan_lists = _P.build_plan(cands, cash_by, scenario, quotes)
+    items = plan_lists["v1"] + plan_lists["v2"] + plan_lists["v1_shadow"] + plan_lists["v2_shadow"]
+    # KR 표시용 트리거(v1) = 실시간 시가 + k×전일레인지
+    from dataclasses import replace
+    disp = []
+    for i in items:
+        qq = quote_objs.get(i.ticker)
+        if i.model == "v1" and qq and not i.shadow and qq.open:
+            i = replace(i, trigger=round(qq.open + (i.k or 0.5) * i.prev_range, 0))
+        disp.append(i)
+    plan = {"date": today, "scenario": scenario, "items": disp}
+    _P.save_plan(cfg.state_dir, market, plan)
+
+    # 3) 브리핑(디스코드+볼트) + 마커
+    embed, md = scalp_brief(market, settled_rows, plan, state, settled_date)
+    notify_embeds(cfg.creds.scalp_webhook, [embed], md)
+    VaultWriter(cfg).append_scalp(md)
+    _DM.record_done(cfg.state_dir, f"scalp_{market}", datetime.now(_DM.KST))
+    n_planned = sum(1 for i in disp if not i.shadow)
+    log.info("scalp-run[%s]: 정산 %d건 · 계획 %d건", market, n_settled, n_planned)
+    return {"settled": n_settled, "planned": n_planned, "warned": warned}
+
+
 __all__ = ["load_config", "run_scan", "run_once", "run_review", "run_backtest", "run_doctor",
            "run_brief", "run_logic", "run_logic_review", "_setup_logging", "run_harness",
-           "run_version_compare"]
+           "run_version_compare", "run_scalp"]

@@ -51,11 +51,13 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("logic-review", help="AI 로직 진단(매매일지·로그 근거 문제점+수정안) → 04_Trading/Logic")
     sub.add_parser("doctor", help="환경/경로/키 점검")
     cd = sub.add_parser("check-done", help="오늘 해당 시장 런 완료 마커 있으면 exit 0, 없으면 1")
-    cd.add_argument("--market", choices=["kr", "us"], required=True)
+    cd.add_argument("--market", choices=["kr", "us", "scalp_kr", "scalp_us"], required=True)
     nf = sub.add_parser("notify-failover", help="로컬 미실행 → 클라우드 대체 경고를 swing 채널로 발송")
     nf.add_argument("--markets", required=True, help='공백 구분, 예: "kr us"')
     sub.add_parser("harness", help="현재 로직 IS/OOS 성과 측정(검증 하니스) → 볼트+디스코드")
     sub.add_parser("versions", help="버전별 백테스트 리플레이 → state/version_compare.json(대시보드 비교화면)")
+    sr = sub.add_parser("scalp-run", help="단타 페이퍼 1사이클(이전 계획 정산+오늘 계획) → 디스코드 ⚡")
+    sr.add_argument("--market", choices=["kr", "us"], required=True)
 
     args = ap.parse_args(argv)
     _utf8_console()
@@ -111,6 +113,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "versions":
         path = M.run_version_compare(cfg)
         print(f"✅ 버전 비교 데이터 → {path}")
+        return 0
+    if args.cmd == "scalp-run":
+        r = M.run_scalp(cfg, args.market)
+        print(f"✅ scalp-run[{args.market}]: 정산 {r['settled']}건 · 계획 {r['planned']}건"
+              + (" ⚠️경고 발생" if r["warned"] else ""))
         return 0
     if args.cmd == "notify-failover":
         from .notify.discord import notify
