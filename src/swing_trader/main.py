@@ -332,6 +332,7 @@ def run_brief(cfg: Config, period: str = "auto") -> list[str]:
             run_harness(cfg)
             sent.append("harness")
             run_version_compare(cfg)   # 버전비교 데이터(version_compare.json)도 갱신
+            run_scalp_compare(cfg)     # 단타 카테고리 비교 데이터도 주간 갱신
         except Exception as e:  # noqa: BLE001 — 하니스 실패해도 나머지 브리핑 영향 없음, 대신 경고
             log.exception("주간 하니스 실패")
             _H.alert(wh, "주간 하니스", f"예외: {type(e).__name__}: {e}")
@@ -606,6 +607,88 @@ def run_version_compare(cfg: Config) -> Path:
     return path
 
 
+def run_scalp_compare(cfg: Config) -> Path:
+    """단타 v1/v2 백테스트 리플레이 → state/scalp_compare.json (대시보드 카테고리 비교)."""
+    from .scalp import backtest as _SB
+    from .scalp.account import SEED_PER_MODEL
+    from .strategy import harness as _HN
+    reader = VaultReader(cfg)
+    provider = _HN.backtest_provider(cfg)
+    notes = [n for n in _load_notes(cfg, reader, None,
+                                    str(cfg.get("backtest", "universe", default="all"))) if n.ticker]
+    days = int(cfg.get("backtest", "lookback_days", default=500))
+    frac = float(cfg.get("backtest", "oos_fraction", default=0.3))
+    min_tv = float(cfg.get("scalp", "min_tv_eok", default=50))
+    pfrac = 1.0 / 5   # 모델당 5분할 사이징과 동일 프레임
+    seed = float(SEED_PER_MODEL)
+
+    trades: dict = {"v1": [], "v2": []}
+    for n in notes:
+        try:
+            df, _src = provider.get_ohlcv(n.ticker)
+        except Exception:  # noqa: BLE001
+            continue
+        r = _SB.simulate_stock(n.ticker, df.tail(days), min_tv_eok=min_tv)
+        trades["v1"] += r["v1"]
+        trades["v2"] += r["v2"]
+
+    meta = {"v1": ("단타 v1", "변동성 돌파(추세형)",
+                   ["당일 시가+0.5×전일레인지 돌파 시 매수", "당일 종가 전량 청산(오버나잇 없음)",
+                    "장중 손절 -2.0%(저가 터치 보수 판정)", "거래대금 하한 필터"]),
+            "v2": ("단타 v2", "갭하락 과매도 반등(역추세형)",
+                   ["시가 -2% 이상 갭하락 + 전일 20>60일선 종목 시가 매수",
+                    "당일 종가 전량 청산(오버나잇 없음)", "장중 손절 -2.5%(보수 판정)"])}
+    out = []
+    for m in ("v1", "v2"):
+        _is, oos = _HN.split_oos(trades[m], frac)
+        rep = _HN.report_from_trades(oos, pfrac)
+        eq, curve = seed, []
+        for t in sorted(oos, key=lambda t: t.entry):
+            eq *= (1 + pfrac * t.ret)
+            curve.append({"date": t.entry, "equity": round(eq)})
+        label, title, core = meta[m]
+        out.append({"label": label, "title": title, "core_logic": core,
+                    "oos": {"expectancy": rep.expectancy, "profit_factor": rep.profit_factor,
+                            "max_drawdown": rep.max_drawdown, "sharpe": rep.sharpe,
+                            "win_rate": rep.win_rate, "n_trades": rep.n_trades,
+                            "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},
+                    "equity": curve})
+    dates = [pt["date"] for v in out for pt in v["equity"]]
+    oos_start, oos_end = (min(dates), max(dates)) if dates else (None, None)
+    oos_days = ((date.fromisoformat(oos_end) - date.fromisoformat(oos_start)).days
+                if dates else None)
+    path = cfg.state_dir / "scalp_compare.json"
+    path.write_text(json.dumps({
+        "as_of": _DM.today_kst().isoformat(), "seed": seed,
+        "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days,
+        "lookback_days": days, "versions": out,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 볼트 영구 기록(로직 정의 + 백테스트 결과) + 디스코드 브리핑 — 스윙 하니스와 동일 패턴
+    def _f(v, dp=2):
+        return "—" if v is None else f"{v:+.{dp}f}%" if dp else f"{v}"
+    md_lines = [f"# ⚡ 단타 백테스트 · {_DM.today_kst().isoformat()}",
+                f"> 유니버스 {len(notes)}종목 · {days}일 · OOS {oos_start}~{oos_end} · 가상 {seed:,.0f}원", ""]
+    brief_bits = []
+    for v in out:
+        o = v["oos"]
+        md_lines += [f"## {v['label']} — {v['title']}", "**핵심 로직**"]
+        md_lines += [f"- {c}" for c in v["core_logic"]]
+        md_lines += ["", f"**OOS 성과**: 기대값 {_f(o['expectancy'])} · PF {o['profit_factor'] or '—'} · "
+                     f"MDD {_f(o['max_drawdown'], 1)} · 승률 {o['win_rate'] or '—'}% · "
+                     f"{o['n_trades']}거래 · 누적 {_f(o['cum_return_pct'], 1)}", ""]
+        brief_bits.append(f"{v['label']} 기대값 {_f(o['expectancy'])}·PF {o['profit_factor'] or '—'}"
+                          f"·승률 {o['win_rate'] or '—'}%({o['n_trades']}건)")
+    vpath = VaultWriter(cfg).write_scalp_backtest("\n".join(md_lines))
+    from .notify.discord import notify
+    notify(cfg.creds.scalp_webhook,
+           "⚡ **단타 백테스트 리플레이** — " + " / ".join(brief_bits) +
+           f"\n볼트: {vpath.name} · 대시보드 '버전 비교 > 초단기 단타' 갱신됨")
+    log.info("scalp_compare → %s (v1 %d·v2 %d OOS거래)", path,
+             out[0]["oos"]["n_trades"], out[1]["oos"]["n_trades"])
+    return path
+
+
 # ── 단타(데이트레이딩) ──
 def _scalp_bar(df, d: str):
     sub = df[df.index.normalize() == pd.Timestamp(d)]
@@ -778,4 +861,4 @@ def run_scalp(cfg: Config, market: str) -> dict:
 
 __all__ = ["load_config", "run_scan", "run_once", "run_review", "run_backtest", "run_doctor",
            "run_brief", "run_logic", "run_logic_review", "_setup_logging", "run_harness",
-           "run_version_compare", "run_scalp"]
+           "run_version_compare", "run_scalp", "run_scalp_compare"]

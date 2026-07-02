@@ -56,6 +56,7 @@ def main(argv: list[str] | None = None) -> int:
     nf.add_argument("--markets", required=True, help='공백 구분, 예: "kr us"')
     sub.add_parser("harness", help="현재 로직 IS/OOS 성과 측정(검증 하니스) → 볼트+디스코드")
     sub.add_parser("versions", help="버전별 백테스트 리플레이 → state/version_compare.json(대시보드 비교화면)")
+    sub.add_parser("scalp-compare", help="단타 v1/v2 백테스트 리플레이 → state/scalp_compare.json")
     sr = sub.add_parser("scalp-run", help="단타 페이퍼 1사이클(이전 계획 정산+오늘 계획) → 디스코드 ⚡")
     sr.add_argument("--market", choices=["kr", "us"], required=True)
 
@@ -113,6 +114,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "versions":
         path = M.run_version_compare(cfg)
         print(f"✅ 버전 비교 데이터 → {path}")
+        return 0
+    if args.cmd == "scalp-compare":
+        path = M.run_scalp_compare(cfg)
+        print(f"✅ 단타 비교 데이터 → {path}")
         return 0
     if args.cmd == "scalp-run":
         r = M.run_scalp(cfg, args.market)
