@@ -845,7 +845,8 @@ def run_scalp(cfg: Config, market: str) -> dict:
     disp = []
     for i in items:
         qq = quote_objs.get(i.ticker)
-        if i.model == "v1" and qq and not i.shadow and qq.open:
+        # US는 계획 시점에 대상 세션 시가 미확보(직전 세션 값) → 오도 방지 위해 트리거 표시 생략(정산은 확정봉 기준)
+        if i.model == "v1" and market == "kr" and qq and not i.shadow and qq.open:
             i = replace(i, trigger=round(qq.open + (i.k or 0.5) * i.prev_range, 0))
         disp.append(i)
     plan = {"date": today, "scenario": scenario, "items": disp}
