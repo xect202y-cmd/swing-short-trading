@@ -7,12 +7,11 @@
 """
 from __future__ import annotations
 
-from datetime import date, datetime
-
 from ..config import Config
 from ..market.data_provider import DataProvider
 from ..market.technicals import build_snapshot
-from ..models import Order, Position, Signal, SignalKind
+from ..models import Order, Position, Signal, SignalKind, now_kst
+from ..state.daily_marker import today_kst
 from . import analytics as A
 
 GREEN, RED, BLUE, PURPLE = 0x2ECC71, 0xE74C3C, 0x3498DB, 0x9B59B6
@@ -203,7 +202,7 @@ def _save_open_positions(cfg: Config, broker, positions: list[dict], holdings_va
     """대시보드용 보유종목 스냅샷. 현재가/평가손익이 담긴 유일한 영속 파일(paper_state.json엔 평단가만 있음)."""
     import json
     snapshot = {
-        "asOf": date.today().isoformat(),
+        "asOf": today_kst().isoformat(),
         "cash": round(broker.get_cash_balance(), 0),
         "holdingsValue": round(holdings_value, 0),
         "positions": positions,
@@ -323,7 +322,7 @@ def _realism_lines(cfg: Config) -> list[str]:
 
 # ── Daily ──
 def daily_brief(cfg: Config, broker, provider, signals: list[Signal], activity: dict) -> tuple[dict, str]:
-    d = date.today().isoformat()
+    d = today_kst().isoformat()
     pos, hv = _positions_data(cfg, broker, provider)
     A.record_equity(cfg.state_dir, d, broker.get_cash_balance(), hv, _seed(cfg))
     m = A.compute_metrics(A.load_closed(cfg.state_dir), A.load_equity(cfg.state_dir), _seed(cfg))
@@ -373,7 +372,7 @@ def daily_brief(cfg: Config, broker, provider, signals: list[Signal], activity: 
 
 # ── Weekly ──
 def weekly_brief(cfg: Config, broker, provider, bt_summary=None) -> tuple[dict, str]:
-    d = date.today().isoformat()
+    d = today_kst().isoformat()
     pos, hv = _positions_data(cfg, broker, provider)
     seed = _seed(cfg)
     equity = A.load_equity(cfg.state_dir)
@@ -416,7 +415,7 @@ def weekly_brief(cfg: Config, broker, provider, bt_summary=None) -> tuple[dict, 
 
 # ── Monthly (로직 수정 제안) ──
 def monthly_report(cfg: Config, broker, provider) -> tuple[dict, str]:
-    d = date.today().isoformat()
+    d = today_kst().isoformat()
     closed = A.load_closed(cfg.state_dir)
     m = A.compute_metrics(closed, A.load_equity(cfg.state_dir), _seed(cfg))
     sugg = _logic_suggestions(cfg, m, closed)
@@ -459,4 +458,4 @@ def _logic_suggestions(cfg: Config, m: A.Metrics, closed: list[dict]) -> list[st
 
 
 def _frontmatter(typ: str, d: str) -> str:
-    return f"---\ntype: {typ}\n날짜: {d}\ntags: [스윙, 브리핑]\n---\n> 생성 {datetime.now():%Y-%m-%d %H:%M}\n\n"
+    return f"---\ntype: {typ}\n날짜: {d}\ntags: [스윙, 브리핑]\n---\n> 생성 {now_kst():%Y-%m-%d %H:%M}\n\n"

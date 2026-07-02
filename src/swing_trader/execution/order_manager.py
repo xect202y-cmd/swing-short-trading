@@ -11,6 +11,7 @@ from datetime import date
 
 from ..broker.base import Broker
 from ..config import Config
+from ..state.daily_marker import today_kst
 from ..models import Order, RiskLevel, Signal, SignalKind
 from ..strategy import portfolio as pf
 from ..strategy import risk as risk_mod
@@ -137,7 +138,7 @@ class OrderManager:
                 if p.ticker == sig.ticker and p.stop == 0.0:
                     p.stop, p.target1, p.target2, p.name = sig.plan.stop, sig.plan.target1, sig.plan.target2, sig.name
                     p.entry_score = sig.score
-                    p.entry_date = date.today().isoformat()
+                    p.entry_date = today_kst().isoformat()
                     p.entry_reasons = [r for r in sig.reasons if not r.startswith("데이터 출처")]
                     p.sector = sig.sector
         return ExecResult(placed=placed, blocked=blocked)

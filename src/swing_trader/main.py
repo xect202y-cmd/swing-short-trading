@@ -21,6 +21,7 @@ from .models import Order, Signal
 from .obsidian.reader import VaultReader
 from .obsidian.writer import VaultWriter
 from .review.trade_reviewer import TradeOutcome, TradeReviewer
+from .state import daily_marker as _DM
 from .strategy.signal_engine import SignalEngine
 
 log = logging.getLogger(__name__)
@@ -81,7 +82,7 @@ def _build(cfg: Config):
         vix_caution=float(cfg.get("event_filter", "vix_caution", default=20.0)),
     )
     events = parse_events(
-        reader.event_calendar(), date.today(),
+        reader.event_calendar(), _DM.today_kst(),
         block_keywords=cfg.get("event_filter", "block_keywords", default=["FOMC", "CPI", "PCE"]),
         window_days=int(cfg.get("event_filter", "block_window_days", default=2)),
     )
@@ -113,15 +114,20 @@ def _save_decision_log(cfg: Config, signals: list[Signal], result, market: str) 
         }
 
     cands = [s for s in signals if s.rank] or [s for s in signals if s.score > 0]
-    payload = {"date": date.today().isoformat(), "market": market,
+    payload = {"date": _DM.today_kst().isoformat(), "market": market,
                "candidates": [rec(s) for s in sorted(cands, key=lambda x: x.rank or 999)]}
     ddir = cfg.state_dir / "decision_log"
     ddir.mkdir(parents=True, exist_ok=True)
-    (ddir / f"{date.today().isoformat()}_{market}.json").write_text(
+    (ddir / f"{_DM.today_kst().isoformat()}_{market}.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def _save_run(cfg: Config, signals: list[Signal], orders: list[Order]) -> None:
+def _save_run(cfg: Config, signals: list[Signal], orders: list[Order]) -> dict:
+    """last_run.json = '오늘(KST)의 누적 원장'. 같은 날짜면 이전 런(us→kr)과 병합.
+
+    하루 다회 실행에서 마지막 런이 앞선 런의 체결을 덮어쓰면 review/Daily 가
+    '매도 0'으로 집계되는 버그(2026-07-02)의 근본 수정. 병합된 payload 를 반환해
+    run_once 의 '오늘 활동' 집계도 같은 소스를 쓴다."""
     def ser(o):
         d = asdict(o) if is_dataclass(o) else dict(o)
         for k, v in list(d.items()):
@@ -130,14 +136,33 @@ def _save_run(cfg: Config, signals: list[Signal], orders: list[Order]) -> None:
         d["stop"] = getattr(o, "stop", None)
         d["target"] = getattr(o, "target", None)
         return d
-    payload = {
-        "date": date.today().isoformat(),
-        "orders": [ser(o) for o in orders],
-        "signals": [{"ticker": s.ticker, "name": s.name, "kind": s.kind.value,
-                     "score": s.score, "event_risk": s.event_risk.value} for s in signals],
-    }
-    (cfg.state_dir / "last_run.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    today = _DM.today_kst().isoformat()
+    new_orders = [ser(o) for o in orders]
+    new_signals = [{"ticker": s.ticker, "name": s.name, "kind": s.kind.value,
+                    "score": s.score, "event_risk": s.event_risk.value} for s in signals]
+    path = cfg.state_dir / "last_run.json"
+    prev: dict = {}
+    if path.exists():
+        try:
+            prev = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            prev = {}
+    if prev.get("date") == today:
+        new_ids = {o.get("order_id") for o in new_orders}
+        new_orders = [o for o in prev.get("orders", []) if o.get("order_id") not in new_ids] + new_orders
+        new_tickers = {s.get("ticker") for s in new_signals}
+        new_signals = [s for s in prev.get("signals", []) if s.get("ticker") not in new_tickers] + new_signals
+    payload = {"date": today, "orders": new_orders, "signals": new_signals}
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return payload
+
+
+def _day_counts(payload: dict) -> tuple[int, int]:
+    """오늘 누적 원장에서 체결(filled) 매수/매도 건수 — Trade.md 행과 1:1."""
+    filled = [o for o in payload.get("orders", []) if o.get("status") == "filled"]
+    return (sum(o.get("side") == "BUY" for o in filled),
+            sum(o.get("side") == "SELL" for o in filled))
 
 
 # ── 명령 ──
@@ -172,7 +197,7 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
         slippage_bps=float(cfg.get("paper", "slippage_bps", default=5.0)),
     )
     # 0) 거래일 경과 → 보유일수 +1 (멀티데이 스윙: '5거래일 초과 후 매도' 로직 활성화)
-    advanced = broker.advance_bar(date.today().isoformat())
+    advanced = broker.advance_bar(_DM.today_kst().isoformat())
     # 1) 보유 청산 점검 먼저
     pm = PositionManager(cfg, broker, provider)
     exits = pm.check_and_exit()
@@ -205,10 +230,16 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
     if sell_embed:
         notify_embeds(wh, [sell_embed], sell_md)
 
+    # 오늘 누적 원장(us→kr 병합) 먼저 갱신 — Daily/Review 집계의 단일 소스.
+    all_orders = [o for o, _, _ in exits] + result.placed
+    day_run = _save_run(cfg, signals, all_orders)
+    day_bought, day_sold = _day_counts(day_run)
+
     # Daily 브리핑(성과+보유복기 표) → 디스코드 + 볼트 기록.
     # 시장 분리 실행 시 마지막(아침 한국) 런에서만 1회 발송(do_brief=False면 건너뜀).
+    # '오늘 활동'은 이 런이 아니라 오늘 전체(앞선 US 런 포함) 기준 — Trade.md 행과 일치.
     if do_brief:
-        activity = {"bought": len(result.placed), "sold": len(exits), "blocked": result.blocked}
+        activity = {"bought": day_bought, "sold": day_sold, "blocked": result.blocked}
         daily_embed, daily_md = _B.daily_brief(cfg, broker, provider, signals, activity)
         notify_embeds(wh, [daily_embed], daily_md)
         writer.write_daily(daily_md)
@@ -217,19 +248,17 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
         # (daily_brief 가 내부에서 _positions_data 로 저장하므로 do_brief 시엔 중복 불필요.)
         _B._positions_data(cfg, broker, provider)
 
-    all_orders = [o for o, _, _ in exits] + result.placed
     # 빈 날에도 Trade.md 를 남겨 '왜 매매하지 않았는지'를 기록(조용히 넘기지 않는다).
     trade_path = writer.append_trades(all_orders)
-    if not all_orders:
+    if not day_run["orders"]:   # 오늘 하루 전체 기준(앞선 런이 체결했으면 문구 생략)
         n_buy = sum(s.kind.value == "BUY" for s in signals)
         with trade_path.open("a", encoding="utf-8") as f:
             f.write(f"\n> 오늘 신규 체결 없음 — 매수신호 {n_buy}건 · 차단 {len(result.blocked)}건. "
                     "보수적 회피(나쁜 타점엔 매매하지 않음). 상세 사유는 Signals.md 참조.\n")
-    _save_run(cfg, signals, all_orders)
 
-    log.info("run-once: 매수 %d · 매도 %d · 차단 %d", len(result.placed), len(exits), len(result.blocked))
+    log.info("run-once: 매수 %d · 매도 %d · 차단 %d (오늘 누적 매수 %d · 매도 %d)",
+             len(result.placed), len(exits), len(result.blocked), day_bought, day_sold)
     # 페일오버 마커: 이 시장 런이 정상 완료됨을 기록(클라우드가 읽어 중복 방지)
-    from .state import daily_marker as _DM
     _DM.record_done(cfg.state_dir, market, datetime.now(_DM.KST))
     return {
         "signals": sig_path, "trades": trade_path,
@@ -257,7 +286,7 @@ def run_brief(cfg: Config, period: str = "auto") -> list[str]:
     )
     writer = VaultWriter(cfg)
     wh = cfg.creds.discord_webhook_url
-    today = _date.today()
+    today = _DM.today_kst()
     sent: list[str] = []
 
     if period == "daily":
@@ -366,7 +395,7 @@ def run_backtest(cfg: Config, days: int = 60, limit: int | None = 8) -> Path:
     reader, provider, macro, events, engine, writer = _build(cfg)
     notes = [n for n in reader.stock_notes(limit=limit) if n.ticker]
     rows, summary, take, stop = _BT.simulate(cfg, provider, notes, days)
-    path = writer.write_backtest(_BT.render_md(rows, days, take, stop, date.today().isoformat()))
+    path = writer.write_backtest(_BT.render_md(rows, days, take, stop, _DM.today_kst().isoformat()))
     log.info("backtest → %s (종목 %d·거래 %d·평균승률 %s)",
              path, summary.n_stocks, summary.total_trades, summary.avg_win_rate)
     from .notify import health as _H
@@ -464,13 +493,13 @@ def run_harness(cfg: Config) -> Path:
     is_rep, oos_rep = _HN.report_from_trades(is_t, pf), _HN.report_from_trades(oos_t, pf)
     writer = VaultWriter(cfg)
     ver = _HN.logic_version_id(cfg)   # 결과를 현재 로직 버전으로 태깅(나중 버전별 A/B 키) → 옵시디언에 무조건 기록
-    md = _HN.render_report_md("기준 로직 성과 측정", is_rep, oos_rep, date.today().isoformat(), version=ver)
+    md = _HN.render_report_md("기준 로직 성과 측정", is_rep, oos_rep, _DM.today_kst().isoformat(), version=ver)
     path = writer.write_harness(md)
     # 대시보드용 compact JSON(헤르메스 대시보드가 readSwingState 로 GitHub raw 읽음). 버전 누적 시 A/B 화면도 이걸로.
     gap = (round(oos_rep.expectancy - is_rep.expectancy, 3)
            if oos_rep.expectancy is not None and is_rep.expectancy is not None else None)
     (cfg.state_dir / "harness_latest.json").write_text(json.dumps({
-        "version": ver, "date": date.today().isoformat(), "n_stocks": len(notes),
+        "version": ver, "date": _DM.today_kst().isoformat(), "n_stocks": len(notes),
         "position_frac": pf, "is": asdict(is_rep), "oos": asdict(oos_rep), "gap": gap,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     from .notify import health as _H
@@ -567,7 +596,7 @@ def run_version_compare(cfg: Config) -> Path:
     lookback = int(cfg.get("backtest", "lookback_days", default=500))
     path = cfg.state_dir / "version_compare.json"
     path.write_text(json.dumps({
-        "as_of": date.today().isoformat(), "seed": seed,
+        "as_of": _DM.today_kst().isoformat(), "seed": seed,
         "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days, "lookback_days": lookback,
         "versions": out,
     }, ensure_ascii=False, indent=2), encoding="utf-8")

@@ -1,11 +1,12 @@
 """볼트 쓰기 — Signals/Trade/Review/Backtest 마크다운. 모든 판단을 사람이 읽게 기록."""
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 
 from ..config import Config
-from ..models import Order, Signal, SignalKind
+from ..models import Order, Signal, SignalKind, now_kst
+from ..state.daily_marker import today_kst
 
 
 def _won(v: float | None) -> str:
@@ -21,18 +22,18 @@ class VaultWriter:
         self.cfg = cfg
 
     def _path(self, dir_key: str, suffix: str, d: date | None = None) -> Path:
-        d = d or date.today()
+        d = d or today_kst()
         dpath = self.cfg.write_dir(dir_key)
         dpath.mkdir(parents=True, exist_ok=True)
         return dpath / f"{d.isoformat()}_{suffix}.md"
 
     # ── 신호 ──
     def write_signals(self, signals: list[Signal], d: date | None = None) -> Path:
-        d = d or date.today()
+        d = d or today_kst()
         lines = [
             "---", "type: 스윙신호", f"날짜: {d.isoformat()}", "tags: [스윙, 신호]", "---",
             f"# 📡 스윙 신호 · {d.isoformat()}",
-            f"> 생성 {datetime.now():%Y-%m-%d %H:%M} · 후보 {len(signals)}건",
+            f"> 생성 {now_kst():%Y-%m-%d %H:%M} · 후보 {len(signals)}건",
             "",
         ]
         order = {SignalKind.BUY: 0, SignalKind.BUY_WATCH: 1, SignalKind.SELL: 2,
@@ -62,7 +63,7 @@ class VaultWriter:
 
     # ── 거래 로그 ──
     def append_trades(self, orders: list[Order], d: date | None = None) -> Path:
-        d = d or date.today()
+        d = d or today_kst()
         path = self._path("logs_dir", "Trade", d)
         new = not path.exists()
         out: list[str] = []
@@ -85,19 +86,19 @@ class VaultWriter:
         return path
 
     def write_review(self, content: str, d: date | None = None) -> Path:
-        d = d or date.today()
+        d = d or today_kst()
         path = self._path("reviews_dir", "Review", d)
         path.write_text(content, encoding="utf-8")
         return path
 
     def write_backtest(self, content: str, d: date | None = None) -> Path:
-        d = d or date.today()
+        d = d or today_kst()
         path = self._path("backtests_dir", "Backtest", d)
         path.write_text(content, encoding="utf-8")
         return path
 
     def write_harness(self, content: str, d: date | None = None) -> Path:
-        d = d or date.today()
+        d = d or today_kst()
         path = self._path("backtests_dir", "Harness", d)
         path.write_text(content, encoding="utf-8")
         return path
@@ -105,14 +106,14 @@ class VaultWriter:
     def write_logic(self, content: str, vnum: int) -> Path:
         dpath = self.cfg.write_dir("logic_dir")
         dpath.mkdir(parents=True, exist_ok=True)
-        path = dpath / f"{date.today().isoformat()}_v{vnum}.md"
+        path = dpath / f"{today_kst().isoformat()}_v{vnum}.md"
         path.write_text(content, encoding="utf-8")
         return path
 
     def write_logic_review(self, content: str) -> Path:
         dpath = self.cfg.write_dir("logic_dir")
         dpath.mkdir(parents=True, exist_ok=True)
-        path = dpath / f"{date.today().isoformat()}_AI진단.md"
+        path = dpath / f"{today_kst().isoformat()}_AI진단.md"
         path.write_text(content, encoding="utf-8")
         return path
 
@@ -129,17 +130,17 @@ class VaultWriter:
         return path
 
     def write_daily(self, content: str, d: date | None = None) -> Path:
-        path = self._path("briefs_dir", "Daily", d or date.today())
+        path = self._path("briefs_dir", "Daily", d or today_kst())
         path.write_text(content, encoding="utf-8")
         return path
 
     def write_weekly(self, content: str, d: date | None = None) -> Path:
-        path = self._path("briefs_dir", "Weekly", d or date.today())
+        path = self._path("briefs_dir", "Weekly", d or today_kst())
         path.write_text(content, encoding="utf-8")
         return path
 
     def write_monthly(self, content: str, d: date | None = None) -> Path:
-        d = d or date.today()
+        d = d or today_kst()
         dpath = self.cfg.write_dir("reports_dir")
         dpath.mkdir(parents=True, exist_ok=True)
         path = dpath / f"{d.strftime('%Y-%m')}_Logic.md"

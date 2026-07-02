@@ -5,6 +5,13 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum
 
+from .state.daily_marker import KST
+
+
+def now_kst() -> datetime:
+    """기록 시각의 단일 기준 — 클라우드(UTC 러너)/로컬 어디서 돌아도 한국 시각."""
+    return datetime.now(KST)
+
 
 class SignalKind(StrEnum):
     BUY_WATCH = "BUY_WATCH"
@@ -167,7 +174,7 @@ class Signal:
     rank: int | None = None                             # 오늘 후보 순위
     atr_pct: float | None = None
     sector: str | None = None
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=now_kst)
 
 
 @dataclass
@@ -182,7 +189,7 @@ class Order:
     filled_price: float | None = None
     fee: float = 0.0
     slippage: float = 0.0
-    created_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = field(default_factory=now_kst)
     note: str = ""
 
 
@@ -195,7 +202,7 @@ class Position:
     stop: float
     target1: float
     target2: float | None = None
-    opened_at: datetime = field(default_factory=datetime.now)
+    opened_at: datetime = field(default_factory=now_kst)
     bars_held: int = 0
     entry_score: float | None = None     # 진입 시 스윙 점수(점수-결과 상관 분석용)
     entry_date: str | None = None        # 진입 거래일(YYYY-MM-DD)

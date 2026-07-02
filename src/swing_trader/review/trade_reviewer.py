@@ -5,10 +5,11 @@ LLM 호출은 선택(키 있으면 보강). 기본은 로컬 룰 기반.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date
 
 from ..config import Config
-from ..models import Order, Signal, SignalKind
+from ..models import Order, Signal, SignalKind, now_kst
+from ..state.daily_marker import today_kst
 from .learning_log import LearningLog
 
 
@@ -30,7 +31,7 @@ class TradeReviewer:
 
     def review(self, signals: list[Signal], orders: list[Order], outcomes: list[TradeOutcome],
                d: date | None = None) -> str:
-        d = d or date.today()
+        d = d or today_kst()
         buys = [o for o in orders if o.side == "BUY" and o.status == "filled"]
         sells = [o for o in orders if o.side == "SELL" and o.status == "filled"]
         wins = [o for o in outcomes if o.realized_pnl > 0]
@@ -65,7 +66,7 @@ class TradeReviewer:
         lines = [
             "---", "type: 스윙리뷰", f"날짜: {d.isoformat()}", "tags: [스윙, 리뷰]", "---",
             f"# 🔎 매매 리뷰 · {d.isoformat()}",
-            f"> 생성 {datetime.now():%Y-%m-%d %H:%M}", "",
+            f"> 생성 {now_kst():%Y-%m-%d %H:%M}", "",
             "## 오늘의 매매 요약",
             summary,
             f"- 체결: 매수 {len(buys)} · 매도 {len(sells)}",

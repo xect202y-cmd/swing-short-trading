@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import json
 from collections import Counter
-from datetime import date, datetime
+from ..models import now_kst
+from ..state.daily_marker import today_kst
 
 from ..strategy import logic_version as LV
 from ..strategy.ai_judge import chat_json
@@ -79,7 +80,7 @@ def _evidence_text(cfg) -> tuple[str, A.Metrics, dict]:
 
 def build_review(cfg) -> tuple[dict, str]:
     """(state, evidence). state는 대시보드/MD 공용 단일 소스."""
-    d = date.today().isoformat()
+    d = today_kst().isoformat()
     evidence, m, agg = _evidence_text(cfg)
     if m.n_closed < 3:
         return {"ok": False, "date": d, "n_closed": m.n_closed,
@@ -99,9 +100,9 @@ def build_review(cfg) -> tuple[dict, str]:
 
 
 def render_md(state: dict, evidence: str) -> str:
-    d = state.get("date", date.today().isoformat())
+    d = state.get("date", today_kst().isoformat())
     fm = (f"---\ntype: 스윙AI로직진단\n날짜: {d}\ntags: [스윙, 로직, AI진단]\n---\n"
-          f"> 생성 {datetime.now():%Y-%m-%d %H:%M}\n\n")
+          f"> 생성 {now_kst():%Y-%m-%d %H:%M}\n\n")
     if not state.get("ok"):
         body = (f"## 🤖 AI 로직 진단 · {d}\n{state.get('reason', '진단 보류')}.\n\n"
                 f"**근거 데이터**\n```\n{evidence}\n```")

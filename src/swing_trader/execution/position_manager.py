@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 import logging
-from datetime import date
 
 from ..broker.base import Broker
 from ..config import Config
+from ..state.daily_marker import today_kst
 from ..market.data_provider import DataProvider
 from ..market.technicals import build_snapshot
 from ..models import Order
@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 
 def _today() -> str:
-    return date.today().isoformat()
+    return today_kst().isoformat()
 
 
 class PositionManager:

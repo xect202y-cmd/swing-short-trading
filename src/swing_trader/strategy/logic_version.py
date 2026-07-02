@@ -7,8 +7,10 @@
 from __future__ import annotations
 
 import json
-from datetime import date, datetime
 from pathlib import Path
+
+from ..models import now_kst
+from ..state.daily_marker import today_kst
 
 
 def snapshot(cfg) -> dict:
@@ -64,8 +66,8 @@ def load_versions(state_dir: Path) -> list[dict]:
 def save_version(state_dir: Path, snap: dict, note: str) -> int:
     versions = load_versions(state_dir)
     vnum = len(versions) + 1
-    versions.append({"version": vnum, "date": date.today().isoformat(),
-                     "created": datetime.now().isoformat(timespec="seconds"),
+    versions.append({"version": vnum, "date": today_kst().isoformat(),
+                     "created": now_kst().isoformat(timespec="seconds"),
                      "note": note, "snapshot": snap})
     state_dir.mkdir(parents=True, exist_ok=True)
     _path(state_dir).write_text(json.dumps(versions, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -74,10 +76,10 @@ def save_version(state_dir: Path, snap: dict, note: str) -> int:
 
 def render(vnum: int, note: str, changes: list[str], ab: tuple | None, prev_v: int | None,
            runner_ab: tuple | None = None) -> str:
-    d = date.today().isoformat()
+    d = today_kst().isoformat()
     lines = [
         "---", "type: 스윙로직변경", f"버전: v{vnum}", f"날짜: {d}", "tags: [스윙, 로직, 변경이력]", "---",
-        f"# 🔧 로직 변경 v{vnum} · {d}", f"> 생성 {datetime.now():%Y-%m-%d %H:%M}", "",
+        f"# 🔧 로직 변경 v{vnum} · {d}", f"> 생성 {now_kst():%Y-%m-%d %H:%M}", "",
         f"**변경 사유**: {note}", "",
     ]
     if prev_v is None:
@@ -119,7 +121,7 @@ def render(vnum: int, note: str, changes: list[str], ab: tuple | None, prev_v: i
 
 
 def changelog_line(vnum: int, note: str, changes: list[str], ab: tuple | None) -> str:
-    d = date.today().isoformat()
+    d = today_kst().isoformat()
     ab_txt = ""
     if ab and ab[0].avg_win_rate is not None and ab[1].avg_win_rate is not None:
         ab_txt = f" · 백테스트 승률 {ab[0].avg_win_rate}%→{ab[1].avg_win_rate}%"

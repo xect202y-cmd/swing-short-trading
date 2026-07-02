@@ -6,10 +6,10 @@
 from __future__ import annotations
 
 import json
-from datetime import date
 from pathlib import Path
 
 from ..models import SignalKind
+from ..state.daily_marker import today_kst
 
 
 def _load(p: Path) -> dict:
@@ -24,7 +24,7 @@ def _load(p: Path) -> dict:
 def record_and_update(cfg, provider, signals, last_bar_advanced: bool) -> None:
     path = cfg.state_dir / "tracking.json"
     data = _load(path)
-    today = date.today().isoformat()
+    today = today_kst().isoformat()
 
     # 1) 기존 추적 갱신(거래일 진행 시 bars+1, 1/3/5일 스냅샷)
     for tk, r in data.items():
