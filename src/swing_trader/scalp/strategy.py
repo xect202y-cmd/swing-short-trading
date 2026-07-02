@@ -4,8 +4,11 @@
 - v1 트리거는 당일 시가 앵커(Larry Williams 방식) = 시가 + k×전일레인지
   → 트리거는 항상 시가보다 크므로 갭 상방 체결 케이스는 존재하지 않는다.
 - 체결 인정 = 트리거가가 당일 고저 범위 안일 때만 (look-ahead 금지)
-- 손절가는 진입가 앵커 = entry × (1 + stop_pct/100)
-- 손절 우선 = 당일 저가가 손절가 이하이면 손절 체결로 보수 판정(장중 순서 미상)
+- 손절 판정은 모델별로 다르다(2026-07-03 500일 실증으로 확정):
+  · v1(장중 트리거 진입): 당일 저가가 진입 '전'(아침 눌림)일 수 있어 저가 기반
+    손절 판정이 승자를 손절로 오판(기대값 -1.2%p 왜곡, 승률 17%→44%) → 일봉으로는
+    손절 시뮬 불가. 종가 청산만 인정(stop_pct 는 라이브 가이드 표시용).
+  · v2(시가 진입): 저가는 항상 진입 이후 → 저가 ≤ 손절가(진입가 앵커)면 손절 체결.
 - 전량 당일 종가 청산(오버나잇 없음)
 """
 from __future__ import annotations
@@ -54,16 +57,17 @@ def settle_item(item: PlanItem, bar, fee_bps: float, slip_bps: float) -> Fill | 
         if h < trigger:
             return None
         entry = trigger * (1 + cost)
-        stop_price = entry * (1 + item.stop_pct / 100)  # 손절가는 진입가 기준
+        # v1 은 저가가 진입 전(아침 눌림)일 수 있어 손절 시뮬 불가 → 종가 청산만(모듈 docstring)
+        exit_px, reason = c * (1 - cost), "종가청산"
     else:  # v2 — 시가 갭하락 재확인(계획 시점 실시간 시가와 무관하게 확정 시가가 정본)
         if item.prev_close <= 0 or o > item.prev_close * (1 + V2_GAP / 100):
             return None
         entry = o * (1 + cost)
-        stop_price = entry * (1 + item.stop_pct / 100)  # 손절가는 진입가 기준
-    if l <= stop_price:
-        exit_px, reason = stop_price * (1 - cost), "손절"
-    else:
-        exit_px, reason = c * (1 - cost), "종가청산"
+        stop_price = entry * (1 + item.stop_pct / 100)  # 시가 진입이라 저가 손절 판정 타당
+        if l <= stop_price:
+            exit_px, reason = stop_price * (1 - cost), "손절"
+        else:
+            exit_px, reason = c * (1 - cost), "종가청산"
     pnl = (exit_px - entry) * item.qty
     return Fill(entry=entry, exit=exit_px, pnl=pnl,
                 ret_pct=round((exit_px / entry - 1) * 100, 2), reason=reason)

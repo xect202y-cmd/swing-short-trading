@@ -38,14 +38,23 @@ def test_v1_trigger_anchors_on_today_open():
     assert settle_item(v1(), bar(10300, 10450, 10250, 10400), 1.5, 5.0) is None
 
 
-def test_v1_stop_first_when_low_touches():
-    # 저가가 손절가 이하 → 보수적으로 손절 체결(같은 날 고저 순서 모름)
+def test_v1_low_below_stop_still_exits_at_close():
+    # v1은 장중 트리거 진입이라 당일 저가가 진입 '전'(아침 눌림)일 수 있음 —
+    # 저가 기반 손절 판정은 승자를 손절로 오판(500일 실증: 기대값 -1.2%p 왜곡).
+    # → v1 손절은 일봉으로 시뮬 불가, 종가 청산만 인정.
     f = settle_item(v1(), bar(10000, 10400, 9800, 10350), 1.5, 5.0)
-    assert f.reason == "손절"
-    assert f.exit < f.entry
+    assert f.reason == "종가청산"
     cost = (1.5 + 5.0) / 10000
-    entry = 10200 * (1 + cost)
-    stop_price = entry * (1 - 0.02)
+    assert f.exit == pytest.approx(10350 * (1 - cost))
+
+
+def test_v2_stop_first_when_low_touches():
+    # v2는 시가 진입 → 당일 저가는 항상 진입 이후 → 저가 기반 손절 판정 타당(유지)
+    f = settle_item(v2(), bar(9750, 9950, 9200, 9900), 1.5, 5.0)   # -2.5% 갭 + 급락
+    assert f.reason == "손절"
+    cost = (1.5 + 5.0) / 10000
+    entry = 9750 * (1 + cost)
+    stop_price = entry * (1 - 0.025)
     assert f.exit == pytest.approx(stop_price * (1 - cost))
 
 
