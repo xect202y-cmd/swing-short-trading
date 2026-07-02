@@ -73,6 +73,15 @@ jobs:
               ALERT="$ALERT $M"
             fi
           done
+          for M in us kr; do
+            if swing-trader check-done --market "scalp_$M"; then
+              echo "::notice::scalp_$M 로컬 완료 마커 존재 — skip"
+            else
+              echo "::group::scalp-run $M (클라우드 보충)"
+              swing-trader scalp-run --market "$M"; echo "exit=$?"
+              echo "::endgroup::"
+            fi
+          done
           if [ -n "$ALERT" ]; then
             echo "::group::review + 주간/월간 brief + 페일오버 경고"
             swing-trader review; echo "review exit=$?"
