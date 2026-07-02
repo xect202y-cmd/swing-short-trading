@@ -1,0 +1,54 @@
+name: 볼트 파이프라인 외부 워치독
+
+# 옵시디언 데이터 파이프라인(노트북 로컬)의 하트비트를 클라우드에서 감시한다.
+#
+# 왜 여기(swing repo)인가: 로컬 워치독(pipeline_watchdog.py)은 같은 노트북에서 돌아서
+# 노트북이 절전/오프라인이면 감지·알림 자체가 불가능하다(2026-07-02: 배터리 전환 후
+# Modern Standby 5시간 → 6.6h 무감지, 깨어난 뒤에야 알림). 이 repo 에는 볼트 읽기
+# 토큰(VAULT_TOKEN)과 Swing 디스코드 웹훅 secret 이 이미 있어 추가 설정 없이 동작한다.
+#
+# 판정: obsidian-vault repo 의 마지막 "auto:" 커밋(= vault_sync, 노트북 생존 증거)이
+# 3.5시간(2h 주기 + 유예)보다 오래되면 stale. 스팸 방지로 ~4h/~12h/이후 24h 간격 밴드에서만 발송.
+
+on:
+  schedule:
+    - cron: "17 */2 * * *"   # 2시간마다(정시 혼잡 회피 :17, UTC)
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 마지막 자동수집 커밋 나이 확인 → stale 시 Discord 경고
+        env:
+          GH_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          WEBHOOK: ${{ secrets.SWING_DISCORD_WEBHOOK_URL }}
+        run: |
+          set -e
+          LAST=$(gh api "repos/xect202y-cmd/obsidian-vault/commits?per_page=50" \
+                 --jq '[.[] | select(.commit.message | startswith("auto:"))][0].commit.committer.date')
+          if [ -z "$LAST" ] || [ "$LAST" = "null" ]; then
+            echo "::warning::최근 50커밋에 auto: 커밋 없음 — 장기 정지 의심"
+            AGE_H=999
+          else
+            AGE_H=$(awk -v now="$(date +%s)" -v last="$(date -d "$LAST" +%s)" \
+                    'BEGIN{printf "%.1f", (now-last)/3600}')
+          fi
+          echo "마지막 auto 커밋: $LAST (나이 ${AGE_H}h)"
+          # 발송 밴드: 최초(3.5~5.5h), 재알림(11.5~13.5h), 이후 24h마다(±1h)
+          SEND=$(awk -v a="$AGE_H" 'BEGIN{
+            s=0
+            if (a>3.5 && a<=5.5) s=1
+            else if (a>11.5 && a<=13.5) s=1
+            else if (a>23.5) { m=(a-0.5)%24; if (m<2) s=1 }
+            print s}')
+          if [ "$SEND" = "1" ]; then
+            KST=$(TZ=Asia/Seoul date '+%m-%d %H:%M')
+            curl -sS -X POST -H "Content-Type: application/json" \
+              -d "{\"content\": \"⚠️ **옵시디언 파이프라인 이상(클라우드 감지)** — 볼트 자동수집 커밋이 ${AGE_H}시간째 없음 ($KST KST).\\n노트북 절전/전원분리/오프라인 의심 → 노트북을 깨우면 자동 복구됩니다(StartWhenAvailable).\"}" \
+              "$WEBHOOK"
+            echo "경고 발송(나이 ${AGE_H}h)"
+          else
+            echo "정상 또는 발송 밴드 아님(나이 ${AGE_H}h)"
+          fi
