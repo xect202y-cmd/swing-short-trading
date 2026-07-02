@@ -43,6 +43,10 @@ def test_v1_stop_first_when_low_touches():
     f = settle_item(v1(), bar(10000, 10400, 9800, 10350), 1.5, 5.0)
     assert f.reason == "손절"
     assert f.exit < f.entry
+    cost = (1.5 + 5.0) / 10000
+    entry = 10200 * (1 + cost)
+    stop_price = entry * (1 - 0.02)
+    assert f.exit == pytest.approx(stop_price * (1 - cost))
 
 
 def test_v2_no_fill_without_gap_down():

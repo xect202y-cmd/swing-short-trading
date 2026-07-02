@@ -50,7 +50,7 @@ def settle_item(item: PlanItem, bar, fee_bps: float, slip_bps: float) -> Fill | 
         return None
     cost = (fee_bps + slip_bps) / 10000
     if item.model == "v1":
-        trigger = o + (item.k or V1_K) * item.prev_range  # 당일 시가 앵커
+        trigger = o + (item.k if item.k is not None else V1_K) * item.prev_range  # 당일 시가 앵커
         if h < trigger:
             return None
         entry = trigger * (1 + cost)
