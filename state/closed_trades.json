@@ -153,5 +153,47 @@
     "hold_days": 8,
     "exit_reason": "보유 8일 초과 + 모멘텀 약화",
     "stop_respected": true
+  },
+  {
+    "ticker": "403870",
+    "name": "HPSP",
+    "qty": 18,
+    "partial": false,
+    "entry": 55227.6,
+    "exit": 46126.93,
+    "pnl": -163937.0,
+    "return_pct": -16.48,
+    "entry_score": 70.4,
+    "entry_date": "2026-06-29",
+    "entry_reasons": [
+      "20일선 근처 반등 구간",
+      "목표가까지 상승여력 5%+"
+    ],
+    "sector": null,
+    "exit_date": "2026-07-02",
+    "hold_days": 3,
+    "exit_reason": "손절가 도달",
+    "stop_respected": true
+  },
+  {
+    "ticker": "005930",
+    "name": "삼성전자",
+    "qty": 3,
+    "partial": false,
+    "entry": 326163.0,
+    "exit": 292103.88,
+    "pnl": -102309.0,
+    "return_pct": -10.44,
+    "entry_score": 72.7,
+    "entry_date": "2026-06-30",
+    "entry_reasons": [
+      "20일선 근처 반등 구간",
+      "목표가까지 상승여력 5%+"
+    ],
+    "sector": null,
+    "exit_date": "2026-07-02",
+    "hold_days": 2,
+    "exit_reason": "손절가 도달",
+    "stop_respected": true
   }
 ]
