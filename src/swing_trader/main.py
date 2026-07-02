@@ -821,6 +821,8 @@ def run_scalp(cfg: Config, market: str) -> dict:
         # Daily 브리핑도 생략. 다음 런이 같은 계획을 다시 정산 시도한다.
         return {"settled": 0, "planned": 0, "warned": True, "held": True}
 
+    state.save(cfg.state_dir)   # 첫 런(정산 없음)에도 시드 상태를 기록 — 대시보드 /api/scalp 가동 표시
+
     # 2) 오늘 계획(실시간가로 수량/트리거 표시 — 정산은 어차피 확정봉)
     from .market.fx import get_usdkrw
     fx = get_usdkrw(float(cfg.get("market_data", "fx_usdkrw", default=1400)))
