@@ -21,6 +21,7 @@ paths:
     briefs_dir: "04_Trading/Briefs"        # 일/주 브리핑
     reports_dir: "04_Trading/Reports"      # 월간 로직 보고서
     logic_dir: "04_Trading/Logic"          # 로직 변경 이력(버전·A/B)
+    scalp_dir: "04_Trading/Scalp"          # 단타 페이퍼 브리핑
   # 로컬 상태(볼트 밖, gitignore)
   state_dir: "state"
 

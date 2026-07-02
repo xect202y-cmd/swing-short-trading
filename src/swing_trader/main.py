@@ -10,6 +10,8 @@ from dataclasses import asdict, is_dataclass
 from datetime import date, datetime
 from pathlib import Path
 
+import pandas as pd
+
 from .broker.paper import PaperBroker
 from .config import Config, load_config, redact
 from .execution.order_manager import OrderManager
@@ -330,6 +332,7 @@ def run_brief(cfg: Config, period: str = "auto") -> list[str]:
             run_harness(cfg)
             sent.append("harness")
             run_version_compare(cfg)   # 버전비교 데이터(version_compare.json)도 갱신
+            run_scalp_compare(cfg)     # 단타 카테고리 비교 데이터도 주간 갱신
         except Exception as e:  # noqa: BLE001 — 하니스 실패해도 나머지 브리핑 영향 없음, 대신 경고
             log.exception("주간 하니스 실패")
             _H.alert(wh, "주간 하니스", f"예외: {type(e).__name__}: {e}")
@@ -604,6 +607,261 @@ def run_version_compare(cfg: Config) -> Path:
     return path
 
 
+def run_scalp_compare(cfg: Config) -> Path:
+    """단타 v1/v2 백테스트 리플레이 → state/scalp_compare.json (대시보드 카테고리 비교)."""
+    from .scalp import backtest as _SB
+    from .scalp.account import SEED_PER_MODEL
+    from .strategy import harness as _HN
+    reader = VaultReader(cfg)
+    provider = _HN.backtest_provider(cfg)
+    notes = [n for n in _load_notes(cfg, reader, None,
+                                    str(cfg.get("backtest", "universe", default="all"))) if n.ticker]
+    days = int(cfg.get("backtest", "lookback_days", default=500))
+    frac = float(cfg.get("backtest", "oos_fraction", default=0.3))
+    min_tv = float(cfg.get("scalp", "min_tv_eok", default=50))
+    pfrac = 1.0 / 5   # 모델당 5분할 사이징과 동일 프레임
+    seed = float(SEED_PER_MODEL)
+
+    trades: dict = {"v1": [], "v2": []}
+    for n in notes:
+        try:
+            df, _src = provider.get_ohlcv(n.ticker)
+        except Exception:  # noqa: BLE001
+            continue
+        r = _SB.simulate_stock(n.ticker, df.tail(days), min_tv_eok=min_tv)
+        trades["v1"] += r["v1"]
+        trades["v2"] += r["v2"]
+
+    meta = {"v1": ("단타 v1", "변동성 돌파(추세형)",
+                   ["당일 시가+0.5×전일레인지 돌파 시 매수", "당일 종가 전량 청산(오버나잇 없음)",
+                    "장중 손절 -2.0%(저가 터치 보수 판정)", "거래대금 하한 필터"]),
+            "v2": ("단타 v2", "갭하락 과매도 반등(역추세형)",
+                   ["시가 -2% 이상 갭하락 + 전일 20>60일선 종목 시가 매수",
+                    "당일 종가 전량 청산(오버나잇 없음)", "장중 손절 -2.5%(보수 판정)"])}
+    out = []
+    for m in ("v1", "v2"):
+        _is, oos = _HN.split_oos(trades[m], frac)
+        rep = _HN.report_from_trades(oos, pfrac)
+        eq, curve = seed, []
+        for t in sorted(oos, key=lambda t: t.entry):
+            eq *= (1 + pfrac * t.ret)
+            curve.append({"date": t.entry, "equity": round(eq)})
+        label, title, core = meta[m]
+        out.append({"label": label, "title": title, "core_logic": core,
+                    "oos": {"expectancy": rep.expectancy, "profit_factor": rep.profit_factor,
+                            "max_drawdown": rep.max_drawdown, "sharpe": rep.sharpe,
+                            "win_rate": rep.win_rate, "n_trades": rep.n_trades,
+                            "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},
+                    "equity": curve})
+    dates = [pt["date"] for v in out for pt in v["equity"]]
+    oos_start, oos_end = (min(dates), max(dates)) if dates else (None, None)
+    oos_days = ((date.fromisoformat(oos_end) - date.fromisoformat(oos_start)).days
+                if dates else None)
+    path = cfg.state_dir / "scalp_compare.json"
+    path.write_text(json.dumps({
+        "as_of": _DM.today_kst().isoformat(), "seed": seed,
+        "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days,
+        "lookback_days": days, "versions": out,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 볼트 영구 기록(로직 정의 + 백테스트 결과) + 디스코드 브리핑 — 스윙 하니스와 동일 패턴
+    def _f(v, dp=2):
+        return "—" if v is None else f"{v:+.{dp}f}%" if dp else f"{v}"
+    md_lines = [f"# ⚡ 단타 백테스트 · {_DM.today_kst().isoformat()}",
+                f"> 유니버스 {len(notes)}종목 · {days}일 · OOS {oos_start}~{oos_end} · 가상 {seed:,.0f}원", ""]
+    brief_bits = []
+    for v in out:
+        o = v["oos"]
+        md_lines += [f"## {v['label']} — {v['title']}", "**핵심 로직**"]
+        md_lines += [f"- {c}" for c in v["core_logic"]]
+        md_lines += ["", f"**OOS 성과**: 기대값 {_f(o['expectancy'])} · PF {o['profit_factor'] or '—'} · "
+                     f"MDD {_f(o['max_drawdown'], 1)} · 승률 {o['win_rate'] or '—'}% · "
+                     f"{o['n_trades']}거래 · 누적 {_f(o['cum_return_pct'], 1)}", ""]
+        brief_bits.append(f"{v['label']} 기대값 {_f(o['expectancy'])}·PF {o['profit_factor'] or '—'}"
+                          f"·승률 {o['win_rate'] or '—'}%({o['n_trades']}건)")
+    vpath = VaultWriter(cfg).write_scalp_backtest("\n".join(md_lines))
+    from .notify.discord import notify
+    notify(cfg.creds.scalp_webhook,
+           "⚡ **단타 백테스트 리플레이** — " + " / ".join(brief_bits) +
+           f"\n볼트: {vpath.name} · 대시보드 '버전 비교 > 초단기 단타' 갱신됨")
+    log.info("scalp_compare → %s (v1 %d·v2 %d OOS거래)", path,
+             out[0]["oos"]["n_trades"], out[1]["oos"]["n_trades"])
+    return path
+
+
+# ── 단타(데이트레이딩) ──
+def _scalp_bar(df, d: str):
+    sub = df[df.index.normalize() == pd.Timestamp(d)]
+    return None if sub.empty else sub.iloc[-1]
+
+
+def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float):
+    """저장된 계획을 확정 일봉으로 정산 — 전량(all-or-nothing) 원칙.
+
+    계획 종목(그림자 포함) 중 단 하나라도 해당 날짜 확정봉이 없으면 부분 정산으로
+    pnl 이 조용히 새지 않도록 (None, None, missing)=보류를 반환한다."""
+    from .scalp.strategy import settle_item
+    items = plan.get("items", [])
+    if not items:
+        return ({m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")},
+                {"v1": [], "v2": []}, [])
+    bars: dict = {}
+    missing: list[str] = []
+    for i in items:
+        if i.ticker in bars:
+            continue
+        bar = _scalp_bar(dfs[i.ticker], plan["date"]) if i.ticker in dfs else None
+        bars[i.ticker] = bar
+        if bar is None:
+            missing.append(i.ticker)
+    if missing:
+        return None, None, missing
+    results = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")}
+    rows: dict = {"v1": [], "v2": []}
+    for i in items:
+        bar = bars[i.ticker]
+        f = settle_item(i, bar, fee_bps, slip_bps)
+        if f is None:
+            continue
+        if i.shadow:
+            results[i.model]["shadow_pnl"] += f.pnl
+            continue
+        results[i.model]["pnl"] += f.pnl
+        row = {"ticker": i.ticker, "name": i.name, "qty": i.qty, "entry": round(f.entry, 2),
+               "exit": round(f.exit, 2), "pnl": round(f.pnl, 0), "ret_pct": f.ret_pct,
+               "reason": f.reason, "why": i.why}
+        results[i.model]["trades"].append(row)
+        rows[i.model].append(row)
+    return results, rows, []
+
+
+def run_scalp(cfg: Config, market: str) -> dict:
+    """단타 페이퍼 1사이클: 이전 계획 정산 → 오늘 계획 수립 → 발송/저장/마커."""
+    from .market.realtime import get_quote
+    from .notify import health as _H
+    from .notify.discord import notify_embeds
+    from .scalp import planner as _P
+    from .scalp.account import ScalpState
+    from .scalp.briefer import scalp_brief
+    reader = VaultReader(cfg)
+    provider = _provider(cfg)
+    notes = [n for n in _load_notes(cfg, reader, None, market) if n.ticker]
+    fee = float(cfg.get("paper", "fee_bps", default=1.5))
+    slip = float(cfg.get("paper", "slippage_bps", default=5.0))
+    today = _DM.today_kst().isoformat()
+    state = ScalpState.load(cfg.state_dir)
+    warned = False
+
+    # 후보 지표(전일 확정봉) — 유동성 하한: scalp.min_tv_eok(기본 50억)
+    min_tv = float(cfg.get("scalp", "min_tv_eok", default=50))
+    cands, dfs = [], {}
+    for n in notes:
+        try:
+            df, _src = provider.get_ohlcv(n.ticker)
+        except Exception as e:  # noqa: BLE001 — 종목 하나 실패가 전체를 못 막게
+            log.warning("scalp 후보 시세 실패 %s: %s", n.ticker, e)
+            continue
+        if df is None or len(df) < 61:
+            continue
+        dfs[n.ticker] = df
+        prev = df.iloc[-1]
+        tv_eok = float(prev["close"]) * float(prev.get("volume", 0)) / 1e8
+        if tv_eok < min_tv:
+            continue
+        ma20 = float(df["close"].tail(20).mean())
+        ma60 = float(df["close"].tail(60).mean())
+        cands.append({"ticker": n.ticker, "name": n.name or n.ticker,
+                      "prev_close": float(prev["close"]),
+                      "prev_range": float(prev["high"]) - float(prev["low"]),
+                      "prev_tv_eok": round(tv_eok, 1), "uptrend": ma20 > ma60,
+                      "why": f"거래대금 {tv_eok:,.0f}억"})
+
+    # 1) 이전 계획 정산(확정 일봉이 정본) — 전량(all-or-nothing): 하나라도 미확보면 보류(재시도)
+    plans = _P.load_plans(cfg.state_dir)
+    prev_plan = plans.get(market)
+    settled_rows = {"v1": [], "v2": []}
+    settled_date = "—"
+    n_settled = 0
+    held = False
+    if prev_plan and prev_plan["date"] < today:
+        # 오늘 후보 유니버스에 없던(노트 이탈 등) 이전 계획 종목도 정산 대상이면 명시적으로 시세 보강
+        for i in prev_plan.get("items", []):
+            if i.ticker in dfs:
+                continue
+            try:
+                df, _src = provider.get_ohlcv(i.ticker)
+            except Exception as e:  # noqa: BLE001 — 개별 실패는 로그 후 missing 판정에 맡김
+                log.warning("scalp 정산용 시세 실패 %s: %s", i.ticker, e)
+                continue
+            if df is not None:
+                dfs[i.ticker] = df
+        results, rows, missing = _settle_scalp_plan(prev_plan, dfs, fee, slip)
+        if missing:
+            warned = True
+            expired = (date.fromisoformat(today) - date.fromisoformat(prev_plan["date"])).days >= 5
+            if expired:
+                zero = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")}
+                state.apply_day(prev_plan["date"], market, zero)
+                state.save(cfg.state_dir)
+                _H.alert(cfg.creds.scalp_webhook, f"단타 정산[{market}]",
+                         f"단타 정산 만료 — {prev_plan['date']} 데이터 미확보로 결과 미산정(0 처리)")
+            else:
+                held = True
+                _H.alert(cfg.creds.scalp_webhook, f"단타 정산[{market}]",
+                         f"{prev_plan['date']} 확정 일봉 미도착({', '.join(missing)}) — "
+                         "정산 보류(다음 런 재시도)")
+        else:
+            state.apply_day(prev_plan["date"], market, results)
+            state.save(cfg.state_dir)
+            settled_rows, settled_date = rows, prev_plan["date"]
+            n_settled = sum(len(v) for v in rows.values())
+
+    if held:
+        # 정산 미확보 — 오늘 계획을 만들지 않고 저장된 계획을 보존(단일 슬롯 store 덮어쓰기 방지),
+        # Daily 브리핑도 생략. 다음 런이 같은 계획을 다시 정산 시도한다.
+        return {"settled": 0, "planned": 0, "warned": True, "held": True}
+
+    state.save(cfg.state_dir)   # 첫 런(정산 없음)에도 시드 상태를 기록 — 대시보드 /api/scalp 가동 표시
+
+    # 2) 오늘 계획(실시간가로 수량/트리거 표시 — 정산은 어차피 확정봉)
+    from .market.fx import get_usdkrw
+    fx = get_usdkrw(float(cfg.get("market_data", "fx_usdkrw", default=1400)))
+    scenario = _P.build_scenario(cfg, reader)
+    quote_objs: dict = {}
+    for c in cands[:20]:
+        q = get_quote(c["ticker"], fx)
+        if q:
+            quote_objs[c["ticker"]] = q
+    quotes = {t: q.price for t, q in quote_objs.items()}
+    if cands and not quotes:
+        warned = True
+        _H.alert(cfg.creds.scalp_webhook, f"단타 계획[{market}]",
+                 "실시간 시세 전부 실패 — 전일 종가로 수량 산정(트리거 표시 생략)")
+    cash_by = {m: state.models[m]["cash"] for m in ("v1", "v2")}
+    plan_lists = _P.build_plan(cands, cash_by, scenario, quotes)
+    items = plan_lists["v1"] + plan_lists["v2"] + plan_lists["v1_shadow"] + plan_lists["v2_shadow"]
+    # KR 표시용 트리거(v1) = 실시간 시가 + k×전일레인지
+    from dataclasses import replace
+    disp = []
+    for i in items:
+        qq = quote_objs.get(i.ticker)
+        # US는 계획 시점에 대상 세션 시가 미확보(직전 세션 값) → 오도 방지 위해 트리거 표시 생략(정산은 확정봉 기준)
+        if i.model == "v1" and market == "kr" and qq and not i.shadow and qq.open:
+            i = replace(i, trigger=round(qq.open + (i.k or 0.5) * i.prev_range, 0))
+        disp.append(i)
+    plan = {"date": today, "scenario": scenario, "items": disp}
+    _P.save_plan(cfg.state_dir, market, plan)
+
+    # 3) 브리핑(디스코드+볼트) + 마커
+    embed, md = scalp_brief(market, settled_rows, plan, state, settled_date)
+    notify_embeds(cfg.creds.scalp_webhook, [embed], md)
+    VaultWriter(cfg).append_scalp(md)
+    _DM.record_done(cfg.state_dir, f"scalp_{market}", datetime.now(_DM.KST))
+    n_planned = sum(1 for i in disp if not i.shadow)
+    log.info("scalp-run[%s]: 정산 %d건 · 계획 %d건", market, n_settled, n_planned)
+    return {"settled": n_settled, "planned": n_planned, "warned": warned, "held": False}
+
+
 __all__ = ["load_config", "run_scan", "run_once", "run_review", "run_backtest", "run_doctor",
            "run_brief", "run_logic", "run_logic_review", "_setup_logging", "run_harness",
-           "run_version_compare"]
+           "run_version_compare", "run_scalp", "run_scalp_compare"]

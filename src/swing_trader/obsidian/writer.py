@@ -146,3 +146,21 @@ class VaultWriter:
         path = dpath / f"{d.strftime('%Y-%m')}_Logic.md"
         path.write_text(content, encoding="utf-8")
         return path
+
+    def append_scalp(self, content: str, d: date | None = None) -> Path:
+        d = d or today_kst()
+        path = self._path("scalp_dir", "Scalp", d)
+        new = not path.exists()
+        with path.open("a", encoding="utf-8") as f:
+            if new:
+                f.write(f"---\ntype: 스윙단타\n날짜: {d.isoformat()}\ntags: [단타, 페이퍼]\n---\n"
+                        f"# ⚡ 단타 페이퍼 · {d.isoformat()}\n\n")
+            f.write(content + "\n")
+        return path
+
+    def write_scalp_backtest(self, content: str, d: date | None = None) -> Path:
+        """단타 로직 정의+백테스트 결과 영구 기록 — 나중에 결과 브리핑/회고의 근거 문서."""
+        d = d or today_kst()
+        path = self._path("scalp_dir", "단타백테스트", d)
+        path.write_text(content, encoding="utf-8")
+        return path

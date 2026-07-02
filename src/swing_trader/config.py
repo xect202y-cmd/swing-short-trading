@@ -47,6 +47,7 @@ class Credentials:
     kis_account_no: str | None = None
     kis_env: str = "vps"  # vps(모의도메인) | real
     discord_webhook_url: str | None = None   # 스윙 알림 전용(Hermes와 분리 권장)
+    scalp_webhook: str | None = None         # 단타 페이퍼 전용(스윙과 시각 분리)
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o-mini"
 
@@ -115,6 +116,8 @@ def load_config(config_path: str | None = None) -> Config:
         kis_account_no=os.getenv("KIS_ACCOUNT_NO") or None,
         kis_env=os.getenv("KIS_ENV", "vps"),
         discord_webhook_url=os.getenv("SWING_DISCORD_WEBHOOK_URL") or os.getenv("DISCORD_WEBHOOK_URL") or None,
+        scalp_webhook=os.getenv("SCALP_DISCORD_WEBHOOK_URL")
+                      or os.getenv("SWING_DISCORD_WEBHOOK_URL") or os.getenv("DISCORD_WEBHOOK_URL") or None,
         openai_api_key=os.getenv("OPENAI_API_KEY") or None,
         openai_model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
     )
