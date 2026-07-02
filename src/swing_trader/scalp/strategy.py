@@ -1,7 +1,10 @@
 """단타(데이트레이딩) 룰 — v1 변동성돌파(추세형)·v2 갭하락반등(역추세형).
 
 일봉 OHLC 만으로 정직하게 판정한다:
+- v1 트리거는 당일 시가 앵커(Larry Williams 방식) = 시가 + k×전일레인지
+  → 트리거는 항상 시가보다 크므로 갭 상방 체결 케이스는 존재하지 않는다.
 - 체결 인정 = 트리거가가 당일 고저 범위 안일 때만 (look-ahead 금지)
+- 손절가는 진입가 앵커 = entry × (1 + stop_pct/100)
 - 손절 우선 = 당일 저가가 손절가 이하이면 손절 체결로 보수 판정(장중 순서 미상)
 - 전량 당일 종가 청산(오버나잇 없음)
 """
@@ -47,16 +50,16 @@ def settle_item(item: PlanItem, bar, fee_bps: float, slip_bps: float) -> Fill | 
         return None
     cost = (fee_bps + slip_bps) / 10000
     if item.model == "v1":
-        trigger = item.prev_close + (item.k or V1_K) * item.prev_range
+        trigger = o + (item.k or V1_K) * item.prev_range  # 당일 시가 앵커
         if h < trigger:
             return None
-        entry = max(o, trigger) * (1 + cost)   # 갭 상방 출발이면 시가 진입
-        stop_price = o * (1 + item.stop_pct / 100)  # 손절가는 시가 기준
+        entry = trigger * (1 + cost)
+        stop_price = entry * (1 + item.stop_pct / 100)  # 손절가는 진입가 기준
     else:  # v2 — 시가 갭하락 재확인(계획 시점 실시간 시가와 무관하게 확정 시가가 정본)
         if item.prev_close <= 0 or o > item.prev_close * (1 + V2_GAP / 100):
             return None
         entry = o * (1 + cost)
-        stop_price = o * (1 + item.stop_pct / 100)  # 손절가는 시가 기준
+        stop_price = entry * (1 + item.stop_pct / 100)  # 손절가는 진입가 기준
     if l <= stop_price:
         exit_px, reason = stop_price * (1 - cost), "손절"
     else:

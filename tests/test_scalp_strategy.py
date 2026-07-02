@@ -24,7 +24,7 @@ def test_v1_no_fill_when_high_below_trigger():
 
 
 def test_v1_fills_at_trigger_and_exits_at_close():
-    f = settle_item(v1(), bar(10000, 10400, 9950, 10350), 1.5, 5.0)
+    f = settle_item(v1(), bar(10000, 10400, 10050, 10350), 1.5, 5.0)
     cost = (1.5 + 5.0) / 10000
     assert f.reason == "종가청산"
     assert f.entry == pytest.approx(10200 * (1 + cost))
@@ -32,10 +32,10 @@ def test_v1_fills_at_trigger_and_exits_at_close():
     assert f.pnl == pytest.approx((f.exit - f.entry) * 10)
 
 
-def test_v1_gap_above_trigger_enters_at_open():
-    # 시가 10300 > 트리거 10200 → 시가 진입
-    f = settle_item(v1(), bar(10300, 10500, 10250, 10450), 1.5, 5.0)
-    assert f.entry == pytest.approx(10300 * (1 + (1.5 + 5.0) / 10000))
+def test_v1_trigger_anchors_on_today_open():
+    # 트리거 = 당일 시가(10300) + 0.5*400 = 10500 > 고가 10450 → 미체결
+    # (전일종가 앵커였다면 10000+200=10200 < 10450 → 체결됐을 것 — 앵커 선택을 검증)
+    assert settle_item(v1(), bar(10300, 10450, 10250, 10400), 1.5, 5.0) is None
 
 
 def test_v1_stop_first_when_low_touches():
