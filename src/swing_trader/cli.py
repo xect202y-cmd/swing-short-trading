@@ -117,7 +117,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "scalp-run":
         r = M.run_scalp(cfg, args.market)
         print(f"✅ scalp-run[{args.market}]: 정산 {r['settled']}건 · 계획 {r['planned']}건"
-              + (" ⚠️경고 발생" if r["warned"] else ""))
+              + (" ⚠️경고 발생" if r["warned"] else "")
+              + (" ⏸ 정산 보류(다음 런 재시도)" if r.get("held") else ""))
         return 0
     if args.cmd == "notify-failover":
         from .notify.discord import notify

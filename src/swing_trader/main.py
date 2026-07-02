@@ -613,21 +613,30 @@ def _scalp_bar(df, d: str):
 
 
 def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float):
-    """저장된 계획을 확정 일봉으로 정산. 계획 종목의 봉이 하나도 없으면 (None, None)=보류."""
+    """저장된 계획을 확정 일봉으로 정산 — 전량(all-or-nothing) 원칙.
+
+    계획 종목(그림자 포함) 중 단 하나라도 해당 날짜 확정봉이 없으면 부분 정산으로
+    pnl 이 조용히 새지 않도록 (None, None, missing)=보류를 반환한다."""
     from .scalp.strategy import settle_item
     items = plan.get("items", [])
     if not items:
         return ({m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")},
-                {"v1": [], "v2": []})
-    bars = {i.ticker: _scalp_bar(dfs[i.ticker], plan["date"]) for i in items if i.ticker in dfs}
-    if not any(b is not None for b in bars.values()):
-        return None, None
+                {"v1": [], "v2": []}, [])
+    bars: dict = {}
+    missing: list[str] = []
+    for i in items:
+        if i.ticker in bars:
+            continue
+        bar = _scalp_bar(dfs[i.ticker], plan["date"]) if i.ticker in dfs else None
+        bars[i.ticker] = bar
+        if bar is None:
+            missing.append(i.ticker)
+    if missing:
+        return None, None, missing
     results = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")}
     rows: dict = {"v1": [], "v2": []}
     for i in items:
-        bar = bars.get(i.ticker)
-        if bar is None:
-            continue
+        bar = bars[i.ticker]
         f = settle_item(i, bar, fee_bps, slip_bps)
         if f is None:
             continue
@@ -640,7 +649,7 @@ def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float):
                "reason": f.reason, "why": i.why}
         results[i.model]["trades"].append(row)
         rows[i.model].append(row)
-    return results, rows
+    return results, rows, []
 
 
 def run_scalp(cfg: Config, market: str) -> dict:
@@ -666,7 +675,8 @@ def run_scalp(cfg: Config, market: str) -> dict:
     for n in notes:
         try:
             df, _src = provider.get_ohlcv(n.ticker)
-        except Exception:  # noqa: BLE001 — 종목 하나 실패가 전체를 못 막게
+        except Exception as e:  # noqa: BLE001 — 종목 하나 실패가 전체를 못 막게
+            log.warning("scalp 후보 시세 실패 %s: %s", n.ticker, e)
             continue
         if df is None or len(df) < 61:
             continue
@@ -683,23 +693,50 @@ def run_scalp(cfg: Config, market: str) -> dict:
                       "prev_tv_eok": round(tv_eok, 1), "uptrend": ma20 > ma60,
                       "why": f"거래대금 {tv_eok:,.0f}억"})
 
-    # 1) 이전 계획 정산(확정 일봉이 정본)
+    # 1) 이전 계획 정산(확정 일봉이 정본) — 전량(all-or-nothing): 하나라도 미확보면 보류(재시도)
     plans = _P.load_plans(cfg.state_dir)
     prev_plan = plans.get(market)
     settled_rows = {"v1": [], "v2": []}
     settled_date = "—"
     n_settled = 0
+    held = False
     if prev_plan and prev_plan["date"] < today:
-        results, rows = _settle_scalp_plan(prev_plan, dfs, fee, slip)
-        if results is None:
+        # 오늘 후보 유니버스에 없던(노트 이탈 등) 이전 계획 종목도 정산 대상이면 명시적으로 시세 보강
+        for i in prev_plan.get("items", []):
+            if i.ticker in dfs:
+                continue
+            try:
+                df, _src = provider.get_ohlcv(i.ticker)
+            except Exception as e:  # noqa: BLE001 — 개별 실패는 로그 후 missing 판정에 맡김
+                log.warning("scalp 정산용 시세 실패 %s: %s", i.ticker, e)
+                continue
+            if df is not None:
+                dfs[i.ticker] = df
+        results, rows, missing = _settle_scalp_plan(prev_plan, dfs, fee, slip)
+        if missing:
             warned = True
-            _H.alert(cfg.creds.scalp_webhook, f"단타 정산[{market}]",
-                     f"{prev_plan['date']} 확정 일봉 미도착 — 정산 보류(다음 런 재시도)")
+            expired = (date.fromisoformat(today) - date.fromisoformat(prev_plan["date"])).days >= 5
+            if expired:
+                zero = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")}
+                state.apply_day(prev_plan["date"], market, zero)
+                state.save(cfg.state_dir)
+                _H.alert(cfg.creds.scalp_webhook, f"단타 정산[{market}]",
+                         f"단타 정산 만료 — {prev_plan['date']} 데이터 미확보로 결과 미산정(0 처리)")
+            else:
+                held = True
+                _H.alert(cfg.creds.scalp_webhook, f"단타 정산[{market}]",
+                         f"{prev_plan['date']} 확정 일봉 미도착({', '.join(missing)}) — "
+                         "정산 보류(다음 런 재시도)")
         else:
             state.apply_day(prev_plan["date"], market, results)
             state.save(cfg.state_dir)
             settled_rows, settled_date = rows, prev_plan["date"]
             n_settled = sum(len(v) for v in rows.values())
+
+    if held:
+        # 정산 미확보 — 오늘 계획을 만들지 않고 저장된 계획을 보존(단일 슬롯 store 덮어쓰기 방지),
+        # Daily 브리핑도 생략. 다음 런이 같은 계획을 다시 정산 시도한다.
+        return {"settled": 0, "planned": 0, "warned": True, "held": True}
 
     # 2) 오늘 계획(실시간가로 수량/트리거 표시 — 정산은 어차피 확정봉)
     from .market.fx import get_usdkrw
@@ -736,7 +773,7 @@ def run_scalp(cfg: Config, market: str) -> dict:
     _DM.record_done(cfg.state_dir, f"scalp_{market}", datetime.now(_DM.KST))
     n_planned = sum(1 for i in disp if not i.shadow)
     log.info("scalp-run[%s]: 정산 %d건 · 계획 %d건", market, n_settled, n_planned)
-    return {"settled": n_settled, "planned": n_planned, "warned": warned}
+    return {"settled": n_settled, "planned": n_planned, "warned": warned, "held": False}
 
 
 __all__ = ["load_config", "run_scan", "run_once", "run_review", "run_backtest", "run_doctor",
