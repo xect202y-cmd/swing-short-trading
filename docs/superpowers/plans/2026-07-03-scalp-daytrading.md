@@ -1083,6 +1083,7 @@ def run_scalp(cfg: Config, market: str) -> dict:
 - Create: `src/swing_trader/scalp/backtest.py`
 - Modify: `src/swing_trader/main.py` — `run_scalp_compare` 추가, `run_brief` weekly 블록에서 호출
 - Modify: `src/swing_trader/cli.py` — `scalp-compare` 서브커맨드
+- Modify: `src/swing_trader/obsidian/writer.py` — `write_scalp_backtest` 추가(로직+결과를 볼트에 영구 기록)
 - Test: `tests/test_scalp_backtest.py`
 
 **Interfaces:**
@@ -1090,6 +1091,8 @@ def run_scalp(cfg: Config, market: str) -> dict:
 - Produces:
   - `simulate_stock(ticker, df, min_tv_eok) -> dict[str, list[Trade]]` — `{"v1": [...], "v2": [...]}` (ret은 **소수**, 수수료+슬리피지 차감)
   - `main.run_scalp_compare(cfg) -> Path` — `state/scalp_compare.json` (version_compare.json 과 동일 스키마 + `"seed": 3000000`, label `단타 v1|단타 v2`)
+  - `VaultWriter.write_scalp_backtest(content) -> Path` — `04_Trading/Scalp/YYYY-MM-DD_단타백테스트.md` (로직 정의+OOS 성과 영구 기록)
+  - 디스코드 브리핑: scalp_webhook 으로 `⚡ 단타 백테스트 리플레이 — v1/v2 기대값·PF·승률` 한 줄 요약(주간 자동 + scalp-compare 수동 실행 시)
 
 - [ ] **Step 1: 실패하는 테스트 작성**
 
@@ -1242,9 +1245,41 @@ def run_scalp_compare(cfg: Config) -> Path:
         "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days,
         "lookback_days": days, "versions": out,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 볼트 영구 기록(로직 정의 + 백테스트 결과) + 디스코드 브리핑 — 스윙 하니스와 동일 패턴
+    def _f(v, dp=2):
+        return "—" if v is None else f"{v:+.{dp}f}%" if dp else f"{v}"
+    md_lines = [f"# ⚡ 단타 백테스트 · {_DM.today_kst().isoformat()}",
+                f"> 유니버스 {len(notes)}종목 · {days}일 · OOS {oos_start}~{oos_end} · 가상 {seed:,.0f}원", ""]
+    brief_bits = []
+    for v in out:
+        o = v["oos"]
+        md_lines += [f"## {v['label']} — {v['title']}", "**핵심 로직**"]
+        md_lines += [f"- {c}" for c in v["core_logic"]]
+        md_lines += ["", f"**OOS 성과**: 기대값 {_f(o['expectancy'])} · PF {o['profit_factor'] or '—'} · "
+                     f"MDD {_f(o['max_drawdown'], 1)} · 승률 {o['win_rate'] or '—'}% · "
+                     f"{o['n_trades']}거래 · 누적 {_f(o['cum_return_pct'], 1)}", ""]
+        brief_bits.append(f"{v['label']} 기대값 {_f(o['expectancy'])}·PF {o['profit_factor'] or '—'}"
+                          f"·승률 {o['win_rate'] or '—'}%({o['n_trades']}건)")
+    vpath = VaultWriter(cfg).write_scalp_backtest("\n".join(md_lines))
+    from .notify.discord import notify
+    notify(cfg.creds.scalp_webhook,
+           f"⚡ **단타 백테스트 리플레이** — " + " / ".join(brief_bits) +
+           f"\n볼트: {vpath.name} · 대시보드 '버전 비교 > 초단기 단타' 갱신됨")
     log.info("scalp_compare → %s (v1 %d·v2 %d OOS거래)", path,
              out[0]["oos"]["n_trades"], out[1]["oos"]["n_trades"])
     return path
+```
+
+`writer.py` 끝에 추가(append_scalp 아래):
+
+```python
+    def write_scalp_backtest(self, content: str, d: date | None = None) -> Path:
+        """단타 로직 정의+백테스트 결과 영구 기록 — 나중에 결과 브리핑/회고의 근거 문서."""
+        d = d or today_kst()
+        path = self._path("scalp_dir", "단타백테스트", d)
+        path.write_text(content, encoding="utf-8")
+        return path
 ```
 
 `run_brief` weekly 블록의 `run_version_compare(cfg)` 호출 다음 줄에:
@@ -1687,7 +1722,7 @@ function DailyGoalCard({ swing }: { swing: { date: string; profit: number; pct: 
 **Files:** 없음(실행/검증만)
 
 - [ ] **Step 1: swing 전체 회귀+푸시** — `pytest tests/ -q` 전부 통과 → `git push origin HEAD:main`
-- [ ] **Step 2: 백테스트 리플레이 실사** — `swing-trader scalp-compare` 실행 → `state/scalp_compare.json` 생성 확인, v1/v2 각 `oos.n_trades > 0`, `max_drawdown < 0`, equity 곡선 길이 > 10. 결과 수치(기대값·PF·승률)를 사용자에게 보고.
+- [ ] **Step 2: 백테스트 리플레이 실사** — `swing-trader scalp-compare` 실행 → ①`state/scalp_compare.json` 생성, v1/v2 각 `oos.n_trades > 0`, `max_drawdown < 0`, equity 곡선 길이 > 10 ②볼트 `04_Trading/Scalp/*_단타백테스트.md` 생성(로직+성과) ③디스코드 ⚡백테스트 브리핑 도착. 결과 수치(기대값·PF·승률)를 사용자에게 보고.
 - [ ] **Step 3: 페이퍼 1사이클 실사** — `swing-trader scalp-run --market kr` 실행 → ①디스코드 ⚡오렌지 임베드 도착 ②`state/scalp_plan.json` kr 계획 생성(트리거가 숫자 표시) ③볼트 `04_Trading/Scalp/` md 생성 ④`daily_done.json` 에 `scalp_kr` 마커. 첫 실행은 정산 0건(계획만)이 정상.
 - [ ] **Step 4: state 푸시** — bat 패턴대로 `git add -f state && git commit -m "chore(state): scalp 초기 상태" && git push origin HEAD:main`
 - [ ] **Step 5: 대시보드 배포(사용자 확인 후)** — `node -r ./patch-hostname.cjs C:/Users/xect2/AppData/Roaming/npm/node_modules/vercel/dist/index.js --prod --yes`
