@@ -1,300 +1,244 @@
 {
-  "date": "2026-07-02",
+  "date": "2026-07-03",
   "orders": [],
   "signals": [
     {
-      "ticker": "278470",
-      "name": "APR",
-      "kind": "BLOCKED",
-      "score": 61.2,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "329180",
-      "name": "HD현대중공업",
-      "kind": "BLOCKED",
-      "score": 48.1,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "403870",
-      "name": "HPSP",
-      "kind": "BLOCKED",
-      "score": 47.3,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "105560",
-      "name": "KB금융",
+      "ticker": "AMD",
+      "name": "AMD",
       "kind": "BUY_WATCH",
-      "score": 67.7,
-      "event_risk": "낮음"
+      "score": 80.8,
+      "event_risk": "중간"
     },
     {
-      "ticker": "373220",
-      "name": "LG에너지솔루션",
-      "kind": "BLOCKED",
-      "score": 52.0,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "011070",
-      "name": "LG이노텍",
+      "ticker": "ARM",
+      "name": "ARM",
       "kind": "HOLD",
-      "score": 46.6,
-      "event_risk": "낮음"
+      "score": 46.9,
+      "event_risk": "중간"
     },
     {
-      "ticker": "066570",
-      "name": "LG전자",
-      "kind": "BLOCKED",
-      "score": 31.3,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "079550",
-      "name": "LIG넥스원",
-      "kind": "BLOCKED",
-      "score": 46.6,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "010120",
-      "name": "LS ELECTRIC",
-      "kind": "BLOCKED",
-      "score": 53.4,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "010120",
-      "name": "LS 일렉트릭",
-      "kind": "BLOCKED",
-      "score": 60.2,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "010120",
-      "name": "LS일렉트릭",
-      "kind": "BLOCKED",
-      "score": 53.4,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "035420",
-      "name": "NAVER",
-      "kind": "BLOCKED",
-      "score": 45.0,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "034730",
-      "name": "SK",
-      "kind": "BUY",
-      "score": 73.7,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "000660",
-      "name": "SK하이닉스",
+      "ticker": "ASML",
+      "name": "ASML",
       "kind": "BUY_WATCH",
-      "score": 62.2,
-      "event_risk": "낮음"
+      "score": 60.7,
+      "event_risk": "중간"
     },
     {
-      "ticker": "010130",
-      "name": "고려아연",
+      "ticker": "BYD",
+      "name": "BYD",
+      "kind": "BUY",
+      "score": 70.7,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "DX",
+      "name": "DX",
       "kind": "BLOCKED",
-      "score": 50.0,
-      "event_risk": "낮음"
+      "score": 62.8,
+      "event_risk": "중간"
     },
     {
-      "ticker": "000270",
-      "name": "기아",
+      "ticker": "GBTC",
+      "name": "GBTC",
       "kind": "BLOCKED",
-      "score": 47.1,
-      "event_risk": "낮음"
+      "score": 61.5,
+      "event_risk": "중간"
     },
     {
-      "ticker": "035420",
-      "name": "네이버",
+      "ticker": "GE",
+      "name": "GE",
+      "kind": "HOLD",
+      "score": 56.3,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "IBM",
+      "name": "IBM",
+      "kind": "HOLD",
+      "score": 59.4,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "JTBC",
+      "name": "JTBC",
       "kind": "BLOCKED",
-      "score": 45.0,
-      "event_risk": "낮음"
+      "score": 67.3,
+      "event_risk": "중간"
     },
     {
-      "ticker": "034020",
-      "name": "두산에너빌리티",
+      "ticker": "KLA",
+      "name": "KLA",
       "kind": "BLOCKED",
-      "score": 50.0,
-      "event_risk": "낮음"
+      "score": 58.8,
+      "event_risk": "중간"
     },
     {
-      "ticker": "277810",
-      "name": "레인보우로보틱스",
+      "ticker": "KT",
+      "name": "KT",
       "kind": "BLOCKED",
-      "score": 47.6,
-      "event_risk": "낮음"
+      "score": 66.0,
+      "event_risk": "중간"
     },
     {
-      "ticker": "058470",
-      "name": "리노공업",
+      "ticker": "MSTR",
+      "name": "MSTR",
+      "kind": "BLOCKED",
+      "score": 63.0,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "RTX",
+      "name": "RTX",
+      "kind": "HOLD",
+      "score": 55.0,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "SM",
+      "name": "SM",
+      "kind": "BLOCKED",
+      "score": 59.8,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "SPG",
+      "name": "SPG",
+      "kind": "HOLD",
+      "score": 59.2,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "STRC",
+      "name": "STRC",
+      "kind": "BLOCKED",
+      "score": 61.7,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "TLB",
+      "name": "TLB",
+      "kind": "BUY",
+      "score": 78.0,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "TSMC",
+      "name": "TSMC",
+      "kind": "BUY",
+      "score": 75.4,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "UMH",
+      "name": "UMH",
+      "kind": "BLOCKED",
+      "score": 74.1,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "NFLX",
+      "name": "넷플릭스",
+      "kind": "BLOCKED",
+      "score": 68.7,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "MSFT",
+      "name": "마이크로소프트",
+      "kind": "BLOCKED",
+      "score": 82.9,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "MSTR",
+      "name": "마이크로스트래티지",
+      "kind": "BLOCKED",
+      "score": 63.0,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "MU",
+      "name": "마이크론",
+      "kind": "HOLD",
+      "score": 41.4,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "META",
+      "name": "메타",
+      "kind": "BLOCKED",
+      "score": 63.8,
+      "event_risk": "중간"
+    },
+    {
+      "ticker": "AVGO",
+      "name": "브로드컴",
       "kind": "BLOCKED",
       "score": 48.2,
-      "event_risk": "낮음"
+      "event_risk": "중간"
     },
     {
-      "ticker": "006400",
-      "name": "삼성SDI",
+      "ticker": "AMZN",
+      "name": "아마존",
       "kind": "BLOCKED",
-      "score": 50.0,
-      "event_risk": "낮음"
+      "score": 68.4,
+      "event_risk": "중간"
     },
     {
-      "ticker": "028260",
-      "name": "삼성물산",
-      "kind": "HOLD",
-      "score": 50.0,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "207940",
-      "name": "삼성바이오로직스",
+      "ticker": "GOOGL",
+      "name": "알파벳",
       "kind": "BLOCKED",
-      "score": 51.2,
-      "event_risk": "낮음"
+      "score": 63.5,
+      "event_risk": "중간"
     },
     {
-      "ticker": "032830",
-      "name": "삼성생명",
-      "kind": "HOLD",
-      "score": 48.3,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "005930",
-      "name": "삼성전자",
-      "kind": "HOLD",
-      "score": 50.0,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "005935.KS",
-      "name": "삼성전자우",
-      "kind": "HOLD",
-      "score": 48.3,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "003230",
-      "name": "삼양식품",
-      "kind": "BLOCKED",
-      "score": 68.3,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "068270",
-      "name": "셀트리온",
-      "kind": "BLOCKED",
-      "score": 66.2,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "055550",
-      "name": "신한지주",
+      "ticker": "AAPL",
+      "name": "애플",
       "kind": "BUY_WATCH",
-      "score": 60.4,
-      "event_risk": "낮음"
+      "score": 68.7,
+      "event_risk": "중간"
     },
     {
-      "ticker": "086520",
-      "name": "에코프로",
+      "ticker": "NVDA",
+      "name": "엔비디아",
       "kind": "BLOCKED",
-      "score": 56.8,
-      "event_risk": "낮음"
+      "score": 35.0,
+      "event_risk": "중간"
     },
     {
-      "ticker": "247540",
-      "name": "에코프로비엠",
-      "kind": "BLOCKED",
-      "score": 53.5,
-      "event_risk": "낮음"
+      "ticker": "INTC",
+      "name": "인텔",
+      "kind": "BUY",
+      "score": 72.2,
+      "event_risk": "중간"
     },
     {
-      "ticker": "000100",
-      "name": "유한양행",
+      "ticker": "COIN",
+      "name": "코인베이스",
       "kind": "BLOCKED",
-      "score": 50.0,
-      "event_risk": "낮음"
+      "score": 62.5,
+      "event_risk": "중간"
     },
     {
-      "ticker": "035720",
-      "name": "카카오",
+      "ticker": "QCOM",
+      "name": "퀄컴",
       "kind": "BLOCKED",
-      "score": 48.0,
-      "event_risk": "낮음"
+      "score": 50.9,
+      "event_risk": "중간"
     },
     {
-      "ticker": "214150",
-      "name": "클래시스",
+      "ticker": "TSLA",
+      "name": "테슬라",
       "kind": "BLOCKED",
-      "score": 55.2,
-      "event_risk": "낮음"
+      "score": 62.2,
+      "event_risk": "중간"
     },
     {
-      "ticker": "005490",
-      "name": "포스코홀딩스",
+      "ticker": "PLTR",
+      "name": "팔란티어",
       "kind": "BLOCKED",
-      "score": 50.0,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "042700",
-      "name": "한미 반도체",
-      "kind": "BLOCKED",
-      "score": 47.1,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "042700",
-      "name": "한미반도체",
-      "kind": "BLOCKED",
-      "score": 47.1,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "012450",
-      "name": "한화에어로스페이스",
-      "kind": "BLOCKED",
-      "score": 70.0,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "064350",
-      "name": "현대로템",
-      "kind": "BLOCKED",
-      "score": 66.2,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "012330",
-      "name": "현대모비스",
-      "kind": "BLOCKED",
-      "score": 46.8,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "005380.KS",
-      "name": "현대차",
-      "kind": "BLOCKED",
-      "score": 47.9,
-      "event_risk": "낮음"
-    },
-    {
-      "ticker": "298040",
-      "name": "효성중공업",
-      "kind": "BLOCKED",
-      "score": 66.2,
-      "event_risk": "낮음"
+      "score": 75.7,
+      "event_risk": "중간"
     }
   ]
 }
