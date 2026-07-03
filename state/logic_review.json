@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "date": "2026-07-03",
+  "n_closed": 11,
+  "headline": {
+    "win_rate": 36.4,
+    "profit_factor": 0.41,
+    "return_pct": -4.67
+  },
+  "suggestions": [
+    {
+      "title": "승률 개선 필요",
+      "insight": "현재 승률이 36.4%로 매우 낮아, 지속적인 손실이 우려됨. 이를 개선할 필요가 있음.",
+      "config_key": "risk.min_reward_risk",
+      "current": 1.5,
+      "suggested": 1.75
+    },
+    {
+      "title": "손익 비율 조정",
+      "insight": "현재 손익비가 0.41로 이익을 극대화하기 위한 조정이 필요함.",
+      "config_key": "risk.min_reward_risk",
+      "current": 1.5,
+      "suggested": 1.6
+    },
+    {
+      "title": "매수 기법 다양화",
+      "insight": "현재 매수 진입 유형이 한정적이므로 다양한 진입 기법을 허용해 유연성을 높여야 함.",
+      "config_key": "ai.min_score",
+      "current": 75,
+      "suggested": 70
+    },
+    {
+      "title": "과도한 차단 사유",
+      "insight": "차단 사유가 너무 많아 기회를 잃는 경우가 많음. 평가 기준을 완화할 필요가 있음.",
+      "config_key": "risk.max_stop_pct",
+      "current": -5.0,
+      "suggested": -7.0
+    },
+    {
+      "title": "진입 시점 최적화",
+      "insight": "현재 진입 조건이 엄격해 매수 기회를 놓치고 있으므로, 트렌드와 연관된 조건을 완화해야 함.",
+      "config_key": "risk.require_uptrend",
+      "current": true,
+      "suggested": false
+    }
+  ],
+  "next_action": "제안한 수정안을 바탕으로 로직을 조정하고 테스트를 진행해 보세요."
+}
