@@ -84,6 +84,58 @@ def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_t
     return out
 
 
+def _v6_entries_and_blocks(df, regime_by_date, *, take, default_stop, take2,
+                           cost, min_tv_eok, policy_table=None):
+    """regime 가변 v6 진입 + 반사실(v5 진입 O·v6 차단 O) 산출. 단일 종목.
+
+    반환: (trades, blocks)
+      trades: [(entry_date, ret, regime, hold_days)]  — v6 실제 진입.
+      blocks: [{entry, ret_v5, regime, reason}]        — v5는 진입했지만 v6가 막은 거래(사후검증용).
+    진입 트리거는 v5와 동일(20일선 눌림 후 반등+거래대금). regime 게이트로 차단/트레일 가변.
+    """
+    from .market_regime import Regime
+    from .regime_policy import policy_for
+    close = _col(df, "close").to_numpy(dtype=float)
+    open_ = _col(df, "open").to_numpy(dtype=float)
+    vol = _col(df, "volume").to_numpy(dtype=float)
+    ma20 = _col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
+    ma60 = _col(df, "close").rolling(60, min_periods=1).mean().to_numpy(dtype=float)
+    dates = [d.strftime("%Y-%m-%d") for d in df.index]
+    trades: list = []
+    blocks: list = []
+    i = 20
+    while i < len(close) - 2:
+        tv_eok = close[i] * vol[i] / 1e8
+        base_setup = (close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1]
+                      and tv_eok >= min_tv_eok and open_[i + 1] > 0)
+        if base_setup:
+            reg = regime_by_date.get(dates[i], Regime.NEUTRAL)
+            pol = policy_for(reg, policy_table)
+            stock_up = close[i] > ma60[i] and ma20[i] > ma60[i]
+            entry = float(open_[i + 1])
+            # v5 결과(반사실용): 추세무관 진입, 트레일 3.0
+            ret5, jend5 = _exit_return(close, i + 1, entry, take, default_stop, 20,
+                                       runner=True, take2=take2, trail=3.0)
+            v5_ret = float(ret5) - cost
+            if pol.block_new_entry:
+                blocks.append({"entry": dates[i + 1], "ret_v5": v5_ret,
+                               "regime": reg.value, "reason": "CRASH차단"})
+            elif pol.require_uptrend and not stock_up:
+                blocks.append({"entry": dates[i + 1], "ret_v5": v5_ret,
+                               "regime": reg.value, "reason": "추세필터"})
+            else:
+                ret6, jend6 = _exit_return(close, i + 1, entry, take, default_stop, 20,
+                                           runner=True, take2=take2, trail=pol.trail_pct)
+                trades.append((dates[i + 1], float(ret6) - cost, reg.value,
+                               int(jend6 - (i + 1))))
+                i = max(jend6, i + 1)
+                i += 1
+                continue
+            i = max(jend5, i + 1)
+        i += 1
+    return trades, blocks
+
+
 def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool | None = None,
                     take2_pct=None, trail_pct=None) -> dict:
     """config + 오버라이드 → simulate/_stock_trades 공용 파라미터.
