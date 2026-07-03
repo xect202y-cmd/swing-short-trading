@@ -1,0 +1,2405 @@
+{
+  "date": "2026-07-04",
+  "market": "us",
+  "candidates": [
+    {
+      "ticker": "MSFT",
+      "name": "마이크로소프트",
+      "kind": "BUY_WATCH",
+      "score": 83.0,
+      "rank": 1,
+      "sector": null,
+      "atr_pct": 3.37,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 25,
+          "max": 25,
+          "reason": "20일선 근처(눌림), 전일고가 돌파, RSI 49.8(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 11.7,
+          "max": 15,
+          "reason": "상승여력 +11.7%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 14.3,
+          "max": 20,
+          "reason": "거래량 5/20일 1.52배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파/눌림",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.52배(증가)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 633077.29,
+          "stop": 582311.66,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.74
+        },
+        "ATR": {
+          "target": 637520.23,
+          "stop": 567034.6,
+          "note": "+2.0ATR / -1.5ATR (ATR 3.37%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 667078.33,
+          "stop": 534090.94,
+          "note": "목표=20일고 667,078 / 손절=20일저 534,091",
+          "rr": 1.11,
+          "atr_stop_mult": 3.14
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 597242.73,
+        "stop": 582311.66,
+        "target1": 633077.29,
+        "target2": 648008.36,
+        "rr": 2.4
+      },
+      "methods": [
+        "스윙트레이딩"
+      ],
+      "ai_verdict": "관망",
+      "ai_confidence": 75,
+      "ai_reason": "20일 이동평균선 상향 유지 확인이 어려워 매수에 적합하지 않음.",
+      "block_reasons": [
+        "AI 관망(75) — 매수 보류"
+      ]
+    },
+    {
+      "ticker": "XAI",
+      "name": "XAI",
+      "kind": "BUY_WATCH",
+      "score": 81.2,
+      "rank": 2,
+      "sector": null,
+      "atr_pct": 2.48,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 25,
+          "max": 25,
+          "reason": "20일선 근처(눌림), 전일고가 돌파, RSI 55.2(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 4.2,
+          "max": 15,
+          "reason": "상승여력 +4.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 9.0,
+          "max": 20,
+          "reason": "거래량 5/20일 1.08배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파/눌림/추세추종",
+        "price_conditions": [
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.08배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "눌림목매매",
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 210330.15,
+          "stop": 193464.05,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 1.01
+        },
+        "ATR": {
+          "target": 208283.71,
+          "stop": 191030.39,
+          "note": "+2.0ATR / -1.5ATR (ATR 2.48%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 206735.12,
+          "stop": 184227.75,
+          "note": "목표=20일고 206,735 / 손절=20일저 184,228",
+          "rr": 0.59,
+          "atr_stop_mult": 2.88
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 198424.67,
+        "stop": 193464.05,
+        "target1": 210330.15,
+        "target2": 215290.77,
+        "rr": 2.4
+      },
+      "methods": [
+        "눌림목매매",
+        "스윙트레이딩"
+      ],
+      "ai_verdict": "관망",
+      "ai_confidence": 75,
+      "ai_reason": "현재가가 20일 이동평균선 위에 있지만, 거래량이 낮아 눌림목 매매의 조건을 충족하지 않음.",
+      "block_reasons": [
+        "AI 관망(75) — 매수 보류"
+      ]
+    },
+    {
+      "ticker": "AMD",
+      "name": "AMD",
+      "kind": "BUY_WATCH",
+      "score": 80.8,
+      "rank": 3,
+      "sector": null,
+      "atr_pct": 7.14,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 52.3(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 12.9,
+          "max": 15,
+          "reason": "상승여력 +12.9%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.7,
+          "max": 20,
+          "reason": "거래량 5/20일 1.06배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "눌림/추세추종",
+        "price_conditions": [
+          "20일선 위",
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 1.06배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 7.14% 변동성과다",
+        "matched_methods": [
+          "눌림목매매",
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 839509.58,
+          "stop": 772190.42,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.35
+        },
+        "ATR": {
+          "target": 905057.35,
+          "stop": 707189.79,
+          "note": "+2.0ATR / -1.5ATR (ATR 7.14%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 894326.96,
+          "stop": 668730.18,
+          "note": "목표=20일고 894,327 / 손절=20일저 668,730",
+          "rr": 0.83,
+          "atr_stop_mult": 2.18
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 791990.17,
+        "stop": 772190.42,
+        "target1": 839509.58,
+        "target2": 859309.33,
+        "rr": 2.4
+      },
+      "methods": [
+        "눌림목매매",
+        "스윙트레이딩"
+      ],
+      "ai_verdict": "관망",
+      "ai_confidence": 75,
+      "ai_reason": "현재가가 20일 이동평균선(790,484) 근처에 있으나 거래량과 RSI 지표가 상승 신호를 보이지 않아 신중할 필요가 있다.",
+      "block_reasons": [
+        "AI 관망(75) — 매수 보류"
+      ]
+    },
+    {
+      "ticker": "PLTR",
+      "name": "팔란티어",
+      "kind": "BUY_WATCH",
+      "score": 75.7,
+      "rank": 4,
+      "sector": "소프트웨어/AI/빅데이터",
+      "atr_pct": 5.1,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 25,
+          "max": 25,
+          "reason": "20일선 근처(눌림), 전일고가 돌파, RSI 51.5(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 13.2,
+          "max": 15,
+          "reason": "상승여력 +13.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 10.5,
+          "max": 20,
+          "reason": "거래량 5/20일 1.21배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파/눌림",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.21배(증가)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "소프트웨어/AI/빅데이터",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 209626.11,
+          "stop": 192816.47,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.49
+        },
+        "ATR": {
+          "target": 217916.72,
+          "stop": 182643.3,
+          "note": "+2.0ATR / -1.5ATR (ATR 5.1%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 223868.52,
+          "stop": 162689.73,
+          "note": "목표=20일고 223,869 / 손절=20일저 162,690",
+          "rr": 0.74,
+          "atr_stop_mult": 3.48
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 197760.48,
+        "stop": 192816.47,
+        "target1": 209626.11,
+        "target2": 214570.12,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": "관망",
+      "ai_confidence": 75,
+      "ai_reason": "현재가가 MA20과 MA60 사이에 위치해 있어 매수 신호가 불확실합니다.",
+      "block_reasons": [
+        "AI 관망(75) — 매수 보류"
+      ]
+    },
+    {
+      "ticker": "UMH",
+      "name": "UMH",
+      "kind": "BUY_WATCH",
+      "score": 74.6,
+      "rank": 5,
+      "sector": null,
+      "atr_pct": 1.75,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 25,
+          "max": 25,
+          "reason": "20일선 근처(눌림), 전일고가 돌파, RSI 56.4(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 1.2,
+          "max": 15,
+          "reason": "상승여력 +1.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 16.4,
+          "max": 20,
+          "reason": "거래량 5/20일 1.70배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파/눌림",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.70배(증가)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 25161.62,
+          "stop": 23143.95,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 1.43
+        },
+        "ATR": {
+          "target": 24567.66,
+          "stop": 23114.67,
+          "note": "+2.0ATR / -1.5ATR (ATR 1.75%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 24027.97,
+          "stop": 22727.92,
+          "note": "목표=20일고 24,028 / 손절=20일저 22,728",
+          "rr": 0.29,
+          "atr_stop_mult": 2.43
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 23737.38,
+        "stop": 23143.95,
+        "target1": 25161.62,
+        "target2": 25755.06,
+        "rr": 2.4
+      },
+      "methods": [
+        "스윙트레이딩"
+      ],
+      "ai_verdict": "관망",
+      "ai_confidence": 70,
+      "ai_reason": "현재 주가는 20일 이동평균선보다 위에 있지만 눌림목이 발생하지 않아 추가 하락 위험이 존재한다.",
+      "block_reasons": [
+        "AI 관망(70) — 매수 보류"
+      ]
+    },
+    {
+      "ticker": "INTC",
+      "name": "인텔",
+      "kind": "BUY_WATCH",
+      "score": 72.2,
+      "rank": 6,
+      "sector": null,
+      "atr_pct": 9.31,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 49.1(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +18.3%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.0,
+          "max": 20,
+          "reason": "거래량 5/20일 0.85배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 0.85배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 9.31% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 195116.01,
+          "stop": 179469.92,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.27
+        },
+        "ATR": {
+          "target": 218351.51,
+          "stop": 158361.86,
+          "note": "+2.0ATR / -1.5ATR (ATR 9.31%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 217720.06,
+          "stop": 150392.79,
+          "note": "목표=20일고 217,720 / 손절=20일저 150,393",
+          "rr": 1.0,
+          "atr_stop_mult": 1.96
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 184071.71,
+        "stop": 179469.92,
+        "target1": 195116.01,
+        "target2": 199717.81,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": "관망",
+      "ai_confidence": 75,
+      "ai_reason": "현재가가 MA5, MA20보다 낮아 단기 상승 모멘텀이 부족해 보인다.",
+      "block_reasons": [
+        "AI 관망(75) — 매수 보류"
+      ]
+    },
+    {
+      "ticker": "BYD",
+      "name": "BYD",
+      "kind": "BUY_WATCH",
+      "score": 70.7,
+      "rank": 7,
+      "sector": "카지노/게이밍/호텔/레저",
+      "atr_pct": 2.45,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 55.8(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 3.5,
+          "max": 15,
+          "reason": "상승여력 +3.5%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.0,
+          "max": 20,
+          "reason": "거래량 5/20일 0.90배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "눌림/추세추종",
+        "price_conditions": [
+          "20일선 위",
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 0.90배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "카지노/게이밍/호텔/레저",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "눌림목매매",
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 142506.85,
+          "stop": 131079.41,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 1.02
+        },
+        "ATR": {
+          "target": 141040.32,
+          "stop": 129490.5,
+          "note": "+2.0ATR / -1.5ATR (ATR 2.45%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 139181.77,
+          "stop": 128062.53,
+          "note": "목표=20일고 139,182 / 손절=20일저 128,063",
+          "rr": 0.74,
+          "atr_stop_mult": 1.93
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 134440.42,
+        "stop": 131079.41,
+        "target1": 142506.85,
+        "target2": 145867.86,
+        "rr": 2.4
+      },
+      "methods": [
+        "눌림목매매",
+        "스윙트레이딩"
+      ],
+      "ai_verdict": "관망",
+      "ai_confidence": 75,
+      "ai_reason": "현재가는 20일 이동평균선 위에 있으나, 매수에 적합한 눌림목 조건이 확인되지 않음.",
+      "block_reasons": [
+        "AI 관망(75) — 매수 보류"
+      ]
+    },
+    {
+      "ticker": "AAPL",
+      "name": "애플",
+      "kind": "BUY_WATCH",
+      "score": 68.8,
+      "rank": 8,
+      "sector": "정보기술/가전제품/소프트웨어",
+      "atr_pct": 2.9,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 20.0,
+          "max": 25,
+          "reason": "20일선 상회(상승추세), 전일고가 돌파, RSI 60.3(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 2.8,
+          "max": 15,
+          "reason": "상승여력 +2.8%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 14.0,
+          "max": 20,
+          "reason": "거래량 5/20일 1.50배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.50배(증가)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "정보기술/가전제품/소프트웨어",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "추세추종"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 500362.75,
+          "stop": 460239.32,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.86
+        },
+        "ATR": {
+          "target": 499391.65,
+          "stop": 451526.84,
+          "note": "+2.0ATR / -1.5ATR (ATR 2.9%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 485453.77,
+          "stop": 418692.41,
+          "note": "목표=20일고 485,454 / 손절=20일저 418,692",
+          "rr": 0.25,
+          "atr_stop_mult": 3.9
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 472040.33,
+        "stop": 460239.32,
+        "target1": 500362.75,
+        "target2": 512163.76,
+        "rr": 2.4
+      },
+      "methods": [
+        "추세추종"
+      ],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "NFLX",
+      "name": "넷플릭스",
+      "kind": "BUY_WATCH",
+      "score": 68.7,
+      "rank": 9,
+      "sector": "미디어 및 엔터테인먼트/기술",
+      "atr_pct": 3.66,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 25,
+          "max": 25,
+          "reason": "20일선 근처(눌림), 전일고가 돌파, RSI 47.3(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 7.8,
+          "max": 15,
+          "reason": "상승여력 +7.8%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.9,
+          "max": 20,
+          "reason": "거래량 5/20일 1.07배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파/눌림",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.07배(보통)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미디어 및 엔터테인먼트/기술",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 125889.15,
+          "stop": 115794.27,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.68
+        },
+        "ATR": {
+          "target": 127463.85,
+          "stop": 112237.98,
+          "note": "+2.0ATR / -1.5ATR (ATR 3.66%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 128016.63,
+          "stop": 108378.25,
+          "note": "목표=20일고 128,017 / 손절=20일저 108,378",
+          "rr": 0.89,
+          "atr_stop_mult": 2.39
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 118763.35,
+        "stop": 115794.27,
+        "target1": 125889.15,
+        "target2": 128858.23,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "AMZN",
+      "name": "아마존",
+      "kind": "BUY_WATCH",
+      "score": 68.5,
+      "rank": 10,
+      "sector": "전자상거래/클라우드 컴퓨팅/AI",
+      "atr_pct": 3.61,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 48.7(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 5.6,
+          "max": 15,
+          "reason": "상승여력 +5.6%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 14.7,
+          "max": 20,
+          "reason": "거래량 5/20일 1.56배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "눌림",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 1.56배(증가)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "전자상거래/클라우드 컴퓨팅/AI",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 393425.87,
+          "stop": 361877.57,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.69
+        },
+        "ATR": {
+          "target": 397989.94,
+          "stop": 351031.39,
+          "note": "+2.0ATR / -1.5ATR (ATR 3.61%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 392125.53,
+          "stop": 344971.96,
+          "note": "목표=20일고 392,126 / 손절=20일저 344,972",
+          "rr": 0.8,
+          "atr_stop_mult": 1.95
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 371156.48,
+        "stop": 361877.57,
+        "target1": 393425.87,
+        "target2": 402704.78,
+        "rr": 2.4
+      },
+      "methods": [
+        "스윙트레이딩"
+      ],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "TLB",
+      "name": "TLB",
+      "kind": "BUY_WATCH",
+      "score": 66.2,
+      "rank": 11,
+      "sector": null,
+      "atr_pct": 2.9,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 13.8,
+          "max": 25,
+          "reason": "20일선 상회(상승추세), 전일고가 돌파, RSI 76.4 과열"
+        },
+        {
+          "name": "상승여력",
+          "score": 1.2,
+          "max": 15,
+          "reason": "상승여력 +1.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 13.2,
+          "max": 20,
+          "reason": "거래량 5/20일 1.43배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파/추세추종",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.43배(증가)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: RSI 76.4 과열",
+        "matched_methods": [
+          "신고가매매"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 227955.31,
+          "stop": 209675.88,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.86
+        },
+        "ATR": {
+          "target": 227530.04,
+          "stop": 205693.79,
+          "note": "+2.0ATR / -1.5ATR (ATR 2.9%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 217694.4,
+          "stop": 181698.17,
+          "note": "목표=20일고 217,694 / 손절=20일저 181,698",
+          "rr": 0.08,
+          "atr_stop_mult": 5.35
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 215052.18,
+        "stop": 209675.88,
+        "target1": 227955.31,
+        "target2": 233331.62,
+        "rr": 2.4
+      },
+      "methods": [
+        "신고가매매"
+      ],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "TSMC",
+      "name": "TSMC",
+      "kind": "BUY_WATCH",
+      "score": 66.0,
+      "rank": 12,
+      "sector": null,
+      "atr_pct": 2.55,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 25,
+          "max": 25,
+          "reason": "20일선 근처(눌림), 전일고가 돌파, RSI 52.5(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 3.8,
+          "max": 15,
+          "reason": "상승여력 +3.8%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 5.2,
+          "max": 20,
+          "reason": "거래량 5/20일 0.65배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파/눌림",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 0.65배(보통)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 206376.92,
+          "stop": 189827.83,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.98
+        },
+        "ATR": {
+          "target": 204619.81,
+          "stop": 187251.76,
+          "note": "+2.0ATR / -1.5ATR (ATR 2.55%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 202011.15,
+          "stop": 184226.63,
+          "note": "목표=20일고 202,011 / 손절=20일저 184,227",
+          "rr": 0.7,
+          "atr_stop_mult": 2.11
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 194695.21,
+        "stop": 189827.83,
+        "target1": 206376.92,
+        "target2": 211244.3,
+        "rr": 2.4
+      },
+      "methods": [
+        "스윙트레이딩"
+      ],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "KT",
+      "name": "KT",
+      "kind": "BUY_WATCH",
+      "score": 66.0,
+      "rank": 13,
+      "sector": "통신 서비스",
+      "atr_pct": 2.6,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 18.8,
+          "max": 25,
+          "reason": "20일선 근처(눌림), 전일고가 돌파"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +179.0%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 5.2,
+          "max": 20,
+          "reason": "거래량 5/20일 0.66배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파",
+        "price_conditions": [
+          "5일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 0.66배(보통)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "통신 서비스",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 28679.71,
+          "stop": 26379.92,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.96
+        },
+        "ATR": {
+          "target": 28463.45,
+          "stop": 26000.99,
+          "note": "+2.0ATR / -1.5ATR (ATR 2.6%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 29151.7,
+          "stop": 26199.82,
+          "note": "목표=20일고 29,152 / 손절=20일저 26,200",
+          "rr": 2.45,
+          "atr_stop_mult": 1.22
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 27056.33,
+        "stop": 26379.92,
+        "target1": 28679.71,
+        "target2": 29356.12,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "KLAC",
+      "name": "KLAC",
+      "kind": "BUY_WATCH",
+      "score": 65.4,
+      "rank": 14,
+      "sector": null,
+      "atr_pct": 9.69,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 6.2,
+          "max": 25,
+          "reason": "RSI 49.8(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +30.5%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 11.2,
+          "max": 20,
+          "reason": "거래량 5/20일 1.26배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "조건 약함"
+        ],
+        "volume_condition": "5/20일 평균 1.26배(증가)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: ATR 9.69% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 381882.66,
+          "stop": 351259.99,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.26
+        },
+        "ATR": {
+          "target": 430089.16,
+          "stop": 307899.78,
+          "note": "+2.0ATR / -1.5ATR (ATR 9.69%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 470113.19,
+          "stop": 294840.51,
+          "note": "목표=20일고 470,113 / 손절=20일저 294,841",
+          "rr": 1.68,
+          "atr_stop_mult": 1.87
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 360266.66,
+        "stop": 351259.99,
+        "target1": 381882.66,
+        "target2": 390889.33,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "META",
+      "name": "메타",
+      "kind": "BUY_WATCH",
+      "score": 63.8,
+      "rank": 15,
+      "sector": "기술/커뮤니케이션 서비스",
+      "atr_pct": 3.96,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 49.7(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 10.1,
+          "max": 15,
+          "reason": "상승여력 +10.1%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 10.5,
+          "max": 20,
+          "reason": "거래량 5/20일 1.21배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "눌림",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 1.21배(증가)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "기술/커뮤니케이션 서비스",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 945019.79,
+          "stop": 869239.9,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.63
+        },
+        "ATR": {
+          "target": 962141.76,
+          "stop": 838567.85,
+          "note": "+2.0ATR / -1.5ATR (ATR 3.96%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 981621.76,
+          "stop": 826189.09,
+          "note": "목표=20일고 981,622 / 손절=20일저 826,189",
+          "rr": 1.38,
+          "atr_stop_mult": 1.85
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 891528.1,
+        "stop": 869239.9,
+        "target1": 945019.79,
+        "target2": 967307.99,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "GOOGL",
+      "name": "알파벳",
+      "kind": "BUY_WATCH",
+      "score": 63.5,
+      "rank": 16,
+      "sector": null,
+      "atr_pct": 3.41,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 49.5(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 4.5,
+          "max": 15,
+          "reason": "상승여력 +4.5%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 10.8,
+          "max": 20,
+          "reason": "거래량 5/20일 1.24배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "눌림",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 1.24배(증가)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 583499.84,
+          "stop": 536709.76,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.73
+        },
+        "ATR": {
+          "target": 587978.51,
+          "stop": 522341.33,
+          "note": "+2.0ATR / -1.5ATR (ATR 3.41%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 575080.72,
+          "stop": 505031.01,
+          "note": "목표=20일고 575,081 / 손절=20일저 505,031",
+          "rr": 0.54,
+          "atr_stop_mult": 2.42
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 550471.55,
+        "stop": 536709.76,
+        "target1": 583499.84,
+        "target2": 597261.63,
+        "rr": 2.4
+      },
+      "methods": [
+        "스윙트레이딩"
+      ],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "MSTR",
+      "name": "MSTR",
+      "kind": "BUY_WATCH",
+      "score": 63.0,
+      "rank": 17,
+      "sector": null,
+      "atr_pct": 10.06,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 8.8,
+          "max": 25,
+          "reason": "전일고가 돌파"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +35.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 12.2,
+          "max": 20,
+          "reason": "거래량 5/20일 1.35배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파",
+        "price_conditions": [
+          "5일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.35배(증가)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: 갭 +6.9%, ATR 10.06% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 163372.17,
+          "stop": 150271.57,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.25
+        },
+        "ATR": {
+          "target": 185131.43,
+          "stop": 130869.64,
+          "note": "+2.0ATR / -1.5ATR (ATR 10.06%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 208390.29,
+          "stop": 125125.94,
+          "note": "목표=20일고 208,390 / 손절=20일저 125,126",
+          "rr": 1.87,
+          "atr_stop_mult": 1.87
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 154124.69,
+        "stop": 150271.57,
+        "target1": 163372.17,
+        "target2": 167225.29,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "MSTR",
+      "name": "마이크로스트래티지",
+      "kind": "BUY_WATCH",
+      "score": 63.0,
+      "rank": 18,
+      "sector": null,
+      "atr_pct": 10.06,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 8.8,
+          "max": 25,
+          "reason": "전일고가 돌파"
+        },
+        {
+          "name": "상승여력",
+          "score": 15,
+          "max": 15,
+          "reason": "상승여력 +35.2%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 12.2,
+          "max": 20,
+          "reason": "거래량 5/20일 1.35배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파",
+        "price_conditions": [
+          "5일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.35배(증가)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: 갭 +6.9%, ATR 10.06% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 163372.17,
+          "stop": 150271.57,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.25
+        },
+        "ATR": {
+          "target": 185131.43,
+          "stop": 130869.64,
+          "note": "+2.0ATR / -1.5ATR (ATR 10.06%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 208390.29,
+          "stop": 125125.94,
+          "note": "목표=20일고 208,390 / 손절=20일저 125,126",
+          "rr": 1.87,
+          "atr_stop_mult": 1.87
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 154124.69,
+        "stop": 150271.57,
+        "target1": 163372.17,
+        "target2": 167225.29,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "DX",
+      "name": "DX",
+      "kind": "BUY_WATCH",
+      "score": 62.8,
+      "rank": 19,
+      "sector": null,
+      "atr_pct": 1.46,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 53.6(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 1.8,
+          "max": 15,
+          "reason": "상승여력 +1.8%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 12.8,
+          "max": 20,
+          "reason": "거래량 5/20일 1.40배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "눌림",
+        "price_conditions": [
+          "20일선 위",
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 1.40배(증가)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": [
+          "스윙트레이딩"
+        ]
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 21092.31,
+          "stop": 19400.95,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 1.71
+        },
+        "ATR": {
+          "target": 20480.97,
+          "stop": 19461.49,
+          "note": "+2.0ATR / -1.5ATR (ATR 1.46%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 20265.48,
+          "stop": 19186.52,
+          "note": "목표=20일고 20,265 / 손절=20일저 19,187",
+          "rr": 0.52,
+          "atr_stop_mult": 2.44
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 19898.41,
+        "stop": 19400.95,
+        "target1": 21092.31,
+        "target2": 21589.77,
+        "rr": 2.4
+      },
+      "methods": [
+        "스윙트레이딩"
+      ],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "COIN",
+      "name": "코인베이스",
+      "kind": "BUY_WATCH",
+      "score": 62.5,
+      "rank": 20,
+      "sector": null,
+      "atr_pct": 6.58,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 20.0,
+          "max": 25,
+          "reason": "20일선 상회(상승추세), 전일고가 돌파, RSI 50.8(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 6.6,
+          "max": 15,
+          "reason": "상승여력 +6.6%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.9,
+          "max": 20,
+          "reason": "거래량 5/20일 1.08배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 1.08배(보통)",
+        "trend_condition": "20일선 상회",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "주의: 갭 +3.7%, ATR 6.58% 변동성과다",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 268282.49,
+          "stop": 246769.27,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.38
+        },
+        "ATR": {
+          "target": 286423.85,
+          "stop": 228101.32,
+          "note": "+2.0ATR / -1.5ATR (ATR 6.58%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 269920.86,
+          "stop": 212871.62,
+          "note": "목표=20일고 269,921 / 손절=20일저 212,872",
+          "rr": 0.42,
+          "atr_stop_mult": 2.41
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 253096.69,
+        "stop": 246769.27,
+        "target1": 268282.49,
+        "target2": 274609.91,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "TSLA",
+      "name": "테슬라",
+      "kind": "BUY_WATCH",
+      "score": 62.2,
+      "rank": 21,
+      "sector": "전기차/자율주행/에너지",
+      "atr_pct": 4.84,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 46.8(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 10.0,
+          "max": 15,
+          "reason": "상승여력 +10.0%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 9.0,
+          "max": 20,
+          "reason": "거래량 5/20일 1.09배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "기타",
+        "price_conditions": [
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 1.09배(보통)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "전기차/자율주행/에너지",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 637876.19,
+          "stop": 586725.74,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.52
+        },
+        "ATR": {
+          "target": 660036.23,
+          "stop": 558070.31,
+          "note": "+2.0ATR / -1.5ATR (ATR 4.84%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 662046.36,
+          "stop": 563762.65,
+          "note": "목표=20일고 662,046 / 손절=20일저 563,763",
+          "rr": 1.59,
+          "atr_stop_mult": 1.3
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 601769.99,
+        "stop": 586725.74,
+        "target1": 637876.19,
+        "target2": 652920.44,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "STRC",
+      "name": "STRC",
+      "kind": "BUY_WATCH",
+      "score": 61.7,
+      "rank": 22,
+      "sector": null,
+      "atr_pct": 5.69,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 16.2,
+          "max": 25,
+          "reason": "20일선 근처(눌림), RSI 47.9(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 9.5,
+          "max": 15,
+          "reason": "상승여력 +9.5%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 9.0,
+          "max": 20,
+          "reason": "거래량 5/20일 1.09배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "기타",
+        "price_conditions": [
+          "5일선 위",
+          "20일선 근처(지지)"
+        ],
+        "volume_condition": "5/20일 평균 1.09배(보통)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 142458.2,
+          "stop": 131034.67,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.44
+        },
+        "ATR": {
+          "target": 149696.81,
+          "stop": 122917.82,
+          "note": "+2.0ATR / -1.5ATR (ATR 5.69%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 147117.51,
+          "stop": 108350.87,
+          "note": "목표=20일고 147,118 / 손절=20일저 108,351",
+          "rr": 0.49,
+          "atr_stop_mult": 3.4
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 134394.53,
+        "stop": 131034.67,
+        "target1": 142458.2,
+        "target2": 145818.07,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "GBTC",
+      "name": "GBTC",
+      "kind": "BUY_WATCH",
+      "score": 61.5,
+      "rank": 23,
+      "sector": null,
+      "atr_pct": 3.77,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 10.0,
+          "max": 20,
+          "reason": "중립"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 18.8,
+          "max": 25,
+          "reason": "20일선 근처(눌림), 전일고가 돌파"
+        },
+        {
+          "name": "상승여력",
+          "score": 9.5,
+          "max": 15,
+          "reason": "상승여력 +9.5%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 6.2,
+          "max": 20,
+          "reason": "거래량 5/20일 0.77배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "돌파",
+        "price_conditions": [
+          "5일선 위",
+          "전일고가 돌파"
+        ],
+        "volume_condition": "5/20일 평균 0.77배(보통)",
+        "trend_condition": "추세 약함",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 77235.79,
+          "stop": 71042.35,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.66
+        },
+        "ATR": {
+          "target": 78355.85,
+          "stop": 68745.02,
+          "note": "+2.0ATR / -1.5ATR (ATR 3.77%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 79807.75,
+          "stop": 68795.56,
+          "note": "목표=20일고 79,808 / 손절=20일저 68,796",
+          "rr": 1.71,
+          "atr_stop_mult": 1.48
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 72863.95,
+        "stop": 71042.35,
+        "target1": 77235.79,
+        "target2": 79057.39,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    },
+    {
+      "ticker": "ASML",
+      "name": "ASML",
+      "kind": "BUY_WATCH",
+      "score": 60.7,
+      "rank": 24,
+      "sector": null,
+      "atr_pct": 5.53,
+      "breakdown": [
+        {
+          "name": "섹터/테마 모멘텀",
+          "score": 16.0,
+          "max": 20,
+          "reason": "이평선 정배열"
+        },
+        {
+          "name": "기술적 타점",
+          "score": 6.2,
+          "max": 25,
+          "reason": "RSI 49.7(과열 전)"
+        },
+        {
+          "name": "상승여력",
+          "score": 13.0,
+          "max": 15,
+          "reason": "상승여력 +13.0%"
+        },
+        {
+          "name": "거래량/거래대금",
+          "score": 8.5,
+          "max": 20,
+          "reason": "거래량 5/20일 1.05배"
+        },
+        {
+          "name": "거시/이벤트 안전도",
+          "score": 7.0,
+          "max": 10,
+          "reason": "거시 중간·이벤트 중간"
+        },
+        {
+          "name": "손절 구조",
+          "score": 10.0,
+          "max": 10,
+          "reason": "손절까지 -3.0%(% 기반 -3%)"
+        }
+      ],
+      "rationale": {
+        "entry_type": "추세추종",
+        "price_conditions": [
+          "조건 약함"
+        ],
+        "volume_condition": "5/20일 평균 1.05배(보통)",
+        "trend_condition": "정배열(단>중>장)",
+        "supply_condition": "데이터 제한(외국인/기관 수급 미연동)",
+        "sector_state": "미상",
+        "market_state": "US · 거시 중간 · 이벤트 중간",
+        "exclusion_pass": "통과",
+        "matched_methods": []
+      },
+      "target_methods": {
+        "고정비율": {
+          "target": 2868489.09,
+          "stop": 2638468.74,
+          "note": "매수가 대비 +6.0% / -2.5%",
+          "rr": 2.4,
+          "atr_stop_mult": 0.45
+        },
+        "ATR": {
+          "target": 3005434.7,
+          "stop": 2481637.09,
+          "note": "+2.0ATR / -1.5ATR (ATR 5.53%)",
+          "rr": 1.33,
+          "atr_stop_mult": 1.5
+        },
+        "지지저항": {
+          "target": 3058878.76,
+          "stop": 2505853.07,
+          "note": "목표=20일고 3,058,879 / 손절=20일저 2,505,853",
+          "rr": 1.76,
+          "atr_stop_mult": 1.34
+        }
+      },
+      "target_method_used": "고정비율",
+      "plan": {
+        "entry": 2706121.78,
+        "stop": 2638468.74,
+        "target1": 2868489.09,
+        "target2": 2936142.13,
+        "rr": 2.4
+      },
+      "methods": [],
+      "ai_verdict": null,
+      "ai_confidence": null,
+      "ai_reason": null,
+      "block_reasons": []
+    }
+  ]
+}

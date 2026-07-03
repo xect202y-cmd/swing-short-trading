@@ -154,5 +154,46 @@
       "ai.min_score": 75,
       "ai.veto_confidence": 70
     }
+  },
+  {
+    "version": 5,
+    "date": "2026-07-04",
+    "created": "2026-07-04T02:21:20+09:00",
+    "note": "v5: 승률/손익비 개선 — min_reward_risk 1.5→1.75, ai.min_score 75→70, max_stop_pct -5→-7, require_uptrend true→false (v4 베이스, AI 진단 반영)",
+    "snapshot": {
+      "capital.seed": 5000000,
+      "capital.max_positions": 3,
+      "capital.max_per_stock": 1250000,
+      "capital.first_entry": 1000000,
+      "capital.weekly_target": 300000,
+      "risk.default_stop_pct": -2.5,
+      "risk.max_stop_pct": -7.0,
+      "risk.take1_pct": 6.0,
+      "risk.take2_pct": 8.5,
+      "risk.min_reward_risk": 1.75,
+      "risk.daily_loss_limit": -150000,
+      "risk.account_loss_limit": -250000,
+      "risk.min_trading_value_eok": 30,
+      "risk.momentum_exit_days": 5,
+      "risk.soft_hold_days": 10,
+      "risk.max_hold_days": 20,
+      "risk.partial_exit_pct": 0.5,
+      "risk.trail_pct": 3.0,
+      "risk.require_uptrend": false,
+      "scoring.weights.sector_momentum": 20,
+      "scoring.weights.technical_setup": 25,
+      "scoring.weights.upside_room": 15,
+      "scoring.weights.volume_surge": 20,
+      "scoring.weights.macro_event_risk": 10,
+      "scoring.weights.short_stop_structure": 10,
+      "scoring.thresholds.strong": 80,
+      "scoring.thresholds.small_ok": 70,
+      "scoring.thresholds.watch": 60,
+      "scoring.method_bonus_per": 5,
+      "scoring.method_bonus_max": 12,
+      "ai.enabled": true,
+      "ai.min_score": 70,
+      "ai.veto_confidence": 70
+    }
   }
 ]
