@@ -165,7 +165,7 @@
     "max_up": 13.49,
     "max_down": 0.0,
     "last_update": "2026-07-04",
-    "last_ret": 12.3,
+    "last_ret": 12.29,
     "ret_d1": 9.92,
     "ret_d3": 12.28
   },
@@ -203,7 +203,7 @@
     "max_up": 4.93,
     "max_down": 0.0,
     "last_update": "2026-07-04",
-    "last_ret": 3.83,
+    "last_ret": 3.82,
     "ret_d1": 3.08,
     "ret_d3": 3.81
   },
@@ -241,7 +241,7 @@
     "max_up": 3.22,
     "max_down": 0.0,
     "last_update": "2026-07-04",
-    "last_ret": 2.14,
+    "last_ret": 2.13,
     "ret_d1": 2.72,
     "ret_d3": 2.13
   },
@@ -1232,7 +1232,8 @@
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-04"
+    "last_update": "2026-07-04",
+    "last_ret": -0.0
   },
   "JTBC": {
     "ticker": "JTBC",
@@ -1249,7 +1250,7 @@
     "max_up": 10.19,
     "max_down": -41.14,
     "last_update": "2026-07-04",
-    "last_ret": -21.51,
+    "last_ret": -33.86,
     "ret_d1": -41.14,
     "ret_d3": -36.21
   },
@@ -1268,7 +1269,7 @@
     "max_up": 0.0,
     "max_down": -38.71,
     "last_update": "2026-07-04",
-    "last_ret": -16.58,
+    "last_ret": -10.31,
     "ret_d1": -19.05,
     "ret_d3": -24.51
   },
@@ -1287,7 +1288,7 @@
     "max_up": 52.58,
     "max_down": -6.43,
     "last_update": "2026-07-04",
-    "last_ret": 27.92,
+    "last_ret": 10.21,
     "ret_d1": 8.02,
     "ret_d3": 31.27
   },
@@ -1306,7 +1307,7 @@
     "max_up": 0.0,
     "max_down": -55.28,
     "last_update": "2026-07-04",
-    "last_ret": -32.52,
+    "last_ret": -43.2,
     "ret_d1": -51.7,
     "ret_d3": -31.38
   },
@@ -1363,7 +1364,7 @@
     "max_up": 0.38,
     "max_down": -0.69,
     "last_update": "2026-07-04",
-    "last_ret": -0.67,
+    "last_ret": -0.68,
     "ret_d1": -0.69
   },
   "SM": {
@@ -1381,7 +1382,7 @@
     "max_up": 0.38,
     "max_down": -0.69,
     "last_update": "2026-07-04",
-    "last_ret": -0.67,
+    "last_ret": -0.68,
     "ret_d1": -0.69
   },
   "003670": {
@@ -1450,7 +1451,8 @@
     "block_reason": "AI 관망(75) — 매수 보류",
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-04"
+    "max_down": -45.69,
+    "last_update": "2026-07-04",
+    "last_ret": -45.69
   }
 }

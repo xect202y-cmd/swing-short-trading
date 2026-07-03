@@ -204,15 +204,24 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
     pm = PositionManager(cfg, broker, provider)
     exits = pm.check_and_exit()
     # 2) 신규 매수(안전장치)
-    om = OrderManager(cfg, broker, realized_today=broker.realized_pnl, realized_total=broker.realized_pnl)
+    # 일/주 손실 한도는 '그 날/그 주' 실현손익만 봐야 함(broker.realized_pnl 은 전체 누적이라
+    # 오래전 손실이 매일 '1일 손실 한도'를 영구히 걸어 봇이 안 사는 버그). closed_trades.json 의
+    # exit_date 창으로 산출 + 이번 런 청산(아직 미저장)을 extra 로 합산.
+    from datetime import timedelta
+    from .review import analytics as _A
+    _closed_now = [c for _, _, c in exits]
+    _today = _DM.today_kst()
+    _week_start = (_today - timedelta(days=_today.weekday())).isoformat()
+    realized_today = _A.realized_since(cfg.state_dir, _today.isoformat(), _closed_now)
+    realized_week = _A.realized_since(cfg.state_dir, _week_start, _closed_now)
+    om = OrderManager(cfg, broker, realized_today=realized_today, realized_total=realized_week)
     result = om.execute_signals(signals)
     broker.save()
 
     # 청산 거래 원장 적재(분석/브리핑용)
     from .notify.discord import notify_embeds
-    from .review import analytics as _A
     from .review import briefer as _B
-    closed = [c for _, _, c in exits]
+    closed = _closed_now
     _A.record_closed_trades(cfg.state_dir, closed)
     # 분석용 의사결정 로그(왜 샀나/차단했나/점수분해/목표방식/순위) + 차단·WATCH 사후추적
     _save_decision_log(cfg, signals, result, market)

@@ -58,6 +58,18 @@ def load_closed(state_dir: Path) -> list[dict]:
     return _load(state_dir / "closed_trades.json")
 
 
+def realized_since(state_dir: Path, since_iso: str, extra: list[dict] | None = None) -> float:
+    """exit_date 가 since_iso(YYYY-MM-DD) 이후인 청산거래의 실현손익 합.
+
+    일/주 손실 한도용 — broker.realized_pnl(전체 누적)과 달리 '그 날/그 주' 창만 본다.
+    extra: 아직 closed_trades.json 에 안 들어간 이번 런의 청산거래(중복합산 방지).
+    """
+    def _sum(rows):
+        return sum(float(r.get("pnl", 0) or 0) for r in rows
+                   if str(r.get("exit_date", "")) >= since_iso)
+    return round(_sum(load_closed(state_dir)) + _sum(extra or []), 2)
+
+
 @dataclass
 class Metrics:
     n_closed: int = 0
