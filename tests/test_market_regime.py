@@ -25,7 +25,8 @@ def test_crash_on_fast_drop():
 
 
 def test_bear_below_ma200_falling():
-    down = list(np.linspace(300, 150, 260))  # below ma200, ma50 falling
+    # 완만한 하락: 200일선 아래 + 50일선 하락이되, 60일 낙폭 -12% 미만이라 CRASH 아님(BEAR).
+    down = list(np.linspace(300, 250, 260))
     df = _idx(down)
     assert classify_series(df)[df.index[-1].strftime("%Y-%m-%d")] == Regime.BEAR
 
