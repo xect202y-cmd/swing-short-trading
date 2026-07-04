@@ -12,7 +12,17 @@ from pathlib import Path
 
 SEED_PER_MODEL = 3_000_000
 _FILE = "scalp_state.json"
-_MODELS = ("v1", "v2", "v3")
+_DEFAULT_MODELS = ("v3",)   # 라이브 기본(채택 모델). load 시 config 값 주입.
+
+
+def live_models(cfg) -> tuple:
+    """라이브 페이퍼가 실제 운용하는 모델 — 채택 모델 1개. (비교는 scalp_compare 백테스트)"""
+    adopted = str(cfg.get("scalp", "adopted_version", default="v3") or "v3").strip()
+    return (adopted,) if adopted else _DEFAULT_MODELS
+
+
+def _blank() -> dict:
+    return {"cash": float(SEED_PER_MODEL), "realized": 0.0, "shadow_realized": 0.0}
 
 
 @dataclass
@@ -21,9 +31,10 @@ class ScalpState:
     daily: list = field(default_factory=list)
     trades: list = field(default_factory=list)
     asOf: str = ""
+    model_names: tuple = _DEFAULT_MODELS
 
     @classmethod
-    def load(cls, state_dir: Path) -> "ScalpState":
+    def load(cls, state_dir: Path, models: tuple = _DEFAULT_MODELS) -> "ScalpState":
         p = Path(state_dir) / _FILE
         raw: dict = {}
         if p.exists():
@@ -31,25 +42,26 @@ class ScalpState:
                 raw = json.loads(p.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError):
                 raw = {}
-        models = raw.get("models") or {}
-        for m in _MODELS:
-            models.setdefault(m, {"cash": float(SEED_PER_MODEL), "realized": 0.0,
-                                  "shadow_realized": 0.0})
-        return cls(models=models, daily=list(raw.get("daily") or []),
-                   trades=list(raw.get("trades") or []), asOf=str(raw.get("asOf") or ""))
+        prev = raw.get("models") or {}
+        models = tuple(models)
+        # 라이브 모델만 유지 — 채택이 바뀌면 옛 모델 계좌는 자연 폐기(비교는 백테스트가 담당)
+        m = {name: (prev.get(name) or _blank()) for name in models}
+        return cls(models=m, daily=list(raw.get("daily") or []),
+                   trades=list(raw.get("trades") or []), asOf=str(raw.get("asOf") or ""),
+                   model_names=models)
 
     def apply_day(self, d: str, market: str, results: dict) -> None:
         # 같은 (date, market) 기존 기록 제거(재정산 멱등) — 현금/실현도 되돌린 뒤 재적용
         prev = next((r for r in self.daily if r["date"] == d and r["market"] == market), None)
         if prev:
-            for m in _MODELS:
-                self.models[m]["cash"] -= prev[f"{m}_pnl"]
-                self.models[m]["realized"] -= prev[f"{m}_pnl"]
-                self.models[m]["shadow_realized"] -= prev[f"{m}_shadow"]
+            for m in self.model_names:
+                self.models[m]["cash"] -= prev.get(f"{m}_pnl", 0.0)
+                self.models[m]["realized"] -= prev.get(f"{m}_pnl", 0.0)
+                self.models[m]["shadow_realized"] -= prev.get(f"{m}_shadow", 0.0)
             self.daily = [r for r in self.daily if not (r["date"] == d and r["market"] == market)]
             self.trades = [t for t in self.trades if not (t["date"] == d and t["market"] == market)]
         row = {"date": d, "market": market}
-        for m in _MODELS:
+        for m in self.model_names:
             res = results.get(m) or {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []}
             self.models[m]["cash"] += res["pnl"]
             self.models[m]["realized"] += res["pnl"]

@@ -73,7 +73,7 @@ def _items(model: str, cands: list[dict], cash: float, quotes: dict,
 
 
 def build_plan(candidates: list[dict], cash_by_model: dict, scenario: dict,
-               quotes: dict) -> dict:
+               quotes: dict, models: tuple = ("v3",)) -> dict:
     ranked = _rank(candidates, scenario.get("focus_text", ""))
     base = _rank(candidates, "")                      # 그림자 = 시나리오 무가중
     v1_cap = 2 if scenario.get("risk") == "높음" else MAX_POS
@@ -81,14 +81,14 @@ def build_plan(candidates: list[dict], cash_by_model: dict, scenario: dict,
     up_base = [c for c in base if c.get("uptrend")]
     v3c = [c for c in up if c.get("v3_ok")]           # v3 = 상승배열 + 리턴 구간(50일선 흐름·VWMA50 지지)
     v3c_base = [c for c in up_base if c.get("v3_ok")]
-    return {
-        "v1": _items("v1", ranked, cash_by_model["v1"], quotes, v1_cap, False),
-        "v2": _items("v2", up, cash_by_model["v2"], quotes, MAX_POS, False),
-        "v3": _items("v3", v3c, cash_by_model["v3"], quotes, MAX_POS, False),
-        "v1_shadow": _items("v1", base, cash_by_model["v1"], quotes, MAX_POS, True),
-        "v2_shadow": _items("v2", up_base, cash_by_model["v2"], quotes, MAX_POS, True),
-        "v3_shadow": _items("v3", v3c_base, cash_by_model["v3"], quotes, MAX_POS, True),
-    }
+    # 모델별 (라이브 후보, 그림자 후보, 상한). 라이브 계좌가 운용하는 models 만 계획 생성.
+    src = {"v1": (ranked, base, v1_cap), "v2": (up, up_base, MAX_POS), "v3": (v3c, v3c_base, MAX_POS)}
+    out: dict = {}
+    for m in models:
+        live_c, shadow_c, cap = src[m]
+        out[m] = _items(m, live_c, cash_by_model[m], quotes, cap, False)
+        out[f"{m}_shadow"] = _items(m, shadow_c, cash_by_model[m], quotes, MAX_POS, True)
+    return out
 
 
 def save_plan(state_dir: Path, market: str, plan: dict) -> None:

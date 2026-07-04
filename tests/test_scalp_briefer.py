@@ -5,7 +5,7 @@ from swing_trader.scalp.strategy import PlanItem
 
 
 def test_brief_contains_results_and_plan(tmp_path):
-    state = ScalpState.load(tmp_path)
+    state = ScalpState.load(tmp_path, ("v1", "v2", "v3"))
     settled = {"v1": [{"name": "삼성전자", "entry": 61000.0, "exit": 61600.0,
                        "pnl": 5900.0, "ret_pct": 0.98, "reason": "종가청산"}], "v2": []}
     plan = {"date": "2026-07-03",
@@ -23,7 +23,7 @@ def test_brief_contains_results_and_plan(tmp_path):
 
 
 def test_brief_no_results_says_so(tmp_path):
-    state = ScalpState.load(tmp_path)
+    state = ScalpState.load(tmp_path, ("v1", "v2", "v3"))
     plan = {"date": "2026-07-03", "scenario": {"risk": "낮음", "notes": [], "focus_text": ""},
             "items": []}
     embed, md = scalp_brief("us", {"v1": [], "v2": []}, plan, state, "2026-07-02")

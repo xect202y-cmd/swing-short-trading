@@ -12,11 +12,14 @@ def _won(v) -> str:
     return "—" if v is None else f"{round(v):,}"
 
 
-def _results_lines(settled: dict) -> list[str]:
+_TAG = {"v1": "v1 돌파", "v2": "v2 갭반등", "v3": "v3 터닝갭"}
+
+
+def _results_lines(settled: dict, models) -> list[str]:
     out: list[str] = []
-    for m in ("v1", "v2", "v3"):
+    for m in models:
         rows = settled.get(m) or []
-        tag = {"v1": "v1 돌파", "v2": "v2 갭반등", "v3": "v3 터닝갭"}[m]
+        tag = _TAG.get(m, m)
         if not rows:
             out.append(f"[{tag}] 체결 없음")
             continue
@@ -34,15 +37,16 @@ def _plan_lines(plan: dict) -> list[str]:
             [i for i in plan.get("items", []) if not getattr(i, "shadow", False)]
     if not items:
         return ["(오늘 계획 없음 — 조건 충족 후보 없음)"]
+    hdr = {"v1": "[v1 돌파 — 트리거 터치 시 매수]", "v2": "[v2 갭반등 — 시가 진입]",
+           "v3": "[v3 터닝갭 — 시가 진입 · 익절 목표]"}
     out: list[str] = []
-    for m in ("v1", "v2"):
+    for m in [x for x in ("v1", "v2", "v3") if any(i.model == x for i in items)]:
         mine = [i for i in items if i.model == m]
-        if not mine:
-            continue
-        out.append("[v1 돌파 — 트리거 터치 시 매수]" if m == "v1" else "[v2 갭반등 — 시가 진입]")
+        out.append(hdr.get(m, f"[{m}]"))
         for i in mine:
             trig = f"트리거 {_won(i.trigger)}원 · " if i.trigger else ""
-            out.append(f"  · {i.name} {i.qty}주 · {trig}손절 {i.stop_pct:+.1f}% · {i.why}")
+            tgt = f" · 익절 {i.target_pct:+.0f}%" if getattr(i, "target_pct", None) else ""
+            out.append(f"  · {i.name} {i.qty}주 · {trig}손절 {i.stop_pct:+.1f}%{tgt} · {i.why}")
     return out
 
 
@@ -50,19 +54,21 @@ def scalp_brief(market: str, settled: dict, plan: dict, state: ScalpState,
                 settled_date: str) -> tuple[dict, str]:
     mk = _MK.get(market, market.upper())
     scen = plan.get("scenario", {})
-    total = sum(state.models[m]["cash"] for m in ("v1", "v2", "v3"))
-    res = _results_lines(settled)
+    mdls = state.model_names
+    total = sum(state.models[m]["cash"] for m in mdls)
+    res = _results_lines(settled, mdls)
     pl = _plan_lines(plan)
-    day_total = sum(r["pnl"] for m in ("v1", "v2", "v3") for r in (settled.get(m) or []))
+    day_total = sum(r["pnl"] for m in mdls for r in (settled.get(m) or []))
     fields = [
         {"name": f"📊 {settled_date} 결과 · 일손익 {'+' if day_total >= 0 else ''}{_won(day_total)}원",
          "value": "\n".join(res)[:1024], "inline": False},
         {"name": f"🗺️ {plan.get('date')} 계획 · 시나리오 리스크 {scen.get('risk', '—')}",
          "value": ("\n".join(scen.get("notes", [])[:2] + pl))[:1024], "inline": False},
     ]
+    tail = f" · {len(mdls)}모델 합산" if len(mdls) > 1 else ""
     embed = {"title": f"⚡ 단타 페이퍼 · {mk}", "color": ORANGE, "fields": fields,
-             "footer": {"text": f"가상 {SEED_PER_MODEL // 10000}만 ×2모델 · 당일청산 · "
-                                f"합산 {_won(total)}원"}}
+             "footer": {"text": f"채택 {'/'.join(mdls)} · 가상 {SEED_PER_MODEL // 10000}만 · "
+                                f"당일청산{tail} · {_won(total)}원"}}
     md = (f"### ⚡ 단타 · {mk} · {plan.get('date')}\n"
           f"**{settled_date} 결과**\n" + "\n".join(res) +
           f"\n\n**계획(리스크 {scen.get('risk', '—')})**\n" + "\n".join(pl) + "\n")

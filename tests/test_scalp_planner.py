@@ -2,6 +2,8 @@
 from swing_trader.scalp.planner import build_plan, load_plans, save_plan
 from swing_trader.scalp.strategy import PlanItem
 
+M3 = ("v1", "v2", "v3")   # 멀티모델 계획 검증(라이브 기본은 v3 단일)
+
 
 def cand(t, name, tv=100.0, uptrend=True, prev_close=10000.0):
     return {"ticker": t, "name": name, "prev_close": prev_close,
@@ -14,14 +16,14 @@ def _scen(risk="낮음", focus=""):
 
 def test_v1_caps_at_5_and_sorts_by_trading_value():
     cands = [cand(f"00000{i}", f"종목{i}", tv=float(i)) for i in range(1, 8)]
-    plan = build_plan(cands, {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000}, _scen(), quotes={})
+    plan = build_plan(cands, {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000}, _scen(), quotes={}, models=M3)
     assert len(plan["v1"]) == 5
     assert plan["v1"][0].ticker == "000007"   # 거래대금 최대 우선
 
 
 def test_high_risk_caps_v1_at_2_but_shadow_keeps_5():
     cands = [cand(f"00000{i}", f"종목{i}", tv=float(i)) for i in range(1, 8)]
-    plan = build_plan(cands, {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000}, _scen(risk="높음"), quotes={})
+    plan = build_plan(cands, {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000}, _scen(risk="높음"), quotes={}, models=M3)
     assert len(plan["v1"]) == 2
     assert len(plan["v1_shadow"]) == 5
     assert all(it.shadow for it in plan["v1_shadow"])
@@ -30,20 +32,20 @@ def test_high_risk_caps_v1_at_2_but_shadow_keeps_5():
 def test_focus_name_boosts_to_front():
     cands = [cand("000001", "삼성전자", tv=1.0), cand("000002", "포스코", tv=99.0)]
     plan = build_plan(cands, {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000},
-                      _scen(focus="오늘은 삼성전자 반도체 모멘텀 주목"), quotes={})
+                      _scen(focus="오늘은 삼성전자 반도체 모멘텀 주목"), quotes={}, models=M3)
     assert plan["v1"][0].name == "삼성전자"
 
 
 def test_v2_requires_uptrend():
     cands = [cand("000001", "A", uptrend=False), cand("000002", "B", uptrend=True)]
-    plan = build_plan(cands, {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000}, _scen(), quotes={})
+    plan = build_plan(cands, {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000}, _scen(), quotes={}, models=M3)
     assert [i.ticker for i in plan["v2"]] == ["000002"]
 
 
 def test_qty_from_budget_and_quote_price():
     cands = [cand("000001", "A", prev_close=100_000.0)]
     plan = build_plan(cands, {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000}, _scen(),
-                      quotes={"000001": 120_000.0})   # 실시간가 우선
+                      quotes={"000001": 120_000.0}, models=M3)   # 실시간가 우선
     assert plan["v1"][0].qty == 5   # (3_000_000/5)//120_000
 
 

@@ -901,16 +901,17 @@ def _scalp_bar(df, d: str):
     return None if sub.empty else sub.iloc[-1]
 
 
-def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float):
+def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float, models: tuple):
     """저장된 계획을 확정 일봉으로 정산 — 전량(all-or-nothing) 원칙.
 
-    계획 종목(그림자 포함) 중 단 하나라도 해당 날짜 확정봉이 없으면 부분 정산으로
-    pnl 이 조용히 새지 않도록 (None, None, missing)=보류를 반환한다."""
+    라이브 모델(models)의 계획 종목(그림자 포함) 중 단 하나라도 해당 날짜 확정봉이 없으면
+    부분 정산으로 pnl 이 조용히 새지 않도록 (None, None, missing)=보류를 반환한다.
+    옛 채택 모델의 잔여 계획 항목은 무시(라이브 모델만 정산)."""
     from .scalp.strategy import settle_item
-    items = plan.get("items", [])
+    items = [i for i in plan.get("items", []) if i.model in models]
     if not items:
-        return ({m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2", "v3")},
-                {"v1": [], "v2": [], "v3": []}, [])
+        return ({m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in models},
+                {m: [] for m in models}, [])
     bars: dict = {}
     missing: list[str] = []
     for i in items:
@@ -922,8 +923,8 @@ def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float):
             missing.append(i.ticker)
     if missing:
         return None, None, missing
-    results = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2", "v3")}
-    rows: dict = {"v1": [], "v2": [], "v3": []}
+    results = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in models}
+    rows: dict = {m: [] for m in models}
     for i in items:
         bar = bars[i.ticker]
         f = settle_item(i, bar, fee_bps, slip_bps)
@@ -947,7 +948,7 @@ def run_scalp(cfg: Config, market: str) -> dict:
     from .notify import health as _H
     from .notify.discord import notify_embeds
     from .scalp import planner as _P
-    from .scalp.account import ScalpState
+    from .scalp.account import ScalpState, live_models
     from .scalp.briefer import scalp_brief
     from .scalp.strategy import v3_setup_ok
     reader = VaultReader(cfg)
@@ -956,7 +957,8 @@ def run_scalp(cfg: Config, market: str) -> dict:
     fee = float(cfg.get("paper", "fee_bps", default=1.5))
     slip = float(cfg.get("paper", "slippage_bps", default=5.0))
     today = _DM.today_kst().isoformat()
-    state = ScalpState.load(cfg.state_dir)
+    models = live_models(cfg)          # 라이브 = 채택 모델 1개(비교는 scalp_compare 백테스트)
+    state = ScalpState.load(cfg.state_dir, models)
     warned = False
 
     # 후보 지표(전일 확정봉) — 유동성 하한: scalp.min_tv_eok(기본 50억)
@@ -987,7 +989,7 @@ def run_scalp(cfg: Config, market: str) -> dict:
     # 1) 이전 계획 정산(확정 일봉이 정본) — 전량(all-or-nothing): 하나라도 미확보면 보류(재시도)
     plans = _P.load_plans(cfg.state_dir)
     prev_plan = plans.get(market)
-    settled_rows = {"v1": [], "v2": [], "v3": []}
+    settled_rows = {m: [] for m in models}
     settled_date = "—"
     n_settled = 0
     held = False
@@ -1003,12 +1005,12 @@ def run_scalp(cfg: Config, market: str) -> dict:
                 continue
             if df is not None:
                 dfs[i.ticker] = df
-        results, rows, missing = _settle_scalp_plan(prev_plan, dfs, fee, slip)
+        results, rows, missing = _settle_scalp_plan(prev_plan, dfs, fee, slip, models)
         if missing:
             warned = True
             expired = (date.fromisoformat(today) - date.fromisoformat(prev_plan["date"])).days >= 5
             if expired:
-                zero = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2", "v3")}
+                zero = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in models}
                 state.apply_day(prev_plan["date"], market, zero)
                 state.save(cfg.state_dir)
                 _H.alert(cfg.creds.scalp_webhook, f"단타 정산[{market}]",
@@ -1045,10 +1047,9 @@ def run_scalp(cfg: Config, market: str) -> dict:
         warned = True
         _H.alert(cfg.creds.scalp_webhook, f"단타 계획[{market}]",
                  "실시간 시세 전부 실패 — 전일 종가로 수량 산정(트리거 표시 생략)")
-    cash_by = {m: state.models[m]["cash"] for m in ("v1", "v2", "v3")}
-    plan_lists = _P.build_plan(cands, cash_by, scenario, quotes)
-    items = (plan_lists["v1"] + plan_lists["v2"] + plan_lists["v3"]
-             + plan_lists["v1_shadow"] + plan_lists["v2_shadow"] + plan_lists["v3_shadow"])
+    cash_by = {m: state.models[m]["cash"] for m in models}
+    plan_lists = _P.build_plan(cands, cash_by, scenario, quotes, models)
+    items = [it for m in models for it in (plan_lists[m] + plan_lists[f"{m}_shadow"])]
     # KR 표시용 트리거(v1) = 실시간 시가 + k×전일레인지
     from dataclasses import replace
     disp = []
