@@ -573,10 +573,38 @@ def _core_logic(p: dict) -> list[str]:
     ]
 
 
+# 버전 제목 — "어떤 로직인지" 대시보드에 바로 보이게(노트 접두어 대신 정제 문구).
+_VERSION_TITLES = {
+    1: "베이스라인 · 추세무관 눌림목",
+    2: "승자 달리게 · 부분익절+트레일",
+    3: "청산 튜닝 · 손절-2.5%/익절6%",
+    4: "추세필터 · 정배열에서만 진입",
+    5: "유연진입 · 추세필터 off·RR1.75",
+    6: "하이브리드 regime · 국면별 가변방어",
+}
+
+
+def _version_title(vnum, note) -> str:
+    if vnum in _VERSION_TITLES:
+        return _VERSION_TITLES[vnum]
+    note = (note or "").strip()
+    return (note.split(":")[0] if ":" in note else note)[:40] or f"버전 {vnum}"
+
+
+def _core_logic_v6() -> list[str]:
+    return [
+        "시장국면별 가변: BULL 유연 · NEUTRAL/BEAR 추세필터 · CRASH 신규차단",
+        "+6% 익절 / -2.5% 손절 (부분익절 후 국면별 트레일)",
+        "국면별 사이징(risk 1.0~0.25%) · 라이브 점수/손익비 게이트 가변",
+        "진입 후 최대 20거래일 보유",
+    ]
+
+
 def run_version_compare(cfg: Config) -> Path:
     """각 로직 버전을 백테스트 리플레이 → 가상 시드계좌 OOS 곡선+핵심로직 → state/version_compare.json.
 
-    대시보드 버전비교 화면용. 72종목 1회 fetch 후 버전별 파라미터로 OOS 거래 재생성·복리 곡선."""
+    대시보드 버전비교 화면용. v6(regime.logic_mode=v6)는 국면가변 엔진(_v6_stock_trades)으로
+    충실 재생성(지수 국면 시계열 반영), 나머지는 고정 파라미터 리플레이."""
     from .strategy import backtest as _BT
     from .strategy import harness as _HN
     from .strategy import logic_version as _LV
@@ -590,27 +618,46 @@ def run_version_compare(cfg: Config) -> Path:
     seed = float(cfg.get("capital", "seed", default=5_000_000))
     dfs = {n.ticker: provider.get_ohlcv(n.ticker)[0].tail(days) for n in notes}
 
+    reg_maps: dict | None = None   # v6 있을 때만 지수 국면 시계열 lazy fetch {kr,us}
     out = []
     for v in _LV.load_versions(cfg.state_dir):
-        p = _params_from_snapshot(v.get("snapshot", {}), cfg)
+        vnum = v.get("version")
+        snap = v.get("snapshot", {})
+        is_v6 = str(snap.get("regime.logic_mode") or "") == "v6"
+        p = _params_from_snapshot(snap, cfg)
         trades = []
-        for n in notes:
-            for d, r in _BT._stock_trades(dfs[n.ticker], take=p["take"], stop=p["stop"],
-                                          max_hold=p["max_hold"], runner=p["runner"], take2=p["take2"],
-                                          trail=p["trail"], cost=p["cost"], min_tv_eok=p["min_tv_eok"],
-                                          require_uptrend=p["require_uptrend"]):
-                trades.append(_HN.Trade(n.ticker, d, r))
+        if is_v6:
+            if reg_maps is None:
+                reg_maps = {}
+                for mk in ("kr", "us"):
+                    try:
+                        reg_maps[mk] = _regime_series_for_market(cfg, mk, days)
+                    except Exception:  # noqa: BLE001
+                        log.warning("version_compare regime 지수 조회 실패: %s", mk)
+                        reg_maps[mk] = {}
+            for n in notes:
+                reg = reg_maps.get(_market_of_ticker(n.ticker), {})
+                for d, r, _rg, _hd in _BT._v6_stock_trades(
+                        dfs[n.ticker], reg, take=p["take"], default_stop=p["stop"],
+                        take2=p["take2"], cost=p["cost"], min_tv_eok=p["min_tv_eok"]):
+                    trades.append(_HN.Trade(n.ticker, d, r))
+        else:
+            for n in notes:
+                for d, r in _BT._stock_trades(dfs[n.ticker], take=p["take"], stop=p["stop"],
+                                              max_hold=p["max_hold"], runner=p["runner"], take2=p["take2"],
+                                              trail=p["trail"], cost=p["cost"], min_tv_eok=p["min_tv_eok"],
+                                              require_uptrend=p["require_uptrend"]):
+                    trades.append(_HN.Trade(n.ticker, d, r))
         _is, oos = _HN.split_oos(trades, frac)
         rep = _HN.report_from_trades(oos, pfrac)
         eq, curve = seed, []
         for t in sorted(oos, key=lambda t: t.entry):
             eq *= (1 + pfrac * t.ret)
             curve.append({"date": t.entry, "equity": round(eq)})
-        note = (v.get("note") or "").strip()
         out.append({
-            "label": f"v{v.get('version')}",
-            "title": (note.split(":")[0] if ":" in note else note)[:40] or f"버전 {v.get('version')}",
-            "core_logic": _core_logic(p),
+            "label": f"v{vnum}",
+            "title": _version_title(vnum, v.get("note")),
+            "core_logic": _core_logic_v6() if is_v6 else _core_logic(p),
             "oos": {"expectancy": rep.expectancy, "profit_factor": rep.profit_factor,
                     "max_drawdown": rep.max_drawdown, "sharpe": rep.sharpe, "win_rate": rep.win_rate,
                     "n_trades": rep.n_trades, "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},
