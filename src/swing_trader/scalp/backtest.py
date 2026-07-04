@@ -6,14 +6,15 @@ ret 은 소수(harness.Trade 규약) — 대시보드 복리 곡선은 eq *= 1 +
 from __future__ import annotations
 
 from ..strategy.harness import Trade
-from .strategy import (V1_K, V1_STOP, V2_STOP, V3_STOP, V3_TARGET, PlanItem,
+from .strategy import (V1_K, V1_STOP, V2_STOP, V3_STOP, V3_TARGET,
+                       V4_STOP, V4_TARGET, V4_SURGE, PlanItem,
                        settle_item, v3_setup_ok)
 
 _FEE, _SLIP = 1.5, 5.0    # config paper 기본과 동일(리플레이 고정 — 재현성)
 
 
 def simulate_stock(ticker: str, df, min_tv_eok: float = 50.0) -> dict:
-    out: dict = {"v1": [], "v2": [], "v3": []}
+    out: dict = {"v1": [], "v2": [], "v3": [], "v4": []}
     if df is None or len(df) < 61:
         return out
     closes = df["close"]
@@ -46,4 +47,13 @@ def simulate_stock(ticker: str, df, min_tv_eok: float = 50.0) -> dict:
                             bar, _FEE, _SLIP)
             if f:
                 out["v3"].append(Trade(ticker, d, f.ret_pct / 100))
+        # v4 급등 후 첫 조정 반등 — 정배열 + 전일 급등(+5%↑) 다음날 갭하락(-2%) 조정에 시가 매수
+        #   (추격 금지·눌림목 매수). 손절 -1.5% / 익절 +10% / 종가청산. OOS서 v3 대비 개선.
+        surged = i >= 2 and float(closes.iloc[i - 2]) > 0 and \
+            float(closes.iloc[i - 1]) >= float(closes.iloc[i - 2]) * (1 + V4_SURGE / 100)
+        if ma20 > ma60 and surged:
+            f = settle_item(PlanItem(model="v4", stop_pct=V4_STOP, target_pct=V4_TARGET, **base),
+                            bar, _FEE, _SLIP)
+            if f:
+                out["v4"].append(Trade(ticker, d, f.ret_pct / 100))
     return out

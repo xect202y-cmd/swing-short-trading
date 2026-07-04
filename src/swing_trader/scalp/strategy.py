@@ -26,6 +26,11 @@ V2_STOP = -2.5    # %
 V3_GAP = -2.0     # v3 시가 갭하락 임계(%) — v2 골격 유지
 V3_STOP = -1.0    # v3 타이트 손절(%) — 손익비 원칙(영상: 1% 손절/5~7% 익절). IS 그리드 선택
 V3_TARGET = 7.0   # v3 장중 익절 목표(%) — RR 7:1
+# v4 (2026-07-05, CIS 순행·Aziz ABCD·강창권 눌림목 3편 수렴): '급등 후 첫 조정(눌림목)' 반등.
+V4_GAP = -2.0     # v4 시가 갭하락(조정) 임계(%)
+V4_SURGE = 5.0    # v4 전일 급등 임계(%) — 급등 다음날 첫 조정만 대상(추격 금지·눌림목 매수)
+V4_STOP = -1.5    # v4 손절(%)
+V4_TARGET = 10.0  # v4 장중 익절 목표(%) — 승자 크게(전고점/+10%)
 
 
 @dataclass(frozen=True)
@@ -67,8 +72,8 @@ def settle_item(item: PlanItem, bar, fee_bps: float, slip_bps: float) -> Fill | 
         entry = trigger * (1 + cost)
         # v1 은 저가가 진입 전(아침 눌림)일 수 있어 손절 시뮬 불가 → 종가 청산만(모듈 docstring)
         exit_px, reason = c * (1 - cost), "종가청산"
-    else:  # v2/v3 — 시가 갭하락 재확인(계획 시점 실시간 시가와 무관하게 확정 시가가 정본)
-        gap = V3_GAP if item.model == "v3" else V2_GAP
+    else:  # v2/v3/v4 — 시가 갭하락 재확인(계획 시점 실시간 시가와 무관하게 확정 시가가 정본)
+        gap = {"v3": V3_GAP, "v4": V4_GAP}.get(item.model, V2_GAP)
         if item.prev_close <= 0 or o > item.prev_close * (1 + gap / 100):
             return None
         entry = o * (1 + cost)

@@ -837,7 +837,7 @@ def run_scalp_compare(cfg: Config) -> Path:
     pfrac = 1.0 / 5   # 모델당 5분할 사이징과 동일 프레임
     seed = float(SEED_PER_MODEL)
 
-    trades: dict = {"v1": [], "v2": [], "v3": []}
+    trades: dict = {"v1": [], "v2": [], "v3": [], "v4": []}
     for n in notes:
         try:
             df, _src = provider.get_ohlcv(n.ticker)
@@ -847,6 +847,7 @@ def run_scalp_compare(cfg: Config) -> Path:
         trades["v1"] += r["v1"]
         trades["v2"] += r["v2"]
         trades["v3"] += r["v3"]
+        trades["v4"] += r["v4"]
 
     meta = {"v1": ("단타 v1", "변동성 돌파(추세형)",
                    ["당일 시가+0.5×전일레인지 돌파 시 매수", "당일 종가 전량 청산(오버나잇 없음)",
@@ -858,9 +859,14 @@ def run_scalp_compare(cfg: Config) -> Path:
                    ["시가 -2% 이상 갭하락 + 전일 20>60일선 종목 시가 매수(v2 골격)",
                     "리턴 구간에서만: 50일선 흐름 비하락 + 종가가 VWMA50(거래량 가중 지지) 위",
                     "손익비 원칙: 장중 손절 -1.0% / 익절 +7% (동시 터치 시 손절 우선 보수 판정)",
+                    "당일 종가 전량 청산(오버나잇 없음)"]),
+            "v4": ("단타 v4", "급등 후 첫 조정 반등 (CIS 순행·Aziz ABCD·강창권 눌림목 수렴)",
+                   ["정배열 강세주가 전일 +5%↑ 급등 → 당일 갭하락(-2%) 조정에 시가 매수",
+                    "추격 금지·눌림목 매수: '급등 후 반드시 눌림목이 온다, 그때 매수'(강창권)",
+                    "손익비 원칙: 장중 손절 -1.5% / 익절 +10% (동시 터치 시 손절 우선 보수 판정)",
                     "당일 종가 전량 청산(오버나잇 없음)"])}
     out = []
-    for m in ("v1", "v2", "v3"):
+    for m in ("v1", "v2", "v3", "v4"):
         _is, oos = _HN.split_oos(trades[m], frac)
         rep = _HN.report_from_trades(oos, pfrac)
         eq, curve = seed, []
