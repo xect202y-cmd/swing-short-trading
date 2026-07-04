@@ -854,11 +854,14 @@ def run_scalp_compare(cfg: Config) -> Path:
     oos_start, oos_end = (min(dates), max(dates)) if dates else (None, None)
     oos_days = ((date.fromisoformat(oos_end) - date.fromisoformat(oos_start)).days
                 if dates else None)
+    adopted = str(cfg.get("scalp", "adopted_version", default="") or "").strip() or None
+    if adopted and not adopted.startswith("단타"):
+        adopted = f"단타 {adopted}"   # versions[].label("단타 v2")과 매칭되는 형태로 정규화
     path = cfg.state_dir / "scalp_compare.json"
     path.write_text(json.dumps({
         "as_of": _DM.today_kst().isoformat(), "seed": seed,
         "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days,
-        "lookback_days": days, "versions": out,
+        "lookback_days": days, "versions": out, "adopted": adopted,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # 볼트 영구 기록(로직 정의 + 백테스트 결과) + 디스코드 브리핑 — 스윙 하니스와 동일 패턴
