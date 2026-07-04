@@ -2,7 +2,7 @@
   "asOf": "",
   "seed_per_model": 3000000,
   "models": {
-    "v3": {
+    "v4": {
       "cash": 3000000.0,
       "realized": 0.0,
       "shadow_realized": 0.0

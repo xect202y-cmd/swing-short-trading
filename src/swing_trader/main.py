@@ -1003,11 +1003,15 @@ def run_scalp(cfg: Config, market: str) -> dict:
             continue
         ma20 = float(df["close"].tail(20).mean())
         ma60 = float(df["close"].tail(60).mean())
+        from .scalp.strategy import V4_SURGE
+        v4_ok = (len(df) >= 2 and float(df["close"].iloc[-2]) > 0
+                 and float(df["close"].iloc[-1]) >= float(df["close"].iloc[-2]) * (1 + V4_SURGE / 100))
         cands.append({"ticker": n.ticker, "name": n.name or n.ticker,
                       "prev_close": float(prev["close"]),
                       "prev_range": float(prev["high"]) - float(prev["low"]),
                       "prev_tv_eok": round(tv_eok, 1), "uptrend": ma20 > ma60,
                       "v3_ok": v3_setup_ok(df["close"], df["volume"] if "volume" in df else None),
+                      "v4_ok": v4_ok,   # 전일 급등(+5%↑) → 급등 후 첫 조정(눌림목) 반등 대상
                       "why": f"거래대금 {tv_eok:,.0f}억"})
 
     # 1) 이전 계획 정산(확정 일봉이 정본) — 전량(all-or-nothing): 하나라도 미확보면 보류(재시도)

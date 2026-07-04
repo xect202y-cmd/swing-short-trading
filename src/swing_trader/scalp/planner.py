@@ -11,7 +11,8 @@ from dataclasses import asdict
 from pathlib import Path
 
 from ..macro.regime import assess_macro
-from .strategy import V1_K, V1_STOP, V2_STOP, V3_STOP, V3_TARGET, PlanItem
+from .strategy import (V1_K, V1_STOP, V2_STOP, V3_STOP, V3_TARGET,
+                       V4_STOP, V4_TARGET, PlanItem)
 
 MAX_POS = 5
 _PLAN_FILE = "scalp_plan.json"
@@ -64,6 +65,11 @@ def _items(model: str, cands: list[dict], cash: float, quotes: dict,
                                 stop_pct=V3_STOP, target_pct=V3_TARGET,
                                 prev_close=c["prev_close"], prev_range=c["prev_range"],
                                 why=c.get("why", ""), shadow=shadow))
+        elif model == "v4":
+            out.append(PlanItem(model="v4", ticker=c["ticker"], name=c["name"], qty=q,
+                                stop_pct=V4_STOP, target_pct=V4_TARGET,
+                                prev_close=c["prev_close"], prev_range=c["prev_range"],
+                                why=c.get("why", ""), shadow=shadow))
         else:
             out.append(PlanItem(model="v2", ticker=c["ticker"], name=c["name"], qty=q,
                                 stop_pct=V2_STOP, prev_close=c["prev_close"],
@@ -81,8 +87,11 @@ def build_plan(candidates: list[dict], cash_by_model: dict, scenario: dict,
     up_base = [c for c in base if c.get("uptrend")]
     v3c = [c for c in up if c.get("v3_ok")]           # v3 = 상승배열 + 리턴 구간(50일선 흐름·VWMA50 지지)
     v3c_base = [c for c in up_base if c.get("v3_ok")]
+    v4c = [c for c in up if c.get("v4_ok")]           # v4 = 상승배열 + 전일 급등(급등 후 첫 조정 눌림)
+    v4c_base = [c for c in up_base if c.get("v4_ok")]
     # 모델별 (라이브 후보, 그림자 후보, 상한). 라이브 계좌가 운용하는 models 만 계획 생성.
-    src = {"v1": (ranked, base, v1_cap), "v2": (up, up_base, MAX_POS), "v3": (v3c, v3c_base, MAX_POS)}
+    src = {"v1": (ranked, base, v1_cap), "v2": (up, up_base, MAX_POS),
+           "v3": (v3c, v3c_base, MAX_POS), "v4": (v4c, v4c_base, MAX_POS)}
     out: dict = {}
     for m in models:
         live_c, shadow_c, cap = src[m]

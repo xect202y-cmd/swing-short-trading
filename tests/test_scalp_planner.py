@@ -69,3 +69,14 @@ def test_v3_requires_uptrend_and_v3_ok():
     assert [i.ticker for i in plan["v3"]] == ["000001"]
     it = plan["v3"][0]
     assert it.stop_pct == -1.0 and it.target_pct == 7.0   # 손익비 원칙 RR7
+
+
+def test_v4_requires_uptrend_and_v4_ok():
+    ok = dict(cand("000001", "급등후눌림"), v4_ok=True)
+    no_flag = dict(cand("000002", "급등없음"), v4_ok=False)
+    down = dict(cand("000003", "역배열", uptrend=False), v4_ok=True)
+    plan = build_plan([ok, no_flag, down], {"v1": 3_000_000, "v2": 3_000_000, "v3": 3_000_000, "v4": 3_000_000},
+                      _scen(), quotes={}, models=("v4",))
+    assert [i.ticker for i in plan["v4"]] == ["000001"]
+    it = plan["v4"][0]
+    assert it.stop_pct == -1.5 and it.target_pct == 10.0   # v4 손익비
