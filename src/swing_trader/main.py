@@ -181,6 +181,20 @@ def run_scan(cfg: Config, limit: int | None = None, market: str = "all") -> tupl
 def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brief: bool = True) -> dict:
     reader, provider, macro, events, engine, writer = _build(cfg)
     notes = _load_notes(cfg, reader, limit, market)
+    # v6 라이브 regime — 오늘 시장국면을 시장지수로 판별(ma200 위해 긴 히스토리 fetch).
+    # 시장별 지수가 명확한 kr/us 단일 시장 런에서만 적용(all 은 US를 KOSPI로 오분류 방지 위해 미적용).
+    # engine.scan(추세필터)·OrderManager(점수/RR/차단) 양쪽에 같은 국면 전달.
+    regime = None
+    if bool(cfg.get("regime", "enabled", default=False)) and market in ("kr", "us"):
+        from .strategy import market_regime as _MR
+        try:
+            series = _regime_series_for_market(cfg, market, 5)
+            regime = list(series.values())[-1] if series else _MR.Regime.NEUTRAL
+            log.info("오늘 시장국면[%s] = %s", market, regime.value)
+        except Exception:  # noqa: BLE001 — 지수 조회 실패 시 보수적 NEUTRAL(조용히 넘기지 않고 경고)
+            regime = _MR.Regime.NEUTRAL
+            log.warning("regime 지수 조회 실패[%s] → NEUTRAL 폴백", market)
+    engine.regime = regime
     signals = engine.scan(notes, macro, events)
     sig_path = writer.write_signals(signals)
 
@@ -214,22 +228,8 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
     _week_start = (_today - timedelta(days=_today.weekday())).isoformat()
     realized_today = _A.realized_since(cfg.state_dir, _today.isoformat(), _closed_now)
     realized_week = _A.realized_since(cfg.state_dir, _week_start, _closed_now)
-    # v6 라이브 regime — 오늘 시장국면을 시장지수로 판별해 진입 게이트에 전달(실패 시 NEUTRAL).
-    regime = None
-    if bool(cfg.get("regime", "enabled", default=False)):
-        from .strategy import market_regime as _MR
-        idx = cfg.get("regime", f"index_{market}", default="^KS11") if market in ("kr", "us") else "^KS11"
-        try:
-            idf, _ = provider.get_ohlcv(idx)
-            series = _MR.classify_series(
-                idf, crash_dd=float(cfg.get("regime", "crash_dd", default=-0.12)),
-                crash_ret5=float(cfg.get("regime", "crash_ret5", default=-0.08)))
-            regime = list(series.values())[-1] if series else _MR.Regime.NEUTRAL
-            log.info("오늘 시장국면[%s] = %s", market, regime.value)
-        except Exception:  # noqa: BLE001 — 지수 조회 실패 시 보수적으로 NEUTRAL
-            regime = _MR.Regime.NEUTRAL
     om = OrderManager(cfg, broker, realized_today=realized_today, realized_total=realized_week,
-                      regime=regime)
+                      regime=regime)   # regime 은 스캔 전에 산출됨(위)
     result = om.execute_signals(signals)
     broker.save()
 
@@ -635,6 +635,25 @@ def _regime_index_ticker(market: str) -> str:
     return {"kr": "^KS11", "us": "^GSPC"}.get(market, "^KS11")
 
 
+def _regime_series_for_market(cfg: Config, market: str, usable_bars: int) -> dict:
+    """regime 판별용 지수 시계열 — ma200 워밍업(220봉) 확보 위해 usable_bars 보다 길게 fetch.
+
+    라이브 provider(lookback 120)로 지수를 받으면 ma200 이 전부 NaN → BULL/BEAR 판별 불가
+    (국면이 사실상 CRASH/NEUTRAL로만 붕괴). 전용 긴 히스토리 provider로 방지한다.
+    """
+    from .market.data_provider import DataProvider
+    from .market.fx import get_usdkrw
+    from .strategy import market_regime as _MR
+    md = cfg.get("market_data", default={})
+    prov = DataProvider(provider=md.get("provider", "auto"),
+                        lookback_days=int(usable_bars) + 220,
+                        fx_usdkrw=get_usdkrw(float(md.get("fx_usdkrw", 1400))))
+    idf, _ = prov.get_ohlcv(_regime_index_ticker(market))
+    return _MR.classify_series(
+        idf, crash_dd=float(cfg.get("regime", "crash_dd", default=-0.12)),
+        crash_ret5=float(cfg.get("regime", "crash_ret5", default=-0.08)))
+
+
 def _market_of_ticker(ticker: str) -> str:
     """KR 종목코드는 숫자로 시작(005930, 005935.KS). 그 외(AVGO)는 US."""
     return "kr" if ticker and ticker[0].isdigit() else "us"
@@ -660,15 +679,12 @@ def run_v6_compare(cfg: Config) -> Path:
     min_tv = float(cfg.get("risk", "min_trading_value_eok", default=30))
     take, dstop, take2 = 0.06, -0.025, 0.085
     dfs = {n.ticker: provider.get_ohlcv(n.ticker)[0].tail(days) for n in notes}
-    # regime 시계열: 각 종목의 시장(kr/us)별 지수 1회 조회
+    # regime 시계열: 시장(kr/us)별 지수를 trade 창(days)+ma200 워밍업만큼 길게 조회 →
+    # trade 창 전 구간에서 BULL/BEAR 판별 가능(워밍업이 창을 NEUTRAL로 오염시키지 않음).
     reg_by_market: dict = {}
     for mk in ("kr", "us"):
         try:
-            idx_df, _ = provider.get_ohlcv(_regime_index_ticker(mk))
-            reg_by_market[mk] = _MR.classify_series(
-                idx_df.tail(days),
-                crash_dd=float(cfg.get("regime", "crash_dd", default=-0.12)),
-                crash_ret5=float(cfg.get("regime", "crash_ret5", default=-0.08)))
+            reg_by_market[mk] = _regime_series_for_market(cfg, mk, days)
         except Exception:  # noqa: BLE001 — 지수 조회 실패 시 NEUTRAL 폴백
             log.warning("regime 지수 조회 실패: %s", mk)
             reg_by_market[mk] = {}

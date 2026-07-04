@@ -21,6 +21,7 @@ class SignalEngine:
     def __init__(self, cfg: Config, provider: DataProvider):
         self.cfg = cfg
         self.provider = provider
+        self.regime = None   # strategy.market_regime.Regime | None — v6 국면가변 추세필터
         self.matcher = load_method_matcher(cfg)
         self._ai_enabled = bool(cfg.creds.openai_api_key) and bool(cfg.get("ai", "enabled", default=True))
         self._ai_min = float(cfg.get("ai", "min_score", default=75))
@@ -60,8 +61,14 @@ class SignalEngine:
             total = min(100.0, round(total + min(len(methods) * per, cap), 1))
 
         reasons = rules.buy_reasons(note, tech)
+        # 추세필터: 기본은 config(risk.require_uptrend). v6 라이브면 오늘 국면 정책값으로 대체
+        # (BULL off·NEUTRAL/BEAR/CRASH on) — 백테스트 _v6_stock_trades 의 stock_up 게이트와 일치.
+        require_uptrend = bool(self.cfg.get("risk", "require_uptrend", default=False))
+        if self.regime is not None and str(self.cfg.get("regime", "logic_mode", default="v6")) == "v6":
+            from .regime_policy import policy_for
+            require_uptrend = policy_for(self.regime).require_uptrend
         blocks = rules.buy_blocks(note, tech, macro.risk, ev_risk, min_tv,
-                                  require_uptrend=bool(self.cfg.get("risk", "require_uptrend", default=False)))
+                                  require_uptrend=require_uptrend)
 
         # 목표/손절 산출 방식 — 고정/ATR/지지저항 후보 모두 계산(비교·저장), 채택값으로 플랜
         rk = self.cfg.get("risk", default={})

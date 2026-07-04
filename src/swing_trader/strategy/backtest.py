@@ -84,36 +84,71 @@ def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_t
     return out
 
 
-def _v6_entries_and_blocks(df, regime_by_date, *, take, default_stop, take2,
-                           cost, min_tv_eok, policy_table=None):
-    """regime 가변 v6 진입 + 반사실(v5 진입 O·v6 차단 O) 산출. 단일 종목.
-
-    반환: (trades, blocks)
-      trades: [(entry_date, ret, regime, hold_days)]  — v6 실제 진입.
-      blocks: [{entry, ret_v5, regime, reason}]        — v5는 진입했지만 v6가 막은 거래(사후검증용).
-    진입 트리거는 v5와 동일(20일선 눌림 후 반등+거래대금). regime 게이트로 차단/트레일 가변.
-    """
-    from .market_regime import Regime
-    from .regime_policy import policy_for
+def _v6_ohlc(df):
+    """v6 진입/차단 계산 공용 배열 추출(1D 강제)."""
     close = _col(df, "close").to_numpy(dtype=float)
     open_ = _col(df, "open").to_numpy(dtype=float)
     vol = _col(df, "volume").to_numpy(dtype=float)
     ma20 = _col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
     ma60 = _col(df, "close").rolling(60, min_periods=1).mean().to_numpy(dtype=float)
     dates = [d.strftime("%Y-%m-%d") for d in df.index]
+    return close, open_, vol, ma20, ma60, dates
+
+
+def _v6_stock_trades(df, regime_by_date, *, take, default_stop, take2,
+                     cost, min_tv_eok, policy_table=None):
+    """v6 를 '독립 전략'으로 백테스트 — 진입일 regime 으로 차단/트레일 가변.
+
+    차단 봉에서는 포지션이 없으므로 i+=1 로 계속 스캔(다음 유효 setup 을 놓치지 않음).
+    반환: [(entry_date, ret, regime, hold_days)].
+    """
+    from .market_regime import Regime
+    from .regime_policy import policy_for
+    close, open_, vol, ma20, ma60, dates = _v6_ohlc(df)
     trades: list = []
+    i = 20
+    while i < len(close) - 2:
+        tv_eok = close[i] * vol[i] / 1e8
+        setup = (close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1]
+                 and tv_eok >= min_tv_eok and open_[i + 1] > 0)
+        if setup:
+            reg = regime_by_date.get(dates[i], Regime.NEUTRAL)
+            pol = policy_for(reg, policy_table)
+            stock_up = close[i] > ma60[i] and ma20[i] > ma60[i]
+            blocked = pol.block_new_entry or (pol.require_uptrend and not stock_up)
+            if not blocked:
+                entry = float(open_[i + 1])
+                ret6, jend6 = _exit_return(close, i + 1, entry, take, default_stop, 20,
+                                           runner=True, take2=take2, trail=pol.trail_pct)
+                trades.append((dates[i + 1], float(ret6) - cost, reg.value, int(jend6 - (i + 1))))
+                i = max(jend6, i + 1)
+                i += 1
+                continue
+        i += 1
+    return trades
+
+
+def _v5_blocks_by_v6(df, regime_by_date, *, take, default_stop, take2,
+                     cost, min_tv_eok, policy_table=None):
+    """반사실 — v5 진입(추세무관·트레일3.0) 집합 중 v6 가 막는 거래.
+
+    v5 와 동일 cadence(_stock_trades require_uptrend=False) 를 그대로 재현 → blocks 는
+    v5 진입 집합의 '정확한 부분집합'. 반환: [{entry, ret_v5, regime, reason}].
+    """
+    from .market_regime import Regime
+    from .regime_policy import policy_for
+    close, open_, vol, ma20, ma60, dates = _v6_ohlc(df)
     blocks: list = []
     i = 20
     while i < len(close) - 2:
         tv_eok = close[i] * vol[i] / 1e8
-        base_setup = (close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1]
-                      and tv_eok >= min_tv_eok and open_[i + 1] > 0)
-        if base_setup:
+        setup = (close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1]
+                 and tv_eok >= min_tv_eok and open_[i + 1] > 0)
+        if setup:                                    # 이 봉이 v5 의 실제 진입
             reg = regime_by_date.get(dates[i], Regime.NEUTRAL)
             pol = policy_for(reg, policy_table)
             stock_up = close[i] > ma60[i] and ma20[i] > ma60[i]
             entry = float(open_[i + 1])
-            # v5 결과(반사실용): 추세무관 진입, 트레일 3.0
             ret5, jend5 = _exit_return(close, i + 1, entry, take, default_stop, 20,
                                        runner=True, take2=take2, trail=3.0)
             v5_ret = float(ret5) - cost
@@ -123,17 +158,18 @@ def _v6_entries_and_blocks(df, regime_by_date, *, take, default_stop, take2,
             elif pol.require_uptrend and not stock_up:
                 blocks.append({"entry": dates[i + 1], "ret_v5": v5_ret,
                                "regime": reg.value, "reason": "추세필터"})
-            else:
-                ret6, jend6 = _exit_return(close, i + 1, entry, take, default_stop, 20,
-                                           runner=True, take2=take2, trail=pol.trail_pct)
-                trades.append((dates[i + 1], float(ret6) - cost, reg.value,
-                               int(jend6 - (i + 1))))
-                i = max(jend6, i + 1)
-                i += 1
-                continue
-            i = max(jend5, i + 1)
+            i = max(jend5, i + 1)                     # v5 cadence 유지(보유기간 스킵)
         i += 1
-    return trades, blocks
+    return blocks
+
+
+def _v6_entries_and_blocks(df, regime_by_date, *, take, default_stop, take2,
+                           cost, min_tv_eok, policy_table=None):
+    """(v6 독립 거래, v5진입-v6차단 반사실) 을 각각 올바른 cadence로 산출."""
+    kw = dict(take=take, default_stop=default_stop, take2=take2, cost=cost,
+              min_tv_eok=min_tv_eok, policy_table=policy_table)
+    return (_v6_stock_trades(df, regime_by_date, **kw),
+            _v5_blocks_by_v6(df, regime_by_date, **kw))
 
 
 def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool | None = None,

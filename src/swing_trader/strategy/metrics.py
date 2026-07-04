@@ -73,7 +73,8 @@ def full_report(trades, *, frac_by_regime: dict | None = None, fixed_frac: float
     span = max((date.fromisoformat(ordered[-1].entry) - date.fromisoformat(ordered[0].entry)).days, 1)
     years = span / 365.0
     total_ret = eq - 1.0
-    cagr = (eq ** (1 / years) - 1) if years > 0 and eq > 0 else None
+    # 표본 창이 너무 짧으면 연율화(eq**(1/years))가 폭발 → CAGR/Calmar 신뢰불가라 None.
+    cagr = (eq ** (1 / years) - 1) if (span >= 30 and eq > 0) else None
 
     mean = sum(rets) / len(rets)
     sd = st.pstdev(rets) if len(rets) >= 2 else 0.0
