@@ -35,6 +35,9 @@ def snapshot(cfg) -> dict:
     ai = cfg.get("ai", default={})
     for k in ("enabled", "min_score", "veto_confidence"):
         flat[f"ai.{k}"] = ai.get(k)
+    rg = cfg.get("regime", default={})
+    for k in ("enabled", "logic_mode"):
+        flat[f"regime.{k}"] = rg.get(k)
     return flat
 
 
