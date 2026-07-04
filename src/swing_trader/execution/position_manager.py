@@ -30,6 +30,7 @@ class PositionManager:
         ind_cfg = self.cfg.get("indicators", default={})
         rsi_ob = float(ind_cfg.get("rsi_overbought", 70))
         rk = self.cfg.get("risk", default={})
+        mode = str(self.cfg.get("regime", "logic_mode", default="v5"))   # v7이면 추세추종 청산
         params = dict(
             momentum_days=int(rk.get("momentum_exit_days", 5)),
             soft_hold_days=int(rk.get("soft_hold_days", 10)),
@@ -41,7 +42,7 @@ class PositionManager:
             df, _ = self.provider.get_ohlcv(pos.ticker)
             tech = build_snapshot(pos.ticker, df, ind_cfg)
             entry, cur = pos.avg_price, tech.price
-            d = rules.decide_exit(pos, cur, tech, rsi_overbought=rsi_ob, **params)
+            d = rules.decide_exit(pos, cur, tech, rsi_overbought=rsi_ob, mode=mode, **params)
             pos.high_water = d["hw"]                 # 트레일링 기준 갱신
             if d["action"] == "hold":
                 pos.stop = d["new_stop"]             # 트레일링 스탑 상향만(하향 안 함)

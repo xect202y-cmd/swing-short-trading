@@ -85,8 +85,13 @@ def decide_exit(
     max_hold_days: int = 20,
     partial_pct: float = 0.5,
     trail_pct: float = 3.0,
+    mode: str = "v5",
+    vol_spike: float = 2.5,
 ) -> dict:
     """승자를 달리게 — 1차 익절서 절반 익절, 잔량은 트레일링으로 2차까지.
+
+    mode="v7"이면 추세추종 청산: 익절 고정 없이 5일선 이탈/대량거래량 음봉까지 홀딩,
+    손절 도달 시 청산(유튜브 마스터스윙 3편 수렴 — '빨리 팔지 말고 추세 살아있으면 홀딩').
 
     반환: {action: all|partial|hold, qty, reasons, hw, new_stop}
     """
@@ -98,6 +103,22 @@ def decide_exit(
 
     def res(action, qty, reasons, new_stop):
         return {"action": action, "qty": qty, "reasons": reasons, "hw": hw, "new_stop": new_stop}
+
+    # v7 추세추종 청산 — 익절 고정 없음(승자 달리게). 손절/5일선 이탈/대량거래량 음봉/최대보유만.
+    if mode == "v7":
+        if cur <= pos.stop:
+            return res("all", pos.quantity, ["손절가 도달"], pos.stop)
+        v20 = tech.vol_avg.get(20)
+        spike = (tech.vol_today / v20) if (tech.vol_today and v20 and v20 > 0) else None
+        down_candle = tech.today_open is not None and cur < tech.today_open
+        if down_candle and spike is not None and spike >= vol_spike:
+            return res("all", pos.quantity, [f"대량거래량 음봉(거래량 {spike:.1f}배) — 세력 이탈"], pos.stop)
+        ma5 = tech.ma.get(5)
+        if pos.bars_held >= 1 and ma5 and cur < ma5:      # 5일선 이탈 = 추세 종료(진입 다음날부터)
+            return res("all", pos.quantity, ["5일선 이탈 — 추세 종료"], pos.stop)
+        if pos.bars_held >= max_hold_days:
+            return res("all", pos.quantity, [f"최대 보유 {max_hold_days}거래일 — 강제청산"], pos.stop)
+        return res("hold", 0, [], pos.stop)               # 추세 지속 → 홀딩(익절 고정 없이)
 
     # 1) 손절/트레일링 (전량)
     if cur <= eff_stop:

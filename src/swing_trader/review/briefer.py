@@ -350,13 +350,17 @@ def daily_brief(cfg: Config, broker, provider, signals: list[Signal], activity: 
     coaching = daily_coaching(cfg, positions=pos, activity=activity, metrics=m, compound=comp)
     if coaching:
         fields.append({"name": "🧙 헤르메스 코칭", "value": coaching[:1024], "inline": False})
+    adopted = str(cfg.get("regime", "adopted_version", default="v5") or "v5")
+    logic_note = {"v7": "추세추종 — 5일선/대량음봉까지 홀딩"}.get(adopted, "")
+    logic_tag = f"🧬 적용 로직 {adopted}" + (f" ({logic_note})" if logic_note else "")
     embed = {
         "title": f"📅 스윙 데일리 브리핑 · {d}", "color": BLUE,
         "description": f"계좌: 현금 {_won(cash)} · 평가금 **{_won(cash+hv)}**원\n" + "\n".join(_metrics_lines(m)),
         "fields": fields[:24],
+        "footer": {"text": f"{logic_tag} · 페이퍼(가상계좌)"},
     }
     md = _frontmatter("스윙데일리", d) + (
-        f"## 📅 데일리 · {d}\n계좌: 현금 {_won(cash)} · 평가금 {_won(cash+hv)}원\n\n"
+        f"## 📅 데일리 · {d}\n> {logic_tag}\n\n계좌: 현금 {_won(cash)} · 평가금 {_won(cash+hv)}원\n\n"
         "**📊 성과**\n- " + "\n- ".join(_metrics_lines(m)) + "\n\n"
         "**💼 보유 종목 & 복기**\n" + _holdings_md(pos) + f"\n\n**🔄 오늘 활동**: {act}\n\n"
         "**📊 포트폴리오 리스크**\n- " + "\n- ".join(port) + "\n\n"

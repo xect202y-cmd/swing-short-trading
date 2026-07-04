@@ -38,7 +38,7 @@ capital:
   max_new_per_day: 3           # 하루 신규매수 최대 종목수
 
 risk:
-  default_stop_pct: -2.5     # 기본 손절 %(Phase2: -3→-2.5, OOS 검증 개선)
+  default_stop_pct: -3.0     # 기본 손절 %(v7 채택: 타이트 -3%, OOS 최적)
   max_stop_pct: -7.0         # 변동성 종목 손절 하한(v5: -5→-7, 과도한 차단 완화)
   take1_pct: 6.0             # 1차 익절 %(Phase2: 5→6, 승자 달리게; 손절 -2.5와 손익비 2.4)
   take2_pct: 8.5             # 2차 익절 %(7~10 중앙)
@@ -49,14 +49,15 @@ risk:
   # 스윙 보유기간 규율 — 장기보유 금지(목표 도달 시 청산, 안 되면 강제 회전)
   momentum_exit_days: 5      # 5거래일 초과 + 모멘텀 약화 시 청산
   soft_hold_days: 10         # 2주 경과 + 수익 없으면 정리(자금 회전)
-  max_hold_days: 20          # 최대 4주 — 무조건 강제청산(스윙 상한)
+  max_hold_days: 40          # v7 추세추종 백스톱(~8주) — 주 청산은 5일선 이탈. (v5는 20이었음)
   # 승자를 달리게 — 1차 익절서 절반만 익절, 잔량은 트레일링으로 2차까지 추세 보유
   partial_exit_pct: 0.5      # 1차 익절가 도달 시 매도 비율(절반)
   trail_pct: 3.0             # 부분익절 후 잔량 트레일링 스탑(최고가 대비 %)
   # 진입 추세 필터(Phase3): 종가>60일선 AND 20일선>60일선(상승배열)에서만 매수.
   # 하니스 OOS 검증: 기대값 +0.66→+0.91%, MDD -25→-18%(눌림목을 상승추세에서만).
   # v5: true→false — 추세 조건 완화로 진입 기회 확대(승률·손익비는 R:R 게이트 1.75로 보완).
-  require_uptrend: false
+  # v7 채택(2026-07-05): false→true — 강세(정배열) 종목만 진입(신고가 강세주 프록시).
+  require_uptrend: true
   # 목표/손절 산출 방식: 고정비율 | ATR | 지지저항 (노트에 값 있으면 노트 우선)
   target_stop_method: "고정비율"
   atr_target_mult: 2.0       # ATR 방식 목표 = +n*ATR
@@ -120,11 +121,12 @@ scalp:
   adopted_version: v3        # 대시보드 초단기 탭 '채택됨' 배지 기준
 
 regime:
-  # v5 채택(2026-07-04): OOS 216일서 v5가 기대값·PF·누적·MDD 모두 v6 우위 → 실전 = v5.
-  # v6 하이브리드 regime은 강세 표본서 방어가 비용으로 나와 미채택(백테/비교용으로 코드·데이터 보존).
-  adopted_version: v5        # 대시보드 '채택됨' 배지 + 실전 로직 기준
-  enabled: false             # 라이브 regime 가변 게이팅 OFF → 단일 v5 로직으로 매매(페이퍼).
-  logic_mode: v5             # v5=추세필터 off 단일. (v6로 바꾸고 enabled:true면 regime 가변 복귀)
+  # v7 채택(2026-07-05): 유튜브 마스터스윙 3편 수렴 기법. OOS(97종목·500일)서 v7이 기대값
+  # 1.37·PF 1.91로 v5(0.75·1.46) 포함 전 버전 최고. 익절 고정 없이 5일선 이탈/대량거래량 음봉까지
+  # 홀딩(승자 달리게) — v5 +6% 고정익절이 승자 자르던 병목 해소. 진입은 정배열(강세주)만.
+  adopted_version: v7        # 대시보드 '채택됨' 배지 + 실전 로직 기준
+  enabled: false             # regime 가변 게이팅 OFF → 단일 v7 추세추종 로직으로 매매(페이퍼).
+  logic_mode: v7             # v7=추세추종 청산(5일선/대량음봉까지 홀딩). position_manager가 이 값으로 청산분기.
   index_kr: "^KS11"          # 코스피 지수(regime 판별용 — v6 백테/비교에서만 사용)
   index_us: "^GSPC"          # S&P500 지수
   crash_dd: -0.12            # 60일 고점대비 낙폭 이 값 이하 → CRASH
