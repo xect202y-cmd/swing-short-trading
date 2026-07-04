@@ -214,7 +214,22 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
     _week_start = (_today - timedelta(days=_today.weekday())).isoformat()
     realized_today = _A.realized_since(cfg.state_dir, _today.isoformat(), _closed_now)
     realized_week = _A.realized_since(cfg.state_dir, _week_start, _closed_now)
-    om = OrderManager(cfg, broker, realized_today=realized_today, realized_total=realized_week)
+    # v6 라이브 regime — 오늘 시장국면을 시장지수로 판별해 진입 게이트에 전달(실패 시 NEUTRAL).
+    regime = None
+    if bool(cfg.get("regime", "enabled", default=False)):
+        from .strategy import market_regime as _MR
+        idx = cfg.get("regime", f"index_{market}", default="^KS11") if market in ("kr", "us") else "^KS11"
+        try:
+            idf, _ = provider.get_ohlcv(idx)
+            series = _MR.classify_series(
+                idf, crash_dd=float(cfg.get("regime", "crash_dd", default=-0.12)),
+                crash_ret5=float(cfg.get("regime", "crash_ret5", default=-0.08)))
+            regime = list(series.values())[-1] if series else _MR.Regime.NEUTRAL
+            log.info("오늘 시장국면[%s] = %s", market, regime.value)
+        except Exception:  # noqa: BLE001 — 지수 조회 실패 시 보수적으로 NEUTRAL
+            regime = _MR.Regime.NEUTRAL
+    om = OrderManager(cfg, broker, realized_today=realized_today, realized_total=realized_week,
+                      regime=regime)
     result = om.execute_signals(signals)
     broker.save()
 

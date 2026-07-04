@@ -114,6 +114,14 @@ backtest:
   universe: all          # all | kr | us
   position_frac: 0.2     # MDD 복리 자산곡선의 거래당 자본분율(사이징-중립 비교용 고정값, 결과 유계 -100%~0)
 
+regime:
+  enabled: true              # 라이브 regime 가변 게이팅(페이퍼). false면 단일 v5 로직.
+  logic_mode: v6             # v6=regime 가변. 시장지수로 오늘 국면 판별→진입 게이트 가변.
+  index_kr: "^KS11"          # 코스피 지수(regime 판별용)
+  index_us: "^GSPC"          # S&P500 지수
+  crash_dd: -0.12            # 60일 고점대비 낙폭 이 값 이하 → CRASH
+  crash_ret5: -0.08          # 5일 수익률 이 값 이하 → CRASH
+
 market_data:
   provider: "auto"           # auto | pykrx | yfinance | synthetic
   lookback_days: 120         # 지표 계산용 OHLCV 기간

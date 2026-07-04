@@ -43,11 +43,13 @@ class ExecResult:
 
 
 class OrderManager:
-    def __init__(self, cfg: Config, broker: Broker, realized_today: float = 0.0, realized_total: float = 0.0):
+    def __init__(self, cfg: Config, broker: Broker, realized_today: float = 0.0, realized_total: float = 0.0,
+                 regime=None):
         self.cfg = cfg
         self.broker = broker
         self.realized_today = realized_today
         self.realized_total = realized_total
+        self.regime = regime   # strategy.market_regime.Regime | None (v6 라이브 게이트)
 
     def _capital(self, key: str, default):
         return self.cfg.get("capital", key, default=default)
@@ -89,6 +91,19 @@ class OrderManager:
             live_min = float(self.cfg.get("scoring", "live_min_score", default=80))
             if sig.score < live_min:
                 reasons.append(f"실전 최소점수 {live_min} 미만(점수 {sig.score})")
+
+        # v6 regime 게이트(라이브) — 국면별 진입차단/최소점수/최소손익비. 사유는 국면명 포함 로깅.
+        if self.regime is not None and str(self.cfg.get("regime", "logic_mode", default="v6")) == "v6":
+            from ..strategy.regime_policy import policy_for
+            pol = policy_for(self.regime)
+            rg = self.regime.value
+            if pol.block_new_entry:
+                reasons.append(f"{rg} 국면 — 신규진입 차단(예외조건 미충족)")
+            if sig.score < pol.ai_min_score:
+                reasons.append(f"{rg} 최소점수 {pol.ai_min_score} 미만(점수 {sig.score:.0f})")
+            rr = sig.plan.reward_risk if sig.plan else None
+            if rr is not None and rr < pol.min_reward_risk:
+                reasons.append(f"{rg} 최소손익비 {pol.min_reward_risk} 미만({rr:.2f})")
 
         # 사이징 + 플랜 검증
         cash = self.broker.get_cash_balance()
