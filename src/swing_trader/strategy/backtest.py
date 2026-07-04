@@ -84,6 +84,60 @@ def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_t
     return out
 
 
+def _v7_exit(close, open_, vol, ma5, va20, entry_idx: int, entry: float,
+             *, stop: float, take1, volspike: float, max_hold: int) -> tuple[float, int]:
+    """v7 청산 — 5일선 이탈 or 대량거래량 음봉까지 홀딩(추세추종). take1 지정 시 절반 부분익절."""
+    partial = False
+    locked = 0.0
+    j = entry_idx
+    for j in range(entry_idx + 1, min(entry_idx + 1 + max_hold, len(close))):
+        r = (close[j] - entry) / entry
+        if r <= stop:
+            return (locked + 0.5 * stop) if partial else stop, j
+        if take1 is not None and not partial and r >= take1:
+            partial, locked = True, 0.5 * take1        # 절반 부분익절 잠금
+            continue
+        down_vol = close[j] < open_[j] and vol[j] >= va20[j] * volspike   # 대량거래량 음봉
+        if close[j] < ma5[j] or down_vol:                                # 5일선 이탈 or 대량음봉 → 매도
+            return (locked + 0.5 * r) if partial else r, j
+    r = (close[min(j, len(close) - 1)] - entry) / entry
+    return (locked + 0.5 * r) if partial else r, j
+
+
+def _v7_stock_trades(df, *, stop, take1, volspike, max_hold, cost, min_tv_eok,
+                     require_uptrend=True):
+    """v7 — 강세(정배열) 종목의 20일선 눌림 반등 진입 → 5일선 이탈/대량거래량 음봉까지 홀딩.
+
+    유튜브 스윙 3편(Farley 마스터 스윙·성경호 신고가 눌림) 수렴 기법:
+    ① 신고가 강세주(정배열 프록시: 종가>60일선·20>60일선)만 대상
+    ② 20일선 눌림 후 반등에 진입(v5 검증 타점 재사용)
+    ③ 익절 고정 없이 5일선 이탈까지 홀딩(승자 달리게) — v5의 +6% 고정익절이 승자를 자르던 문제 해소
+    ④ 대량거래량 음봉 = 세력 이탈 신호로 매도, 손절 stop.
+    OOS 검증서 v5 대비 기대값·PF 개선(승률은 낮으나 승자 수익 큼)."""
+    close = _col(df, "close").to_numpy(dtype=float)
+    open_ = _col(df, "open").to_numpy(dtype=float)
+    vol = _col(df, "volume").to_numpy(dtype=float)
+    ma5 = _col(df, "close").rolling(5, min_periods=1).mean().to_numpy(dtype=float)
+    ma20 = _col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
+    ma60 = _col(df, "close").rolling(60, min_periods=1).mean().to_numpy(dtype=float)
+    va20 = _col(df, "volume").rolling(20, min_periods=5).mean().to_numpy(dtype=float)
+    dates = [d.strftime("%Y-%m-%d") for d in df.index]
+    out: list[tuple[str, float]] = []
+    i = 20
+    while i < len(close) - 2:
+        tv_eok = close[i] * vol[i] / 1e8
+        uptrend = (not require_uptrend) or (close[i] > ma60[i] and ma20[i] > ma60[i])
+        if (close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1]
+                and tv_eok >= min_tv_eok and open_[i + 1] > 0 and uptrend):
+            entry = float(open_[i + 1])
+            ret, jend = _v7_exit(close, open_, vol, ma5, va20, i + 1, entry,
+                                 stop=stop, take1=take1, volspike=volspike, max_hold=max_hold)
+            out.append((dates[i + 1], float(ret) - cost))
+            i = max(jend, i + 1)
+        i += 1
+    return out
+
+
 def _v6_ohlc(df):
     """v6 진입/차단 계산 공용 배열 추출(1D 강제)."""
     close = _col(df, "close").to_numpy(dtype=float)

@@ -581,6 +581,7 @@ _VERSION_TITLES = {
     4: "추세필터 · 정배열에서만 진입",
     5: "유연진입 · 추세필터 off·RR1.75",
     6: "하이브리드 regime · 국면별 가변방어",
+    7: "추세추종 청산 · 5일선/대량음봉까지 홀딩(마스터스윙)",
 }
 
 
@@ -597,6 +598,15 @@ def _core_logic_v6() -> list[str]:
         "+6% 익절 / -2.5% 손절 (부분익절 후 국면별 트레일)",
         "국면별 사이징(risk 1.0~0.25%) · 라이브 점수/손익비 게이트 가변",
         "진입 후 최대 20거래일 보유",
+    ]
+
+
+def _core_logic_v7() -> list[str]:
+    return [
+        "강세(정배열: 종가>60일선·20>60일선) 종목만 — 신고가 강세주 프록시",
+        "20일선 눌림 후 반등에 진입(v5 검증 눌림 타점 재사용)",
+        "익절 고정 없이 5일선 이탈까지 홀딩 — 승자 달리게(v5 +6% 고정익절이 승자 자르던 문제 해소)",
+        "대량거래량 음봉 = 세력 이탈 신호로 매도 · 손절 -3%",
     ]
 
 
@@ -624,9 +634,17 @@ def run_version_compare(cfg: Config) -> Path:
         vnum = v.get("version")
         snap = v.get("snapshot", {})
         is_v6 = str(snap.get("regime.logic_mode") or "") == "v6"
+        is_v7 = str(snap.get("regime.logic_mode") or "") == "v7"
         p = _params_from_snapshot(snap, cfg)
         trades = []
-        if is_v6:
+        if is_v7:
+            for n in notes:
+                for d, r in _BT._v7_stock_trades(
+                        dfs[n.ticker], stop=p["stop"], take1=None, volspike=2.5,
+                        max_hold=p["max_hold"], cost=p["cost"], min_tv_eok=p["min_tv_eok"],
+                        require_uptrend=True):
+                    trades.append(_HN.Trade(n.ticker, d, r))
+        elif is_v6:
             if reg_maps is None:
                 reg_maps = {}
                 for mk in ("kr", "us"):
@@ -657,7 +675,7 @@ def run_version_compare(cfg: Config) -> Path:
         out.append({
             "label": f"v{vnum}",
             "title": _version_title(vnum, v.get("note")),
-            "core_logic": _core_logic_v6() if is_v6 else _core_logic(p),
+            "core_logic": _core_logic_v7() if is_v7 else (_core_logic_v6() if is_v6 else _core_logic(p)),
             "oos": {"expectancy": rep.expectancy, "profit_factor": rep.profit_factor,
                     "max_drawdown": rep.max_drawdown, "sharpe": rep.sharpe, "win_rate": rep.win_rate,
                     "n_trades": rep.n_trades, "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},
