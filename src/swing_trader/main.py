@@ -669,12 +669,14 @@ def run_version_compare(cfg: Config) -> Path:
     oos_days = (date.fromisoformat(oos_end) - date.fromisoformat(oos_start)).days if dates else None
     lookback = int(cfg.get("backtest", "lookback_days", default=500))
     path = cfg.state_dir / "version_compare.json"
+    adopted = str(cfg.get("regime", "adopted_version", default="") or "").strip() or None
     path.write_text(json.dumps({
         "as_of": _DM.today_kst().isoformat(), "seed": seed,
         "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days, "lookback_days": lookback,
+        "adopted": adopted,   # 실전 채택 버전(대시보드 '채택됨' 배지)
         "versions": out,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
-    log.info("version_compare → %s (버전 %d개, OOS %s~%s)", path, len(out), oos_start, oos_end)
+    log.info("version_compare → %s (버전 %d개, OOS %s~%s, 채택 %s)", path, len(out), oos_start, oos_end, adopted)
     return path
 
 

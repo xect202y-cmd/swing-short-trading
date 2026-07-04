@@ -115,9 +115,12 @@ backtest:
   position_frac: 0.2     # MDD 복리 자산곡선의 거래당 자본분율(사이징-중립 비교용 고정값, 결과 유계 -100%~0)
 
 regime:
-  enabled: true              # 라이브 regime 가변 게이팅(페이퍼). false면 단일 v5 로직.
-  logic_mode: v6             # v6=regime 가변. 시장지수로 오늘 국면 판별→진입 게이트 가변.
-  index_kr: "^KS11"          # 코스피 지수(regime 판별용)
+  # v5 채택(2026-07-04): OOS 216일서 v5가 기대값·PF·누적·MDD 모두 v6 우위 → 실전 = v5.
+  # v6 하이브리드 regime은 강세 표본서 방어가 비용으로 나와 미채택(백테/비교용으로 코드·데이터 보존).
+  adopted_version: v5        # 대시보드 '채택됨' 배지 + 실전 로직 기준
+  enabled: false             # 라이브 regime 가변 게이팅 OFF → 단일 v5 로직으로 매매(페이퍼).
+  logic_mode: v5             # v5=추세필터 off 단일. (v6로 바꾸고 enabled:true면 regime 가변 복귀)
+  index_kr: "^KS11"          # 코스피 지수(regime 판별용 — v6 백테/비교에서만 사용)
   index_us: "^GSPC"          # S&P500 지수
   crash_dd: -0.12            # 60일 고점대비 낙폭 이 값 이하 → CRASH
   crash_ret5: -0.08          # 5일 수익률 이 값 이하 → CRASH
