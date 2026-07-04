@@ -31,6 +31,15 @@ def test_bear_below_ma200_falling():
     assert classify_series(df)[df.index[-1].strftime("%Y-%m-%d")] == Regime.BEAR
 
 
+def test_handles_multiindex_columns():
+    # provider(yfinance) df 는 MultiIndex 컬럼일 수 있음 → 2D 접근 방어.
+    df = _idx(list(np.linspace(100, 300, 260)))
+    df.columns = pd.MultiIndex.from_product([df.columns, ["^KS11"]])
+    df.columns = [c[0] for c in df.columns]  # duplicate-name simulation
+    reg = classify_series(df)
+    assert reg[df.index[-1].strftime("%Y-%m-%d")] == Regime.BULL
+
+
 def test_warmup_is_neutral():
     df = _idx(list(np.linspace(100, 110, 30)))  # < 200 bars → no ma200
     reg = classify_series(df)

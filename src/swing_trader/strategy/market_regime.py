@@ -17,10 +17,18 @@ class Regime(str, Enum):
     CRASH = "CRASH"
 
 
+def _col1d(df, name):
+    """OHLCV 컬럼을 1D 시리즈로 강제(provider df 의 MultiIndex/중복컬럼 → 2D 방어)."""
+    col = df[name]
+    if getattr(col, "ndim", 1) > 1:
+        col = col.iloc[:, 0]
+    return col.astype(float)
+
+
 def classify_series(index_df, *, crash_dd: float = -0.12, crash_ret5: float = -0.08) -> dict:
     """지수 OHLCV → {'YYYY-MM-DD': Regime}. 우선순위 CRASH>BEAR>BULL>NEUTRAL."""
-    close = index_df["close"].astype(float)
-    high = index_df["high"].astype(float)
+    close = _col1d(index_df, "close")
+    high = _col1d(index_df, "high")
     ma50 = close.rolling(50, min_periods=50).mean()
     ma200 = close.rolling(200, min_periods=200).mean()
     dd60 = close / high.rolling(60, min_periods=1).max() - 1.0

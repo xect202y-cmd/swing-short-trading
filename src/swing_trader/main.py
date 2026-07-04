@@ -616,6 +616,114 @@ def run_version_compare(cfg: Config) -> Path:
     return path
 
 
+def _regime_index_ticker(market: str) -> str:
+    return {"kr": "^KS11", "us": "^GSPC"}.get(market, "^KS11")
+
+
+def _market_of_ticker(ticker: str) -> str:
+    """KR 종목코드는 숫자로 시작(005930, 005935.KS). 그 외(AVGO)는 US."""
+    return "kr" if ticker and ticker[0].isdigit() else "us"
+
+
+def run_v6_compare(cfg: Config) -> Path:
+    """v4/v5/v6 동일조건 백테스트 + regime별 + 반사실 → state/v6_compare.json + 볼트 문서."""
+    from .review.v6_doc import render_v6_doc
+    from .strategy import backtest as _BT
+    from .strategy import harness as _HN
+    from .strategy import market_regime as _MR
+    from .strategy import metrics as _MX
+    from .strategy.regime_policy import V6_POLICY
+    reader = VaultReader(cfg)
+    provider = _HN.backtest_provider(cfg)
+    notes = [n for n in _load_notes(cfg, reader, None, str(cfg.get("backtest", "universe", default="all")))
+             if n.ticker]
+    days = int(cfg.get("backtest", "lookback_days", default=500))
+    seed = float(cfg.get("capital", "seed", default=5_000_000))
+    fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
+    slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
+    cost = 2 * (fee + slip)
+    min_tv = float(cfg.get("risk", "min_trading_value_eok", default=30))
+    take, dstop, take2 = 0.06, -0.025, 0.085
+    dfs = {n.ticker: provider.get_ohlcv(n.ticker)[0].tail(days) for n in notes}
+    # regime 시계열: 각 종목의 시장(kr/us)별 지수 1회 조회
+    reg_by_market: dict = {}
+    for mk in ("kr", "us"):
+        try:
+            idx_df, _ = provider.get_ohlcv(_regime_index_ticker(mk))
+            reg_by_market[mk] = _MR.classify_series(
+                idx_df.tail(days),
+                crash_dd=float(cfg.get("regime", "crash_dd", default=-0.12)),
+                crash_ret5=float(cfg.get("regime", "crash_ret5", default=-0.08)))
+        except Exception:  # noqa: BLE001 — 지수 조회 실패 시 NEUTRAL 폴백
+            log.warning("regime 지수 조회 실패: %s", mk)
+            reg_by_market[mk] = {}
+
+    def _reg_tag(reg_map, d):
+        return reg_map.get(d, _MR.Regime.NEUTRAL).value
+
+    # v4(추세필터 on)/v5(off) 고정 파라미터 거래 — regime 태그는 진입일 지수로 부여
+    def _fixed(require_uptrend):
+        recs = []
+        for n in notes:
+            reg = reg_by_market.get(_market_of_ticker(n.ticker), {})
+            for d, r in _BT._stock_trades(dfs[n.ticker], take=take, stop=dstop, max_hold=20,
+                                          runner=True, take2=take2, trail=3.0, cost=cost,
+                                          min_tv_eok=min_tv, require_uptrend=require_uptrend):
+                recs.append(_MX.TradeRec(d, r, _reg_tag(reg, d), 0))
+        return recs
+
+    v4 = _fixed(True)
+    v5 = _fixed(False)
+    v6: list = []
+    blocks: list = []
+    for n in notes:
+        reg = reg_by_market.get(_market_of_ticker(n.ticker), {})
+        t, b = _BT._v6_entries_and_blocks(dfs[n.ticker], reg, take=take, default_stop=dstop,
+                                          take2=take2, cost=cost, min_tv_eok=min_tv)
+        v6 += [_MX.TradeRec(e, r, rg, hd) for (e, r, rg, hd) in t]
+        blocks += b
+
+    # 사이징: risk_per_trade% / |손절폭%| = 자본분율. v4/v5는 flat 1.0%, v6는 regime 가변.
+    frac = {r.value: p.risk_per_trade_pct / abs(dstop * 100) for r, p in V6_POLICY.items()}
+    flat = {k: 1.0 / abs(dstop * 100) for k in ("BULL", "NEUTRAL", "BEAR", "CRASH")}
+    versions = [
+        {"label": "v4", "title": "추세필터 고정 ON",
+         "edge": _MX.full_report(v4, fixed_frac=0.2),
+         "as_traded": _MX.full_report(v4, frac_by_regime=flat)},
+        {"label": "v5", "title": "추세필터 OFF(유연)",
+         "edge": _MX.full_report(v5, fixed_frac=0.2),
+         "as_traded": _MX.full_report(v5, frac_by_regime=flat)},
+        {"label": "v6", "title": "regime 가변 하이브리드",
+         "edge": _MX.full_report(v6, fixed_frac=0.2),
+         "as_traded": _MX.full_report(v6, frac_by_regime=frac)},
+    ]
+    # 반사실 요약(v5 진입 O·v6 차단 O)
+    cf: dict = {"n": len(blocks)}
+    if blocks:
+        avg = sum(b["ret_v5"] for b in blocks) / len(blocks)
+        helped = sum(1 for b in blocks if b["ret_v5"] <= 0) / len(blocks) * 100
+        by_reason = {}
+        for reason in {b["reason"] for b in blocks}:
+            sub = [b for b in blocks if b["reason"] == reason]
+            by_reason[reason] = {"n": len(sub),
+                                 "avg_ret_pct": round(sum(x["ret_v5"] for x in sub) / len(sub) * 100, 3)}
+        cf.update({"avg_ret_pct": round(avg * 100, 3), "helped_pct": round(helped, 1),
+                   "by_reason": by_reason})
+    all_dates = [t.entry for v in (v4, v5, v6) for t in v]
+    path = cfg.state_dir / "v6_compare.json"
+    payload = {
+        "as_of": _DM.today_kst().isoformat(), "seed": seed,
+        "oos_start": min(all_dates) if all_dates else None,
+        "oos_end": max(all_dates) if all_dates else None,
+        "lookback_days": days, "versions": versions, "counterfactual": cf,
+    }
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    VaultWriter(cfg).write_logic(render_v6_doc(payload), 6)   # → 04_Trading/Logic/<날짜>_v6.md
+    log.info("v6_compare → %s (v4 %d·v5 %d·v6 %d 거래, 차단 %d)",
+             path, len(v4), len(v5), len(v6), len(blocks))
+    return path
+
+
 def run_scalp_compare(cfg: Config) -> Path:
     """단타 v1/v2 백테스트 리플레이 → state/scalp_compare.json (대시보드 카테고리 비교)."""
     from .scalp import backtest as _SB
