@@ -819,7 +819,7 @@ def run_scalp_compare(cfg: Config) -> Path:
     pfrac = 1.0 / 5   # 모델당 5분할 사이징과 동일 프레임
     seed = float(SEED_PER_MODEL)
 
-    trades: dict = {"v1": [], "v2": []}
+    trades: dict = {"v1": [], "v2": [], "v3": []}
     for n in notes:
         try:
             df, _src = provider.get_ohlcv(n.ticker)
@@ -828,15 +828,21 @@ def run_scalp_compare(cfg: Config) -> Path:
         r = _SB.simulate_stock(n.ticker, df.tail(days), min_tv_eok=min_tv)
         trades["v1"] += r["v1"]
         trades["v2"] += r["v2"]
+        trades["v3"] += r["v3"]
 
     meta = {"v1": ("단타 v1", "변동성 돌파(추세형)",
                    ["당일 시가+0.5×전일레인지 돌파 시 매수", "당일 종가 전량 청산(오버나잇 없음)",
                     "장중 손절 -2.0%(저가 터치 보수 판정)", "거래대금 하한 필터"]),
             "v2": ("단타 v2", "갭하락 과매도 반등(역추세형)",
                    ["시가 -2% 이상 갭하락 + 전일 20>60일선 종목 시가 매수",
-                    "당일 종가 전량 청산(오버나잇 없음)", "장중 손절 -2.5%(보수 판정)"])}
+                    "당일 종가 전량 청산(오버나잇 없음)", "장중 손절 -2.5%(보수 판정)"]),
+            "v3": ("단타 v3", "터닝포인트 갭반등 · 손익비 RR7 (불장단타왕 기법 반영)",
+                   ["시가 -2% 이상 갭하락 + 전일 20>60일선 종목 시가 매수(v2 골격)",
+                    "리턴 구간에서만: 50일선 흐름 비하락 + 종가가 VWMA50(거래량 가중 지지) 위",
+                    "손익비 원칙: 장중 손절 -1.0% / 익절 +7% (동시 터치 시 손절 우선 보수 판정)",
+                    "당일 종가 전량 청산(오버나잇 없음)"])}
     out = []
-    for m in ("v1", "v2"):
+    for m in ("v1", "v2", "v3"):
         _is, oos = _HN.split_oos(trades[m], frac)
         rep = _HN.report_from_trades(oos, pfrac)
         eq, curve = seed, []
@@ -903,8 +909,8 @@ def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float):
     from .scalp.strategy import settle_item
     items = plan.get("items", [])
     if not items:
-        return ({m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")},
-                {"v1": [], "v2": []}, [])
+        return ({m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2", "v3")},
+                {"v1": [], "v2": [], "v3": []}, [])
     bars: dict = {}
     missing: list[str] = []
     for i in items:
@@ -916,8 +922,8 @@ def _settle_scalp_plan(plan: dict, dfs: dict, fee_bps: float, slip_bps: float):
             missing.append(i.ticker)
     if missing:
         return None, None, missing
-    results = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")}
-    rows: dict = {"v1": [], "v2": []}
+    results = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2", "v3")}
+    rows: dict = {"v1": [], "v2": [], "v3": []}
     for i in items:
         bar = bars[i.ticker]
         f = settle_item(i, bar, fee_bps, slip_bps)
@@ -943,6 +949,7 @@ def run_scalp(cfg: Config, market: str) -> dict:
     from .scalp import planner as _P
     from .scalp.account import ScalpState
     from .scalp.briefer import scalp_brief
+    from .scalp.strategy import v3_setup_ok
     reader = VaultReader(cfg)
     provider = _provider(cfg)
     notes = [n for n in _load_notes(cfg, reader, None, market) if n.ticker]
@@ -974,12 +981,13 @@ def run_scalp(cfg: Config, market: str) -> dict:
                       "prev_close": float(prev["close"]),
                       "prev_range": float(prev["high"]) - float(prev["low"]),
                       "prev_tv_eok": round(tv_eok, 1), "uptrend": ma20 > ma60,
+                      "v3_ok": v3_setup_ok(df["close"], df["volume"] if "volume" in df else None),
                       "why": f"거래대금 {tv_eok:,.0f}억"})
 
     # 1) 이전 계획 정산(확정 일봉이 정본) — 전량(all-or-nothing): 하나라도 미확보면 보류(재시도)
     plans = _P.load_plans(cfg.state_dir)
     prev_plan = plans.get(market)
-    settled_rows = {"v1": [], "v2": []}
+    settled_rows = {"v1": [], "v2": [], "v3": []}
     settled_date = "—"
     n_settled = 0
     held = False
@@ -1000,7 +1008,7 @@ def run_scalp(cfg: Config, market: str) -> dict:
             warned = True
             expired = (date.fromisoformat(today) - date.fromisoformat(prev_plan["date"])).days >= 5
             if expired:
-                zero = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2")}
+                zero = {m: {"pnl": 0.0, "shadow_pnl": 0.0, "trades": []} for m in ("v1", "v2", "v3")}
                 state.apply_day(prev_plan["date"], market, zero)
                 state.save(cfg.state_dir)
                 _H.alert(cfg.creds.scalp_webhook, f"단타 정산[{market}]",
@@ -1037,9 +1045,10 @@ def run_scalp(cfg: Config, market: str) -> dict:
         warned = True
         _H.alert(cfg.creds.scalp_webhook, f"단타 계획[{market}]",
                  "실시간 시세 전부 실패 — 전일 종가로 수량 산정(트리거 표시 생략)")
-    cash_by = {m: state.models[m]["cash"] for m in ("v1", "v2")}
+    cash_by = {m: state.models[m]["cash"] for m in ("v1", "v2", "v3")}
     plan_lists = _P.build_plan(cands, cash_by, scenario, quotes)
-    items = plan_lists["v1"] + plan_lists["v2"] + plan_lists["v1_shadow"] + plan_lists["v2_shadow"]
+    items = (plan_lists["v1"] + plan_lists["v2"] + plan_lists["v3"]
+             + plan_lists["v1_shadow"] + plan_lists["v2_shadow"] + plan_lists["v3_shadow"])
     # KR 표시용 트리거(v1) = 실시간 시가 + k×전일레인지
     from dataclasses import replace
     disp = []

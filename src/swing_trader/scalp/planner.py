@@ -11,7 +11,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 from ..macro.regime import assess_macro
-from .strategy import V1_K, V1_STOP, V2_STOP, PlanItem
+from .strategy import V1_K, V1_STOP, V2_STOP, V3_STOP, V3_TARGET, PlanItem
 
 MAX_POS = 5
 _PLAN_FILE = "scalp_plan.json"
@@ -59,6 +59,11 @@ def _items(model: str, cands: list[dict], cash: float, quotes: dict,
                                 stop_pct=V1_STOP, prev_close=c["prev_close"],
                                 prev_range=c["prev_range"], k=V1_K,
                                 why=c.get("why", ""), shadow=shadow))
+        elif model == "v3":
+            out.append(PlanItem(model="v3", ticker=c["ticker"], name=c["name"], qty=q,
+                                stop_pct=V3_STOP, target_pct=V3_TARGET,
+                                prev_close=c["prev_close"], prev_range=c["prev_range"],
+                                why=c.get("why", ""), shadow=shadow))
         else:
             out.append(PlanItem(model="v2", ticker=c["ticker"], name=c["name"], qty=q,
                                 stop_pct=V2_STOP, prev_close=c["prev_close"],
@@ -74,11 +79,15 @@ def build_plan(candidates: list[dict], cash_by_model: dict, scenario: dict,
     v1_cap = 2 if scenario.get("risk") == "높음" else MAX_POS
     up = [c for c in ranked if c.get("uptrend")]
     up_base = [c for c in base if c.get("uptrend")]
+    v3c = [c for c in up if c.get("v3_ok")]           # v3 = 상승배열 + 리턴 구간(50일선 흐름·VWMA50 지지)
+    v3c_base = [c for c in up_base if c.get("v3_ok")]
     return {
         "v1": _items("v1", ranked, cash_by_model["v1"], quotes, v1_cap, False),
         "v2": _items("v2", up, cash_by_model["v2"], quotes, MAX_POS, False),
+        "v3": _items("v3", v3c, cash_by_model["v3"], quotes, MAX_POS, False),
         "v1_shadow": _items("v1", base, cash_by_model["v1"], quotes, MAX_POS, True),
         "v2_shadow": _items("v2", up_base, cash_by_model["v2"], quotes, MAX_POS, True),
+        "v3_shadow": _items("v3", v3c_base, cash_by_model["v3"], quotes, MAX_POS, True),
     }
 
 

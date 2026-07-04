@@ -1,4 +1,4 @@
-"""단타 백테스트 — 합성 일봉에서 v1/v2 거래 생성·look-ahead 없음."""
+"""단타 백테스트 — 합성 일봉에서 v1/v2/v3 거래 생성·look-ahead 없음."""
 import numpy as np
 import pandas as pd
 
@@ -19,8 +19,8 @@ def _df(n=80, seed=7):
 
 def test_simulate_produces_trades_with_dates():
     trades = simulate_stock("005930", _df(), min_tv_eok=0)
-    assert set(trades) == {"v1", "v2"}
-    all_t = trades["v1"] + trades["v2"]
+    assert set(trades) == {"v1", "v2", "v3"}
+    all_t = trades["v1"] + trades["v2"] + trades["v3"]
     assert len(trades["v1"]) > 0                       # 돌파는 변동장에서 반드시 발생
     for t in all_t:
         assert t.ticker == "005930"
@@ -30,8 +30,8 @@ def test_simulate_produces_trades_with_dates():
 
 def test_liquidity_filter_blocks_all():
     trades = simulate_stock("005930", _df(), min_tv_eok=1e9)
-    assert trades == {"v1": [], "v2": []}
+    assert trades == {"v1": [], "v2": [], "v3": []}
 
 
 def test_needs_61_bars():
-    assert simulate_stock("005930", _df(n=50), min_tv_eok=0) == {"v1": [], "v2": []}
+    assert simulate_stock("005930", _df(n=50), min_tv_eok=0) == {"v1": [], "v2": [], "v3": []}

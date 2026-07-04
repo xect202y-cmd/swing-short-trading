@@ -12,7 +12,7 @@ from pathlib import Path
 
 SEED_PER_MODEL = 3_000_000
 _FILE = "scalp_state.json"
-_MODELS = ("v1", "v2")
+_MODELS = ("v1", "v2", "v3")
 
 
 @dataclass

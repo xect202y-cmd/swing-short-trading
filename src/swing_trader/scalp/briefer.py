@@ -14,9 +14,9 @@ def _won(v) -> str:
 
 def _results_lines(settled: dict) -> list[str]:
     out: list[str] = []
-    for m in ("v1", "v2"):
+    for m in ("v1", "v2", "v3"):
         rows = settled.get(m) or []
-        tag = "v1 돌파" if m == "v1" else "v2 갭반등"
+        tag = {"v1": "v1 돌파", "v2": "v2 갭반등", "v3": "v3 터닝갭"}[m]
         if not rows:
             out.append(f"[{tag}] 체결 없음")
             continue
@@ -50,10 +50,10 @@ def scalp_brief(market: str, settled: dict, plan: dict, state: ScalpState,
                 settled_date: str) -> tuple[dict, str]:
     mk = _MK.get(market, market.upper())
     scen = plan.get("scenario", {})
-    total = sum(state.models[m]["cash"] for m in ("v1", "v2"))
+    total = sum(state.models[m]["cash"] for m in ("v1", "v2", "v3"))
     res = _results_lines(settled)
     pl = _plan_lines(plan)
-    day_total = sum(r["pnl"] for m in ("v1", "v2") for r in (settled.get(m) or []))
+    day_total = sum(r["pnl"] for m in ("v1", "v2", "v3") for r in (settled.get(m) or []))
     fields = [
         {"name": f"📊 {settled_date} 결과 · 일손익 {'+' if day_total >= 0 else ''}{_won(day_total)}원",
          "value": "\n".join(res)[:1024], "inline": False},

@@ -6,16 +6,18 @@ ret 은 소수(harness.Trade 규약) — 대시보드 복리 곡선은 eq *= 1 +
 from __future__ import annotations
 
 from ..strategy.harness import Trade
-from .strategy import V1_K, V1_STOP, V2_STOP, PlanItem, settle_item
+from .strategy import (V1_K, V1_STOP, V2_STOP, V3_STOP, V3_TARGET, PlanItem,
+                       settle_item, v3_setup_ok)
 
 _FEE, _SLIP = 1.5, 5.0    # config paper 기본과 동일(리플레이 고정 — 재현성)
 
 
 def simulate_stock(ticker: str, df, min_tv_eok: float = 50.0) -> dict:
-    out: dict = {"v1": [], "v2": []}
+    out: dict = {"v1": [], "v2": [], "v3": []}
     if df is None or len(df) < 61:
         return out
     closes = df["close"]
+    volumes = df["volume"] if "volume" in df else None
     for i in range(60, len(df)):
         prev, bar = df.iloc[i - 1], df.iloc[i]
         tv_eok = float(prev["close"]) * float(prev.get("volume", 0)) / 1e8
@@ -38,4 +40,10 @@ def simulate_stock(ticker: str, df, min_tv_eok: float = 50.0) -> dict:
                             bar, _FEE, _SLIP)
             if f:
                 out["v2"].append(Trade(ticker, d, f.ret_pct / 100))
+        # v3 터닝포인트 갭반등 — v2 골격 + 50일선 흐름·VWMA50 지지 필터 + 타이트 손절/장중 익절
+        if ma20 > ma60 and v3_setup_ok(closes.iloc[:i], volumes.iloc[:i] if volumes is not None else None):
+            f = settle_item(PlanItem(model="v3", stop_pct=V3_STOP, target_pct=V3_TARGET, **base),
+                            bar, _FEE, _SLIP)
+            if f:
+                out["v3"].append(Trade(ticker, d, f.ret_pct / 100))
     return out

@@ -20,8 +20,8 @@ def test_apply_day_updates_cash_and_daily(tmp_path):
     assert st.models["v2"]["realized"] == -8000.0
     assert st.models["v1"]["shadow_realized"] == 12000.0
     assert st.daily[-1] == {"date": "2026-07-03", "market": "kr",
-                            "v1_pnl": 15000.0, "v2_pnl": -8000.0,
-                            "v1_shadow": 12000.0, "v2_shadow": -8000.0}
+                            "v1_pnl": 15000.0, "v2_pnl": -8000.0, "v3_pnl": 0.0,
+                            "v1_shadow": 12000.0, "v2_shadow": -8000.0, "v3_shadow": 0.0}
     assert st.trades[-1]["date"] == "2026-07-03" and st.trades[-1]["model"] == "v1"
 
 
