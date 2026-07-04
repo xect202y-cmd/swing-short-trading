@@ -100,16 +100,16 @@
         "스윙트레이딩"
       ],
       "ai_verdict": "관망",
-      "ai_confidence": 70,
-      "ai_reason": "현재 주가는 20일 이동평균선 위에 있지만, 추가 상승 여력이 불확실한 상태입니다.",
+      "ai_confidence": 75,
+      "ai_reason": "현재 주가는 20일 이동평균선인 151,785에 근접하나 지지선에 도달하지 않았고, RSI가 50으로 중립 상태이다.",
       "block_reasons": [
-        "AI 관망(70) — 매수 보류"
+        "AI 관망(75) — 매수 보류"
       ]
     },
     {
       "ticker": "005935.KS",
       "name": "삼성전자우",
-      "kind": "BUY",
+      "kind": "BUY_WATCH",
       "score": 75.0,
       "rank": 2,
       "sector": "반도체/IT/AI인프라",
@@ -198,10 +198,12 @@
         "rr": 2.4
       },
       "methods": [],
-      "ai_verdict": "매수",
-      "ai_confidence": 85,
-      "ai_reason": "현재가가 MA5를 상회하고 있으며, RSI가 중립 영역에 위치해 있어 매수에 적합합니다.",
-      "block_reasons": []
+      "ai_verdict": "관망",
+      "ai_confidence": 70,
+      "ai_reason": "현재가는 MA5보다 높지만 MA20 이하로 단기적으로 상승 모멘텀이 부족하다.",
+      "block_reasons": [
+        "AI 관망(70) — 매수 보류"
+      ]
     },
     {
       "ticker": "034730",
@@ -296,7 +298,7 @@
       "methods": [],
       "ai_verdict": "관망",
       "ai_confidence": 75,
-      "ai_reason": "현재가가 5일 이동평균선보다 낮고, 20일 이동평균선과도 가까워 추세 전환 신호가 불확실하여 관망이 적합합니다.",
+      "ai_reason": "현재가는 MA20 아래에 있으며, 가격 상승이 확실하지 않아 관망이 필요하다.",
       "block_reasons": [
         "AI 관망(75) — 매수 보류"
       ]
@@ -393,10 +395,10 @@
       },
       "methods": [],
       "ai_verdict": "관망",
-      "ai_confidence": 70,
-      "ai_reason": "현재가가 MA5와 MA20을 하회하고 있으며, 추가적인 상승모멘텀이 관찰되지 않기 때문에 매수보다는 관망이 적절합니다.",
+      "ai_confidence": 75,
+      "ai_reason": "현재가가 MA5와 MA20보다 낮고, 목표 대비 손절폭이 크므로 매수를 피하는 것이 좋습니다.",
       "block_reasons": [
-        "AI 관망(70) — 매수 보류"
+        "AI 관망(75) — 매수 보류"
       ]
     },
     {
@@ -493,7 +495,7 @@
       "methods": [],
       "ai_verdict": "관망",
       "ai_confidence": 70,
-      "ai_reason": "현재가가 5일 이동평균선보다 높지만 20일과 60일 이동평균선 아래에 있어 매수 신호가 명확하지 않음.",
+      "ai_reason": "현재가가 MA20과 MA60 아래에 있으며, RSI도 중립 위치에 있어 추가적인 확인이 필요하다.",
       "block_reasons": [
         "AI 관망(70) — 매수 보류"
       ]
@@ -597,7 +599,7 @@
       ],
       "ai_verdict": "관망",
       "ai_confidence": 75,
-      "ai_reason": "현재가가 20일 이동평균선 아래에 있으며, 추가적인 눌림목이 필요하므로 관망하는 것이 적합하다.",
+      "ai_reason": "주가는 20일 이동평균선 아래에 있으며, 추가적인 하락 위험이 존재합니다.",
       "block_reasons": [
         "AI 관망(75) — 매수 보류"
       ]
@@ -696,9 +698,14 @@
       },
       "methods": [],
       "ai_verdict": "매수",
-      "ai_confidence": 80,
-      "ai_reason": "현재가가 5일 이동 평균선보다 높고 RSI도 중립적인 수준이므로 단기 스윙 매수에 적합하다.",
-      "block_reasons": []
+      "ai_confidence": 85,
+      "ai_reason": "현재가가 MA5, MA20, MA60보다 높고 거래량이 증가하여 상승 가능성이 높습니다.",
+      "block_reasons": [
+        "이미 보유 중 — 중복 매수 방지",
+        "CRASH 국면 — 신규진입 차단(예외조건 미충족)",
+        "CRASH 최소점수 80 미만(점수 71)",
+        "CRASH 최소손익비 2.5 미만(2.40)"
+      ]
     },
     {
       "ticker": "259960",
