@@ -582,6 +582,7 @@ _VERSION_TITLES = {
     5: "유연진입 · 추세필터 off·RR1.75",
     6: "하이브리드 regime · 국면별 가변방어",
     7: "추세추종 청산 · 5일선/대량음봉까지 홀딩(마스터스윙)",
+    8: "무한매수법 · 눌림 진입 후 정액DCA+평단10%익절(라오어)",
 }
 
 
@@ -610,6 +611,15 @@ def _core_logic_v7() -> list[str]:
     ]
 
 
+def _core_logic_v8() -> list[str]:
+    return [
+        "진입은 v7 그대로 — 강세(정배열) 종목의 20일선 눌림 반등",
+        "진입 후 무한매수법(라오어): 매일 종가 1분할 정액 DCA — 하락하면 사서 평단↓",
+        "평단 대비 +10% 도달 시 전량 익절 → 사이클 리셋 (손절 없음)",
+        "분할 소진 후 사이클 상한일 미도달 시 종가 청산 (백테스트 유한성)",
+    ]
+
+
 def run_version_compare(cfg: Config) -> Path:
     """각 로직 버전을 백테스트 리플레이 → 가상 시드계좌 OOS 곡선+핵심로직 → state/version_compare.json.
 
@@ -635,9 +645,19 @@ def run_version_compare(cfg: Config) -> Path:
         snap = v.get("snapshot", {})
         is_v6 = str(snap.get("regime.logic_mode") or "") == "v6"
         is_v7 = str(snap.get("regime.logic_mode") or "") == "v7"
+        is_v8 = str(snap.get("regime.logic_mode") or "") == "v8"
         p = _params_from_snapshot(snap, cfg)
         trades = []
-        if is_v7:
+        if is_v8:
+            # v8 파라미터는 스냅샷의 v8.* 키에서(divisions·사이클상한·익절). 없으면 기본값.
+            for n in notes:
+                for d, r in _BT._v8_stock_trades(
+                        dfs[n.ticker], take=float(snap.get("v8.take_pct", 10.0)) / 100,
+                        divisions=int(snap.get("v8.divisions", 40)),
+                        max_cycle_days=int(snap.get("v8.max_cycle_days", 60)),
+                        cost=p["cost"], min_tv_eok=p["min_tv_eok"], require_uptrend=True):
+                    trades.append(_HN.Trade(n.ticker, d, r))
+        elif is_v7:
             for n in notes:
                 for d, r in _BT._v7_stock_trades(
                         dfs[n.ticker], stop=p["stop"], take1=None, volspike=2.5,
@@ -675,7 +695,7 @@ def run_version_compare(cfg: Config) -> Path:
         out.append({
             "label": f"v{vnum}",
             "title": _version_title(vnum, v.get("note")),
-            "core_logic": _core_logic_v7() if is_v7 else (_core_logic_v6() if is_v6 else _core_logic(p)),
+            "core_logic": _core_logic_v8() if is_v8 else (_core_logic_v7() if is_v7 else (_core_logic_v6() if is_v6 else _core_logic(p))),
             "oos": {"expectancy": rep.expectancy, "profit_factor": rep.profit_factor,
                     "max_drawdown": rep.max_drawdown, "sharpe": rep.sharpe, "win_rate": rep.win_rate,
                     "n_trades": rep.n_trades, "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},

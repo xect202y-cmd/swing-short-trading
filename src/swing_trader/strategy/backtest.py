@@ -138,6 +138,56 @@ def _v7_stock_trades(df, *, stop, take1, volspike, max_hold, cost, min_tv_eok,
     return out
 
 
+def _v8_stock_trades(df, *, take, divisions, max_cycle_days, cost, min_tv_eok,
+                     require_uptrend=True):
+    """v8 — v7 진입(정배열·20일선 눌림 반등) 후 '무한매수법'(라오어) 운용.
+
+    유튜브 무한매수법 규칙(2026-07-06, JkkJd4Wdb_A 10:26~14:00):
+    ① 진입 게이트는 v7 그대로(강세주 눌림 반등). 다음 봉 시가에 1분할 첫 매수 = 사이클 시작.
+    ② 매일 종가에 1분할씩 기계적 추가 매수(LOC 근사·가격 무관 DCA) — divisions 회 상한.
+       하락하면 그대로 사서 평단(정액매수라 조화평균)을 계속 낮춘다.
+    ③ 매일 '전일까지의 평단' 대비 +take 도달(당일 고가 기준) 시 전량 익절(체결가=평단×(1+take)),
+       사이클 리셋. 당일 매수분은 익절 판정에 미포함(룩어헤드 방지).
+    ④ 손절 없음(원전 규칙). 단 백테스트 유한성 위해 max_cycle_days 미도달 시 종가 청산.
+    비용은 기존 버전들과 동일 규약(사이클=거래 1건당 왕복 cost 1회) — 사이징 중립 비교 유지.
+    반환: [(사이클 시작일 'YYYY-MM-DD', 사이클 수익률 소수 - cost)].
+    ※ 원전 대상은 3배 레버리지 ETF — 여기선 v7 유니버스(개별주)에 이식해 검증.
+    """
+    close = _col(df, "close").to_numpy(dtype=float)
+    open_ = _col(df, "open").to_numpy(dtype=float)
+    high = _col(df, "high").to_numpy(dtype=float)
+    vol = _col(df, "volume").to_numpy(dtype=float)
+    ma20 = _col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
+    ma60 = _col(df, "close").rolling(60, min_periods=1).mean().to_numpy(dtype=float)
+    dates = [d.strftime("%Y-%m-%d") for d in df.index]
+    out: list[tuple[str, float]] = []
+    i = 20
+    while i < len(close) - 2:
+        tv_eok = close[i] * vol[i] / 1e8
+        uptrend = (not require_uptrend) or (close[i] > ma60[i] and ma20[i] > ma60[i])
+        if (close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1]
+                and tv_eok >= min_tv_eok and open_[i + 1] > 0 and uptrend):
+            start = i + 1
+            invested, shares, buys = 1.0, 1.0 / float(open_[start]), 1   # 1분할 금액=1 정규화
+            end_idx, ret = start, None
+            for j in range(start + 1, min(start + max_cycle_days, len(close))):
+                end_idx = j
+                avg = invested / shares                     # 전일까지의 평단
+                if high[j] >= avg * (1 + take):             # 지정가 익절 체결 가정
+                    ret = take
+                    break
+                if buys < divisions and close[j] > 0:       # 미도달 → 종가 1분할 추가 매수
+                    invested += 1.0
+                    shares += 1.0 / close[j]
+                    buys += 1
+            if ret is None:                                 # 사이클 상한/데이터 끝 → 종가 청산
+                ret = close[end_idx] / (invested / shares) - 1
+            out.append((dates[start], float(ret) - cost))
+            i = max(end_idx, i + 1)
+        i += 1
+    return out
+
+
 def _v6_ohlc(df):
     """v6 진입/차단 계산 공용 배열 추출(1D 강제)."""
     close = _col(df, "close").to_numpy(dtype=float)

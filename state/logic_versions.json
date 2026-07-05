@@ -282,5 +282,20 @@
       "regime.logic_mode": "v7",
       "regime.adopted_version": "v5"
     }
+  },
+  {
+    "version": 8,
+    "date": "2026-07-06",
+    "created": "2026-07-06T07:12:15+09:00",
+    "note": "무한매수법 테스트: v7 눌림 진입 + 정액DCA 40분할 + 평단10% 익절(라오어, 유튜브). 채택 아님 — 비교 검증용",
+    "snapshot": {
+      "regime.logic_mode": "v8",
+      "v8.divisions": 40,
+      "v8.max_cycle_days": 60,
+      "v8.take_pct": 10.0,
+      "risk.default_stop_pct": null,
+      "risk.take1_pct": 10.0,
+      "risk.require_uptrend": true
+    }
   }
 ]
