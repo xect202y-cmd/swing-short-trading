@@ -998,6 +998,11 @@ def run_scalp(cfg: Config, market: str) -> dict:
     slip = float(cfg.get("paper", "slippage_bps", default=5.0))
     today = _DM.today_kst().isoformat()
     models = live_models(cfg)          # 라이브 = 채택 모델 1개(비교는 scalp_compare 백테스트)
+    if "v5" in models:
+        # v5 오버나잇 상따는 15시 장중 스캔 런(scalp-v5)이 정산·계획·브리핑을 전담 —
+        # 저녁 v1~v4 사이클(전일계획→당일 인트라데이 정산)과 구조가 달라 여기선 생략.
+        log.info("scalp-run[%s]: 채택 v5 — 15시 스캔 런(scalp-v5) 전담, 저녁 사이클 생략", market)
+        return {"settled": 0, "planned": 0, "warned": False, "held": False}
     state = ScalpState.load(cfg.state_dir, models)
     warned = False
 

@@ -59,6 +59,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("scalp-compare", help="단타 v1/v2 백테스트 리플레이 → state/scalp_compare.json")
     sub.add_parser("v6-compare", help="v4/v5/v6 동일조건 regime 비교 → state/v6_compare.json + 볼트문서")
     sr = sub.add_parser("scalp-run", help="단타 페이퍼 1사이클(이전 계획 정산+오늘 계획) → 디스코드 ⚡")
+    sub.add_parser("scalp-v5", help="단타 v5 오버나잇 상따 — 15시 장중 스캔(정산+종가매수 계획) → 디스코드 ⚡")
     sr.add_argument("--market", choices=["kr", "us"], required=True)
 
     args = ap.parse_args(argv)
@@ -123,6 +124,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "v6-compare":
         path = M.run_v6_compare(cfg)
         print(f"✅ v6 비교 데이터 → {path}")
+        return 0
+    if args.cmd == "scalp-v5":
+        from swing_trader.scalp.v5_live import run_scalp_v5
+        r = run_scalp_v5(cfg)
+        print(f"✅ scalp-v5: 정산 {r['settled']}건 · 계획 {r['planned']}건 · 스캔 {'O' if r['scanned'] else 'X'}")
         return 0
     if args.cmd == "scalp-run":
         r = M.run_scalp(cfg, args.market)
