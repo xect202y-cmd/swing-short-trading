@@ -1,6 +1,7 @@
 # Register swing PAPER-trading tasks (market-split, weekdays). ASCII-only. Run once by the user.
 #   Swing-KR : 09:05 KST  -> KR names, enter at today's open (decision on prev-day candle) + review + briefs
 #   Swing-US : 06:00 KST  -> US names on fresh US-close data
+#   Scalp-V5 : 15:00 KST  -> ultra-short v5 overnight breakout (intraday scan, close buy) via run_scalp_v5.bat
 # Paper mode only - live orders stay triple-locked via .env.
 $dir = "C:\Users\xect2\swing-short-trading"
 $hidden = Join-Path $dir "hidden.vbs"
@@ -21,5 +22,6 @@ function Register-Swing($name, $bat, $at, $desc) {
 
 Register-Swing "Swing-KR" "run_swing_kr.bat" "9:05AM"  "KR swing paper (open entry) + review + briefs. Weekdays 09:05 KST."
 Register-Swing "Swing-US" "run_swing_us.bat" "6:00AM"  "US swing paper on fresh US-close data. Weekdays 06:00 KST."
+Register-Swing "Scalp-V5" "run_scalp_v5.bat" "3:00PM" "Ultra-short v5 overnight breakout paper (intraday scan + close buy). Weekdays 15:00 KST."
 
-Get-ScheduledTask -TaskName "Swing-*" | Get-ScheduledTaskInfo | Select-Object TaskName, NextRunTime, State | Format-List
+Get-ScheduledTask -TaskName "Swing-*","Scalp-*" | Get-ScheduledTaskInfo | Select-Object TaskName, NextRunTime, State | Format-List
