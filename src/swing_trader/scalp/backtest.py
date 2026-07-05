@@ -7,14 +7,14 @@ from __future__ import annotations
 
 from ..strategy.harness import Trade
 from .strategy import (V1_K, V1_STOP, V2_STOP, V3_STOP, V3_TARGET,
-                       V4_STOP, V4_TARGET, V4_SURGE, PlanItem,
-                       settle_item, v3_setup_ok)
+                       V4_STOP, V4_TARGET, V4_SURGE, V5_STOP, V5_TARGET,
+                       PlanItem, settle_item, v3_setup_ok, v5_setup_ok)
 
 _FEE, _SLIP = 1.5, 5.0    # config paper 기본과 동일(리플레이 고정 — 재현성)
 
 
 def simulate_stock(ticker: str, df, min_tv_eok: float = 50.0) -> dict:
-    out: dict = {"v1": [], "v2": [], "v3": [], "v4": []}
+    out: dict = {"v1": [], "v2": [], "v3": [], "v4": [], "v5": []}
     if df is None or len(df) < 61:
         return out
     closes = df["close"]
@@ -56,4 +56,11 @@ def simulate_stock(ticker: str, df, min_tv_eok: float = 50.0) -> dict:
                             bar, _FEE, _SLIP)
             if f:
                 out["v4"].append(Trade(ticker, d, f.ret_pct / 100))
+        # v5 상따 모멘텀 — 전일 폭등(+15%↑)+대량거래(20일평균×5)+신고가 종목을 다음날 시가 매수
+        #   (이가근 상따의 일봉 정직 버전). 갭 범위·손절·익절은 settle 이 판정. IS 그리드 선택.
+        if volumes is not None and v5_setup_ok(closes.iloc[:i], volumes.iloc[:i]):
+            f = settle_item(PlanItem(model="v5", stop_pct=V5_STOP, target_pct=V5_TARGET, **base),
+                            bar, _FEE, _SLIP)
+            if f:
+                out["v5"].append(Trade(ticker, d, f.ret_pct / 100))
     return out

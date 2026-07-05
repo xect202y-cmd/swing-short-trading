@@ -74,3 +74,53 @@ def test_serialization_roundtrip():
     d = asdict(v1())
     assert d["model"] == "v1" and d["k"] == V1_K
     assert PlanItem(**d) == v1()
+
+
+# ── v5 상따 모멘텀 ──────────────────────────────────────────────────────────
+def v5(qty=10, prev_close=10000.0):
+    from swing_trader.scalp.strategy import V5_STOP, V5_TARGET
+    return PlanItem(model="v5", ticker="005930", name="삼성전자", qty=qty,
+                    stop_pct=V5_STOP, target_pct=V5_TARGET,
+                    prev_close=prev_close, prev_range=300.0)
+
+
+def test_v5_no_fill_on_deep_gap_down():
+    # 깊은 갭하락(-3% 초과) 출발 = 모멘텀 소멸 → 미진입
+    assert settle_item(v5(), bar(9600, 10500, 9500, 10400), 1.5, 5.0) is None
+
+
+def test_v5_no_fill_on_excessive_gap_up():
+    # 과도 갭업(+10% 초과) = 추격 금지 → 미진입
+    assert settle_item(v5(), bar(11100, 12000, 11000, 11900), 1.5, 5.0) is None
+
+
+def test_v5_fills_at_open_and_hits_target():
+    from swing_trader.scalp.strategy import V5_TARGET
+    f = settle_item(v5(), bar(10500, 12800, 10450, 12500), 1.5, 5.0)
+    cost = (1.5 + 5.0) / 10000
+    assert f.reason == "익절"
+    entry = 10500 * (1 + cost)
+    assert f.entry == pytest.approx(entry)
+    assert f.exit == pytest.approx(entry * (1 + V5_TARGET / 100) * (1 - cost))
+
+
+def test_v5_stop_first_when_low_touches():
+    from swing_trader.scalp.strategy import V5_STOP
+    f = settle_item(v5(), bar(10500, 12800, 10100, 12500), 1.5, 5.0)
+    assert f.reason == "손절"   # 손절·익절 동시 터치 가능 → 손절 우선(보수 판정)
+    assert f.ret_pct < 0
+
+
+def test_v5_setup_ok_requires_surge_volume_and_high():
+    import pandas as pd
+    from swing_trader.scalp.strategy import v5_setup_ok, V5_HIGH_N
+    n = V5_HIGH_N + 10
+    flat = pd.Series([10000.0] * n)
+    vol = pd.Series([1_000_000.0] * n)
+    assert not v5_setup_ok(flat, vol)                       # 폭등 없음
+    surged = flat.copy(); surged.iloc[-1] = 12000.0         # 전일 +20% & 신고가
+    assert not v5_setup_ok(surged, vol)                     # 거래량 폭발 없음
+    bigvol = vol.copy(); bigvol.iloc[-1] = 6_000_000.0      # 20일 평균×6
+    assert v5_setup_ok(surged, bigvol)
+    capped = surged.copy(); capped.iloc[-30] = 13000.0      # 판정창(60일) 안의 매물대 → 신고가 아님
+    assert not v5_setup_ok(capped, bigvol)

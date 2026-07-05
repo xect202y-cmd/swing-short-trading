@@ -837,17 +837,15 @@ def run_scalp_compare(cfg: Config) -> Path:
     pfrac = 1.0 / 5   # 모델당 5분할 사이징과 동일 프레임
     seed = float(SEED_PER_MODEL)
 
-    trades: dict = {"v1": [], "v2": [], "v3": [], "v4": []}
+    trades: dict = {"v1": [], "v2": [], "v3": [], "v4": [], "v5": []}
     for n in notes:
         try:
             df, _src = provider.get_ohlcv(n.ticker)
         except Exception:  # noqa: BLE001
             continue
         r = _SB.simulate_stock(n.ticker, df.tail(days), min_tv_eok=min_tv)
-        trades["v1"] += r["v1"]
-        trades["v2"] += r["v2"]
-        trades["v3"] += r["v3"]
-        trades["v4"] += r["v4"]
+        for m in trades:
+            trades[m] += r[m]
 
     meta = {"v1": ("단타 v1", "변동성 돌파(추세형)",
                    ["당일 시가+0.5×전일레인지 돌파 시 매수", "당일 종가 전량 청산(오버나잇 없음)",
@@ -864,9 +862,14 @@ def run_scalp_compare(cfg: Config) -> Path:
                    ["정배열 강세주가 전일 +5%↑ 급등 → 당일 갭하락(-2%) 조정에 시가 매수",
                     "추격 금지·눌림목 매수: '급등 후 반드시 눌림목이 온다, 그때 매수'(강창권)",
                     "손익비 원칙: 장중 손절 -1.5% / 익절 +10% (동시 터치 시 손절 우선 보수 판정)",
-                    "당일 종가 전량 청산(오버나잇 없음)"])}
+                    "당일 종가 전량 청산(오버나잇 없음)"]),
+            "v5": ("단타 v5", "상따 모멘텀 — 폭등 다음날 지속 (이가근 상한가 따라잡기의 일봉 버전)",
+                   ["전일 +15%↑ 폭등 + 거래량 20일평균×5↑ + 60일 신고가(왼쪽 매물대 청정) 종목만",
+                    "다음날 시가 매수 — 갭 -3%~+10% 범위만(깊은 갭하락=모멘텀 소멸·과도 갭업=추격 금지)",
+                    "손익비 원칙: 장중 손절 -3% / 익절 +20% (동시 터치 시 손절 우선 보수 판정)",
+                    "당일 종가 전량 청산(오버나잇 없음) · '오직 대장주만' 원칙(라이브 상한 2)"])}
     out = []
-    for m in ("v1", "v2", "v3", "v4"):
+    for m in ("v1", "v2", "v3", "v4", "v5"):
         _is, oos = _HN.split_oos(trades[m], frac)
         rep = _HN.report_from_trades(oos, pfrac)
         eq, curve = seed, []
@@ -1003,15 +1006,19 @@ def run_scalp(cfg: Config, market: str) -> dict:
             continue
         ma20 = float(df["close"].tail(20).mean())
         ma60 = float(df["close"].tail(60).mean())
-        from .scalp.strategy import V4_SURGE
+        from .scalp.strategy import V4_SURGE, v5_setup_ok
         v4_ok = (len(df) >= 2 and float(df["close"].iloc[-2]) > 0
                  and float(df["close"].iloc[-1]) >= float(df["close"].iloc[-2]) * (1 + V4_SURGE / 100))
+        prev_chg = ((float(df["close"].iloc[-1]) / float(df["close"].iloc[-2]) - 1) * 100
+                    if len(df) >= 2 and float(df["close"].iloc[-2]) > 0 else 0.0)
         cands.append({"ticker": n.ticker, "name": n.name or n.ticker,
                       "prev_close": float(prev["close"]),
                       "prev_range": float(prev["high"]) - float(prev["low"]),
+                      "prev_chg_pct": round(prev_chg, 2),   # v5 대장주(가장 강한 종목) 정렬용
                       "prev_tv_eok": round(tv_eok, 1), "uptrend": ma20 > ma60,
                       "v3_ok": v3_setup_ok(df["close"], df["volume"] if "volume" in df else None),
                       "v4_ok": v4_ok,   # 전일 급등(+5%↑) → 급등 후 첫 조정(눌림목) 반등 대상
+                      "v5_ok": v5_setup_ok(df["close"], df["volume"] if "volume" in df else None),
                       "why": f"거래대금 {tv_eok:,.0f}억"})
 
     # 1) 이전 계획 정산(확정 일봉이 정본) — 전량(all-or-nothing): 하나라도 미확보면 보류(재시도)

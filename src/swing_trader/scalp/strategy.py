@@ -31,6 +31,20 @@ V4_GAP = -2.0     # v4 시가 갭하락(조정) 임계(%)
 V4_SURGE = 5.0    # v4 전일 급등 임계(%) — 급등 다음날 첫 조정만 대상(추격 금지·눌림목 매수)
 V4_STOP = -1.5    # v4 손절(%)
 V4_TARGET = 10.0  # v4 장중 익절 목표(%) — 승자 크게(전고점/+10%)
+# v5 (2026-07-05, 이가근 '한국형 모멘텀 투자' 상따 기법의 일봉 정직 버전): 폭등 모멘텀 지속.
+#   상따 원전은 '상한가 도달 순간 매수'(장중)이나 일봉·전일계획 프레임에선 불가 →
+#   저자 대안("장중이 무서우면 종가에라도 반드시 사라"·삼양식품 "그다음날은 사야만 했다")을 따라
+#   '전일 폭등(상한가권)+평소 대비 대량거래+신고가(왼쪽 매물대 청정)' 종목을 다음날 시가 매수.
+#   과도 갭업은 추격 금지, 갭하락 출발은 모멘텀 소멸로 보고 미진입. 상수는 IS 그리드 선택.
+#   IS 그리드(2026-07-05, 실데이터 84종목×500일, 276조합): 손절 -3%가 상위 전부 지배,
+#   익절은 +20 > +15 > +10, 갭 상한 +10 우세. 최상위 조합 채택(IS 기대값 +1.94%/건·PF 2.38).
+V5_SURGE = 15.0   # v5 전일 폭등 임계(%) — 상한가권 강모멘텀만
+V5_VOL_X = 5.0    # v5 전일 거래량 ≥ 직전 20일 평균 × N (영상: 평소 10배 거래 폭발)
+V5_HIGH_N = 60    # v5 신고가 판정 구간(일) — 전일 종가가 구간 최고(매물대 청정)
+V5_MIN_GAP = -3.0 # v5 시가 갭 하한(%) — 이보다 깊은 갭하락 출발은 모멘텀 소멸 → 미진입
+V5_MAX_GAP = 10.0 # v5 시가 갭 상한(%) — 과도 갭업 추격 금지
+V5_STOP = -3.0    # v5 손절(%) — 영상 '오후 2시 기법'의 -3% 손절과 일치
+V5_TARGET = 20.0  # v5 장중 익절 목표(%) — 승자 크게(상따 폭발 수익 본질)
 
 
 @dataclass(frozen=True)
@@ -72,10 +86,17 @@ def settle_item(item: PlanItem, bar, fee_bps: float, slip_bps: float) -> Fill | 
         entry = trigger * (1 + cost)
         # v1 은 저가가 진입 전(아침 눌림)일 수 있어 손절 시뮬 불가 → 종가 청산만(모듈 docstring)
         exit_px, reason = c * (1 - cost), "종가청산"
-    else:  # v2/v3/v4 — 시가 갭하락 재확인(계획 시점 실시간 시가와 무관하게 확정 시가가 정본)
-        gap = {"v3": V3_GAP, "v4": V4_GAP}.get(item.model, V2_GAP)
-        if item.prev_close <= 0 or o > item.prev_close * (1 + gap / 100):
+    else:  # v2/v3/v4 갭하락 재확인 · v5 갭 범위 재확인(확정 시가가 정본)
+        if item.prev_close <= 0:
             return None
+        if item.model == "v5":
+            gap_pct = (o / item.prev_close - 1) * 100
+            if gap_pct < V5_MIN_GAP or gap_pct > V5_MAX_GAP:
+                return None   # 갭하락(모멘텀 소멸)·과도 갭업(추격 금지) 모두 미진입
+        else:
+            gap = {"v3": V3_GAP, "v4": V4_GAP}.get(item.model, V2_GAP)
+            if o > item.prev_close * (1 + gap / 100):
+                return None
         entry = o * (1 + cost)
         stop_price = entry * (1 + item.stop_pct / 100)  # 시가 진입이라 저가 손절 판정 타당
         target_price = entry * (1 + item.target_pct / 100) if item.target_pct else None
@@ -88,6 +109,24 @@ def settle_item(item: PlanItem, bar, fee_bps: float, slip_bps: float) -> Fill | 
     pnl = (exit_px - entry) * item.qty
     return Fill(entry=entry, exit=exit_px, pnl=pnl,
                 ret_pct=round((exit_px / entry - 1) * 100, 2), reason=reason)
+
+def v5_setup_ok(closes, volumes) -> bool:
+    """v5 '상따 모멘텀' 셋업 판정 — 전일까지의 시리즈만 사용(look-ahead 금지).
+
+    - 전일 폭등: 종가 상승률 ≥ V5_SURGE (상한가권 강모멘텀)
+    - 대량거래: 전일 거래량 ≥ 직전 20일 평균 × V5_VOL_X (시장이 인정한 재료)
+    - 신고가: 전일 종가가 최근 V5_HIGH_N일 최고 종가 (왼쪽 매물대 청정)
+    """
+    if closes is None or volumes is None or len(closes) < V5_HIGH_N + 1 or len(volumes) < 22:
+        return False
+    pc, p2 = float(closes.iloc[-1]), float(closes.iloc[-2])
+    if p2 <= 0 or pc < p2 * (1 + V5_SURGE / 100):
+        return False
+    vmean = float(volumes.iloc[-21:-1].mean())
+    if vmean <= 0 or float(volumes.iloc[-1]) < V5_VOL_X * vmean:
+        return False
+    return pc >= float(closes.iloc[-V5_HIGH_N:].max())
+
 
 def v3_setup_ok(closes, volumes) -> bool:
     """v3 '리턴 구간' 셋업 판정 — 전일까지의 시리즈만 사용(look-ahead 금지).

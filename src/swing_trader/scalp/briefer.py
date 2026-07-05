@@ -12,7 +12,8 @@ def _won(v) -> str:
     return "—" if v is None else f"{round(v):,}"
 
 
-_TAG = {"v1": "v1 돌파", "v2": "v2 갭반등", "v3": "v3 터닝갭", "v4": "v4 급등후눌림"}
+_TAG = {"v1": "v1 돌파", "v2": "v2 갭반등", "v3": "v3 터닝갭", "v4": "v4 급등후눌림",
+        "v5": "v5 상따모멘텀"}
 
 
 def _results_lines(settled: dict, models) -> list[str]:
@@ -39,9 +40,10 @@ def _plan_lines(plan: dict) -> list[str]:
         return ["(오늘 계획 없음 — 조건 충족 후보 없음)"]
     hdr = {"v1": "[v1 돌파 — 트리거 터치 시 매수]", "v2": "[v2 갭반등 — 시가 진입]",
            "v3": "[v3 터닝갭 — 시가 진입 · 익절 목표]",
-           "v4": "[v4 급등후눌림 — 갭하락 조정에 시가 진입]"}
+           "v4": "[v4 급등후눌림 — 갭하락 조정에 시가 진입]",
+           "v5": "[v5 상따모멘텀 — 폭등 다음날 시가 진입(갭하락·과열갭 미진입)]"}
     out: list[str] = []
-    for m in [x for x in ("v1", "v2", "v3", "v4") if any(i.model == x for i in items)]:
+    for m in [x for x in ("v1", "v2", "v3", "v4", "v5") if any(i.model == x for i in items)]:
         mine = [i for i in items if i.model == m]
         out.append(hdr.get(m, f"[{m}]"))
         for i in mine:
