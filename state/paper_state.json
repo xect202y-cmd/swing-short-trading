@@ -1,5 +1,5 @@
 {
-  "cash": 3015153.77,
+  "cash": 2109565.45,
   "realized": -232578.11,
   "last_bar_date": "2026-07-06",
   "positions": {
@@ -19,7 +19,7 @@
         "🤖 AI 매수(85): 현재가가 MA5를 상회하고 있으며, RSI가 중립 영역에 위치해 있어 매수에 적합합니다."
       ],
       "partial_done": false,
-      "high_water": 208104.0
+      "high_water": 213500.0
     },
     "068270": {
       "name": "셀트리온",
@@ -37,6 +37,24 @@
       ],
       "partial_done": false,
       "high_water": 183691.8
+    },
+    "028260": {
+      "name": "삼성물산",
+      "quantity": 2,
+      "avg_price": 452726.25,
+      "stop": 438925.0,
+      "target1": 479650.0,
+      "target2": 490962.5,
+      "bars_held": 0,
+      "entry_score": 75.0,
+      "entry_date": "2026-07-06",
+      "entry_reasons": [
+        "20일선 근처 반등 구간",
+        "목표가까지 상승여력 5%+",
+        "🤖 AI 관망(65): 현재가가 MA20과 MA5를 초과하였으나, 거래량이 낮아 추세 전환의 신뢰도가 낮기 때문에 관망이 적절합니다."
+      ],
+      "partial_done": false,
+      "high_water": 0.0
     }
   }
 }
