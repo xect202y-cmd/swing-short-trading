@@ -1,0 +1,51 @@
+{
+  "as_of": "2026-07-08",
+  "rule": "50/200일 이평 골든크로스 · 보강: 거래량 20일평균↑·200일선 기울기·50일선 위",
+  "golden_top": [
+    {
+      "ticker": "GD",
+      "name": "General Dynamics",
+      "market": "US",
+      "kind": "golden",
+      "close": 373.9949951171875,
+      "ma50": 346.13,
+      "ma200": 345.66,
+      "vol_ratio": 0.18,
+      "slope200_pct": 0.3,
+      "above50": true,
+      "high120": 380.7099914550781,
+      "date": "2026-07-07",
+      "score": 3.41,
+      "buyLow": 346.13,
+      "buyHigh": 373.99,
+      "stop": 345.66,
+      "target": 430.09
+    }
+  ],
+  "golden_count": 1,
+  "dead_count": 4,
+  "watch_golden": [],
+  "hold_dead": [],
+  "dead_all": [
+    {
+      "ticker": "005070",
+      "name": "코스모신소재",
+      "market": "KR"
+    },
+    {
+      "ticker": "017960",
+      "name": "한국카본",
+      "market": "KR"
+    },
+    {
+      "ticker": "450080",
+      "name": "에코프로머티",
+      "market": "KR"
+    },
+    {
+      "ticker": "022100",
+      "name": "포스코DX",
+      "market": "KR"
+    }
+  ]
+}

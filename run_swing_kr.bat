@@ -10,6 +10,8 @@ cd /d "%~dp0"
 REM scalp paper cycle: settle yesterday's plan + build today's plan (Discord orange embed)
 "%~dp0.venv\Scripts\swing-trader.exe" scalp-run --market kr >> "%~dp0swing.log" 2>&1
 "%~dp0.venv\Scripts\swing-trader.exe" review >> "%~dp0swing.log" 2>&1
+REM golden/dead cross scan (KR full market + US S&P500, 50/200 MA) -> crosses.json + Discord
+"%~dp0.venv\Scripts\swing-trader.exe" crosses >> "%~dp0swing.log" 2>&1
 REM weekly(Fri, incl. backtest) / monthly(last Fri) briefings auto-fire by date
 "%~dp0.venv\Scripts\swing-trader.exe" brief --period auto >> "%~dp0swing.log" 2>&1
 REM sync local main to origin so the marker commit fast-forwards (self-heal after a cloud fallback day)

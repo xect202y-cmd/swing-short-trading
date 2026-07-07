@@ -60,6 +60,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("v6-compare", help="v4/v5/v6 동일조건 regime 비교 → state/v6_compare.json + 볼트문서")
     sr = sub.add_parser("scalp-run", help="단타 페이퍼 1사이클(이전 계획 정산+오늘 계획) → 디스코드 ⚡")
     sub.add_parser("scalp-v5", help="단타 v5 오버나잇 상따 — 15시 장중 스캔(정산+종가매수 계획) → 디스코드 ⚡")
+    sub.add_parser("crosses", help="골든/데드 크로스 스캔(KR 전시장+US S&P500, 50/200일) → state/crosses.json + 디스코드 ✨")
     sr.add_argument("--market", choices=["kr", "us"], required=True)
 
     args = ap.parse_args(argv)
@@ -124,6 +125,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "v6-compare":
         path = M.run_v6_compare(cfg)
         print(f"✅ v6 비교 데이터 → {path}")
+        return 0
+    if args.cmd == "crosses":
+        from swing_trader.market.crosses import run_crosses
+        r = run_crosses(cfg)
+        print(f"✅ crosses: 골든 {r['golden']}건(보유·관심 {r['watch_golden']}) · 데드 {r['dead']}건(보유 {r['hold_dead']})")
         return 0
     if args.cmd == "scalp-v5":
         from swing_trader.scalp.v5_live import run_scalp_v5
