@@ -1,6 +1,6 @@
 {
-  "cash": 3046961.69,
-  "realized": -274607.09,
+  "cash": 3857428.73,
+  "realized": -308626.33,
   "last_bar_date": "2026-07-07",
   "positions": {
     "005935.KS": {
@@ -19,25 +19,7 @@
         "🤖 AI 매수(85): 현재가가 MA5를 상회하고 있으며, RSI가 중립 영역에 위치해 있어 매수에 적합합니다."
       ],
       "partial_done": false,
-      "high_water": 216500.0
-    },
-    "AMD": {
-      "name": "AMD",
-      "quantity": 1,
-      "avg_price": 844495.43,
-      "stop": 818751.19,
-      "target1": 894717.79,
-      "target2": 915819.63,
-      "bars_held": 0,
-      "entry_score": 76.9,
-      "entry_date": "2026-07-07",
-      "entry_reasons": [
-        "목표가까지 상승여력 5%+",
-        "🎯 기법 부합: 눌림목매매, 스윙트레이딩",
-        "🤖 AI 매수(85): 현재 주가가 20일 이동평균선 위에 있으며, RSI도 상대적으로 높은 편이기 때문에 매수 기회로 판단된다."
-      ],
-      "partial_done": false,
-      "high_water": 844495.43
+      "high_water": 213500.0
     }
   }
 }
