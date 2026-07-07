@@ -857,7 +857,7 @@ def run_scalp_compare(cfg: Config) -> Path:
     pfrac = 1.0 / 5   # 모델당 5분할 사이징과 동일 프레임
     seed = float(SEED_PER_MODEL)
 
-    trades: dict = {"v1": [], "v2": [], "v3": [], "v4": [], "v5": []}
+    trades: dict = {"v1": [], "v2": [], "v3": [], "v4": [], "v5": [], "v6": []}
     for n in notes:
         try:
             df, _src = provider.get_ohlcv(n.ticker)
@@ -872,13 +872,14 @@ def run_scalp_compare(cfg: Config) -> Path:
     # 관심종목 유니버스로 돌리면 다른 전략을 같은 이름으로 비교하게 되므로 폴백하지 않는다.
     v5_universe = "패널 없음(전시장 캐시 필요)"
     try:
-        from .scalp.krx_universe import load_cache, v5_market_trades
+        from .scalp.krx_universe import load_cache, v5_market_trades, v6_market_trades
         panel = {k: v for k, v in load_cache(cfg.state_dir).items() if v is not None}
         if len(panel) >= 500:
             trades["v5"] = v5_market_trades(panel, min_tv_eok=min_tv)
+            trades["v6"] = v6_market_trades(panel, min_tv_eok=min_tv)   # v5 + 코스닥 국면게이트
             v5_universe = f"전시장 {len(panel)}"
     except Exception as e:  # noqa: BLE001
-        log.warning("v5 전시장 패널 사용 불가: %s", e)
+        log.warning("v5/v6 전시장 패널 사용 불가: %s", e)
 
     meta = {"v1": ("단타 v1", "변동성 돌파(추세형)",
                    ["당일 시가+0.5×전일레인지 돌파 시 매수", "당일 종가 전량 청산(오버나잇 없음)",
@@ -900,9 +901,14 @@ def run_scalp_compare(cfg: Config) -> Path:
                    ["당일 +15%↑ 폭등(상한가 잠금 29.5%↑ 마감은 매수 불가라 제외) + 거래량 20일평균×5↑ + 60일 신고가",
                     "종가 매수(동시호가 참여 가정) → 익일 시가 매도 — 상따 수익의 본체인 오버나잇 갭만 취함",
                     "인트라데이 변형(익일 시가 매수)은 OOS 644건 -76%로 폐기 — 그 시가가 상따의 매도 지점",
-                    "백테스트 전용(라이브 채택 시 15시 장중 스캔 런 필요) · 거래대금 50억↑"])}
+                    "백테스트 전용(라이브 채택 시 15시 장중 스캔 런 필요) · 거래대금 50억↑"]),
+            "v6": ("단타 v6", f"v5 오버나잇 상따 + 코스닥 50일선 국면게이트 (2026-07-08 채택) · 유니버스 {v5_universe}",
+                   ["v5 셋업 동일 — 당일 +15%↑ 폭등 + 거래량 20일평균×5↑ + 60일 신고가 → 종가매수·익일시가청산",
+                    "코스닥(KQ11)이 50일선 아래(약세 국면)면 신규 진입 보류 — 하락장 손실거래 제거",
+                    "검증(2026-07-08): 무필터 대비 PF 1.19→1.27·위험조정 2.69→4.09, IS·OOS 양쪽 개선, MA 30~60 견고",
+                    "라이브: 15시 스캔 런에서 게이트 판정(정산·청산은 국면 무관 유지)"])}
     out = []
-    for m in ("v1", "v2", "v3", "v4", "v5"):
+    for m in ("v1", "v2", "v3", "v4", "v5", "v6"):
         _is, oos = _HN.split_oos(trades[m], frac)
         rep = _HN.report_from_trades(oos, pfrac)
         eq, curve = seed, []

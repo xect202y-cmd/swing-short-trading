@@ -84,8 +84,26 @@ def fetch_panel(state_dir: Path, progress_path: Path | None = None,
     return {k: v for k, v in panel.items() if v is not None}
 
 
-def v5_market_trades(panel: dict, min_tv_eok: float = 50.0,
+def _kosdaq_up_days(ma: int = 50) -> set | None:
+    """v6 국면게이트 — 코스닥(KQ11) 종가 ≥ ma일선인 날짜(YYYY-MM-DD) 집합. 실패 시 None(게이트 미적용=v5와 동일)."""
+    try:
+        import FinanceDataReader as fdr
+        s = fdr.DataReader("KQ11", "2023-06-01")["Close"].astype(float)
+        up = s >= s.rolling(ma).mean()
+        return {d.strftime("%Y-%m-%d") for d, u in up.items() if bool(u)}
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def v6_market_trades(panel: dict, min_tv_eok: float = 50.0,
                      fee_bps: float = 1.5, slip_bps: float = 5.0) -> list:
+    """v6 = v5 오버나잇 상따 + 코스닥 50일선 국면게이트(약세국면 진입일 제외). 백테스트: PF·위험조정 개선."""
+    return v5_market_trades(panel, min_tv_eok, fee_bps, slip_bps, up_days=_kosdaq_up_days(50))
+
+
+def v5_market_trades(panel: dict, min_tv_eok: float = 50.0,
+                     fee_bps: float = 1.5, slip_bps: float = 5.0,
+                     up_days: set | None = None) -> list:
     """전시장 패널에서 v5 '오버나잇 상따' 리플레이(벡터화) → harness.Trade 목록.
 
     진입 = 폭등 당일(D) 종가(장 마감 동시호가 참여 가정), 청산 = 익일(D+1) 시가.
@@ -118,5 +136,8 @@ def v5_market_trades(panel: dict, min_tv_eok: float = 50.0,
         rets = ex / entry - 1
         dates = df.index[m]
         for d, r in zip(dates, rets):
-            out.append(Trade(code, d.strftime("%Y-%m-%d"), float(r)))
+            ds = d.strftime("%Y-%m-%d")
+            if up_days is not None and ds not in up_days:
+                continue    # v6 국면게이트: 코스닥 약세일 진입 제외
+            out.append(Trade(code, ds, float(r)))
     return out
