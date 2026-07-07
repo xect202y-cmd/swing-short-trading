@@ -1,7 +1,7 @@
 {
-  "cash": 3015153.77,
-  "realized": -232578.11,
-  "last_bar_date": "2026-07-06",
+  "cash": 3046961.69,
+  "realized": -274607.09,
+  "last_bar_date": "2026-07-07",
   "positions": {
     "005935.KS": {
       "name": "삼성전자우",
@@ -10,7 +10,7 @@
       "stop": 202800.0,
       "target1": 220480.0,
       "target2": 400000.0,
-      "bars_held": 1,
+      "bars_held": 2,
       "entry_score": 75.0,
       "entry_date": "2026-07-04",
       "entry_reasons": [
@@ -21,22 +21,23 @@
       "partial_done": false,
       "high_water": 216500.0
     },
-    "068270": {
-      "name": "셀트리온",
-      "quantity": 5,
-      "avg_price": 183691.8,
-      "stop": 179010.0,
-      "target1": 194616.0,
-      "target2": 199206.0,
-      "bars_held": 1,
-      "entry_score": 70.6,
-      "entry_date": "2026-07-04",
+    "AMD": {
+      "name": "AMD",
+      "quantity": 1,
+      "avg_price": 844495.43,
+      "stop": 818751.19,
+      "target1": 894717.79,
+      "target2": 915819.63,
+      "bars_held": 0,
+      "entry_score": 76.9,
+      "entry_date": "2026-07-07",
       "entry_reasons": [
         "목표가까지 상승여력 5%+",
-        "🤖 AI 매수(80): 현재가가 5일 이동 평균선보다 높고 RSI도 중립적인 수준이므로 단기 스윙 매수에 적합하다."
+        "🎯 기법 부합: 눌림목매매, 스윙트레이딩",
+        "🤖 AI 매수(85): 현재 주가가 20일 이동평균선 위에 있으며, RSI도 상대적으로 높은 편이기 때문에 매수 기회로 판단된다."
       ],
       "partial_done": false,
-      "high_water": 183691.8
+      "high_water": 0.0
     }
   }
 }

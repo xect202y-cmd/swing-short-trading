@@ -195,5 +195,26 @@
     "hold_days": 2,
     "exit_reason": "손절가 도달",
     "stop_respected": true
+  },
+  {
+    "ticker": "068270",
+    "name": "셀트리온",
+    "qty": 5,
+    "partial": false,
+    "entry": 183691.8,
+    "exit": 175312.3,
+    "pnl": -42029.0,
+    "return_pct": -4.56,
+    "entry_score": 70.6,
+    "entry_date": "2026-07-04",
+    "entry_reasons": [
+      "목표가까지 상승여력 5%+",
+      "🤖 AI 매수(80): 현재가가 5일 이동 평균선보다 높고 RSI도 중립적인 수준이므로 단기 스윙 매수에 적합하다."
+    ],
+    "sector": null,
+    "exit_date": "2026-07-07",
+    "hold_days": 2,
+    "exit_reason": "손절가 도달",
+    "stop_respected": true
   }
 ]
