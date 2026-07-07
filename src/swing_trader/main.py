@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 from dataclasses import asdict, is_dataclass
 from datetime import date, datetime
 from pathlib import Path
@@ -907,6 +908,7 @@ def run_scalp_compare(cfg: Config) -> Path:
                     "코스닥(KQ11)이 50일선 아래(약세 국면)면 신규 진입 보류 — 하락장 손실거래 제거",
                     "검증(2026-07-08): 무필터 대비 PF 1.19→1.27·위험조정 2.69→4.09, IS·OOS 양쪽 개선, MA 30~60 견고",
                     "라이브: 15시 스캔 런에서 게이트 판정(정산·청산은 국면 무관 유지)"])}
+    trades = {m: [t for t in ts if math.isfinite(t.ret)] for m, ts in trades.items()}  # 비유한 수익률 제거
     out = []
     for m in ("v1", "v2", "v3", "v4", "v5", "v6"):
         _is, oos = _HN.split_oos(trades[m], frac)

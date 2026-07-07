@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import statistics as st
 from dataclasses import dataclass
 from datetime import date, timedelta
@@ -37,6 +38,7 @@ class BacktestReport:
 
 
 def report_from_trades(trades: list[Trade], position_frac: float = 1.0) -> BacktestReport:
+    trades = [t for t in trades if math.isfinite(t.ret)]   # 비유한(NaN/inf) 수익률 제외 — 통계 계산 보호
     r = BacktestReport(n_trades=len(trades))
     if not trades:
         return r
