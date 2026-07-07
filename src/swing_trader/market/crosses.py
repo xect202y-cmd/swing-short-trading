@@ -143,10 +143,12 @@ def _score(m: dict, tv_norm: float) -> float:
 
 
 def _entry(m: dict) -> dict:
-    """타점 — 매수구간(50일선 지지~현재가)·손절(200일선)·목표(+15% vs 120일 고점)."""
-    return {"buyLow": round(m["ma50"], 2), "buyHigh": round(m["close"], 2),
-            "stop": round(m["ma200"], 2),
-            "target": round(max(m["close"] * 1.15, m["high120"]), 2)}
+    """타점 — 매수구간(50일선 지지~현재가)·손절(200일선)·목표(+15% vs 120일 고점)·상승여력."""
+    target = round(max(m["close"] * 1.15, m["high120"]), 2)
+    close = m["close"]
+    upside = round((target / close - 1) * 100, 1) if close > 0 else None
+    return {"buyLow": round(m["ma50"], 2), "buyHigh": round(close, 2),
+            "stop": round(m["ma200"], 2), "target": target, "upside_pct": upside}
 
 
 def scan(kr: dict, us: dict, us_names: dict, kr_names: dict) -> dict:
@@ -269,7 +271,8 @@ def run_crosses(cfg) -> dict:
     if golden or hold_dead:
         flag = {"KR": "🇰🇷", "US": "🇺🇸"}
         line = (lambda g: f"{flag[g['market']]} {g['name']} · 종가 {g['close']:,.2f} · 거래량 {g['vol_ratio']}배 "
-                          f"· 매수 {g['buyLow']:,.2f}~{g['buyHigh']:,.2f} · 손절 {g['stop']:,.2f} · 목표 {g['target']:,.2f}")
+                          f"· 매수 {g['buyLow']:,.2f}~{g['buyHigh']:,.2f} · 손절 {g['stop']:,.2f} "
+                          f"· 목표 {g['target']:,.2f}(여력 {g.get('upside_pct', 0):+.1f}%)")
         fields = []
         if hold_dead:
             fields.append({"name": "⚠️ 보유 종목 데드크로스 — 대응 필요",

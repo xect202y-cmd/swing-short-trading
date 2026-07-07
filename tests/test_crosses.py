@@ -57,6 +57,7 @@ def test_entry_targets_use_ma_levels():
     assert e["buyLow"] == 100.0 and e["buyHigh"] == 105.0   # 50일선~현재가
     assert e["stop"] == 90.0                                # 200일선(이탈=무효)
     assert e["target"] == 130.0                             # max(+15%=120.75, 120일 고점 130)
+    assert e["upside_pct"] == 23.8                          # (130/105 - 1)*100 = +23.8% 상승여력
 
 
 def test_scan_splits_ranks_and_filters_liquidity():
