@@ -1,4 +1,9 @@
-"""v5 '오버나잇 상따' 라이브 — 15시 장중 스캔 런 (매 거래일 15:05 KST 예약 실행).
+"""v6 '오버나잇 상따 + 코스닥 국면게이트' 라이브 — 15시 장중 스캔 런 (매 거래일 15:05 KST 예약 실행).
+
+v6 = v5(폭등 종가매수→익일 시가) + 코스닥(KQ11) 50일선 국면 게이트. 코스닥이 50일선 아래면
+신규 진입 보류(정산·청산은 유지). 백테스트: 무필터 PF 1.19→v6 PF 1.27, 위험조정 2.69→4.09,
+IS·OOS 양쪽 개선(2026-07-08 검증, MA 30~60 견고). 손대는 건 '진입 게이트'뿐 — 나머지는 v5와 동일.
+
 
 사이클:
   1) 전일 v5 계획 정산 — 진입=전일 확정 종가(상한가 잠금 마감이면 미체결),
@@ -15,7 +20,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 from .strategy import V5_HIGH_N, V5_LIMIT_CAP, V5_SURGE, V5_VOL_X
@@ -153,8 +158,25 @@ def is_trading_day(today: date) -> bool:
     return df is not None and len(df) > 0 and df.index[-1].date() == today
 
 
-def run_scalp_v5(cfg) -> dict:
-    """v5 오버나잇 상따 1사이클: 전일 계획 정산 → 오늘 15시 스캔 → 계획·브리핑."""
+V6_REGIME_MA = 50   # 코스닥 국면 게이트 이동평균(일) — 백테스트서 30~60 견고, 중앙값 채택
+
+
+def kosdaq_uptrend(ma: int = V6_REGIME_MA) -> bool | None:
+    """v6 국면 게이트 — 코스닥(KQ11) 최근 종가 ≥ ma일 이동평균이면 True(진입 허용).
+
+    False=약세(진입 보류). 데이터 미확보면 None → 페일오픈(진입 허용, 경고 로깅)."""
+    import FinanceDataReader as fdr
+    try:
+        s = fdr.DataReader("KQ11", (date.today() - timedelta(days=ma * 2 + 60)).isoformat())["Close"].astype(float)
+        if s is None or len(s) < ma + 1:
+            return None
+        return bool(s.iloc[-1] >= s.tail(ma).mean())
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def run_scalp_v6(cfg) -> dict:
+    """v6 오버나잇 상따 + 코스닥 국면게이트 1사이클: 전일 계획 정산 → (코스닥 상승국면이면) 오늘 15시 스캔 → 계획·브리핑."""
     import FinanceDataReader as fdr
     from ..notify.discord import notify_embeds
     from ..obsidian.writer import VaultWriter
@@ -167,7 +189,7 @@ def run_scalp_v5(cfg) -> dict:
     min_tv = float(cfg.get("scalp", "min_tv_eok", default=50))
     today = _DM.today_kst()
     now_hm = datetime.now(_DM.KST).strftime("%H:%M")
-    state = ScalpState.load(cfg.state_dir, ("v5",))
+    state = ScalpState.load(cfg.state_dir, ("v6",))
 
     # 1) 전일 계획 정산(확정 일봉) — 미확보면 보류(다음 런 재시도)
     prev = load_plan(cfg.state_dir)
@@ -177,7 +199,7 @@ def run_scalp_v5(cfg) -> dict:
         if missing:
             log_lines.append(f"정산 보류 — {prev['date']} 확정봉 미도착({', '.join(missing)})")
         else:
-            state.apply_day(prev["date"], "kr", {"v5": {"pnl": pnl, "shadow_pnl": 0.0, "trades": rows}})
+            state.apply_day(prev["date"], "kr", {"v6": {"pnl": pnl, "shadow_pnl": 0.0, "trades": rows}})
             state.save(cfg.state_dir)
             settled_rows, settled_date = rows, prev["date"]
             n_settled = len(rows)
@@ -185,16 +207,25 @@ def run_scalp_v5(cfg) -> dict:
 
     state.save(cfg.state_dir)   # 첫 런에도 시드 기록 — 대시보드 /api/scalp 가동 표시
 
-    # 2) 오늘 스캔(거래일 + 오늘 계획 미수립일 때만 — 재실행 멱등)
+    # 2) 오늘 스캔(거래일 + 코스닥 상승국면 + 오늘 계획 미수립일 때만 — 재실행 멱등)
     items: list[V5Item] = []
     scanned = False
     already = prev and prev.get("date") == today.isoformat() and prev.get("items")
     trading = is_trading_day(today)
-    if trading and not already:
+    regime = kosdaq_uptrend()   # v6 국면 게이트: True=진입허용 / False=약세보류 / None=데이터없음(페일오픈)
+    if not trading:
+        log_lines.append("비거래일 — 스캔 생략")
+    elif already:
+        pass   # 오늘 계획 이미 있음 — 멱등
+    elif regime is False:
+        log_lines.append(f"코스닥 {V6_REGIME_MA}일선 하회(약세 국면) — v6 게이트로 신규 진입 보류")
+    else:
+        if regime is None:
+            log_lines.append("코스닥 국면 데이터 미확보 — 게이트 페일오픈(진입 허용)")
         snapshot = fdr.StockListing("KRX")
         cands = pick_candidates(snapshot, _fdr_hist, min_tv_eok=min_tv, today=today)
         scanned = True
-        cash = state.models["v5"]["cash"]
+        cash = state.models["v6"]["cash"]
         budget = cash / SCAN_CAP
         for c in cands:
             qty = int(budget // c["price"]) if c["price"] > 0 else 0
@@ -205,13 +236,11 @@ def run_scalp_v5(cfg) -> dict:
                                 why=f"+{c['chg_pct']}% · 거래량 {c['vol_x']}배 · 대금 {c['tv_eok']:,.0f}억 · 60일 신고가"))
         if items:
             save_plan(cfg.state_dir, today.isoformat(), items, now_hm)
-    elif not trading:
-        log_lines.append("비거래일 — 스캔 생략")
 
     # 3) 브리핑(디스코드 ⚡ + 옵시디언)
     day_pnl = sum(r["pnl"] for r in settled_rows)
-    res_lines = ([f"[v5 상따] {n_settled}건 · 일손익 {'+' if day_pnl >= 0 else ''}{round(day_pnl):,}원"]
-                 if settled_rows else ["[v5 상따] 정산 없음"])
+    res_lines = ([f"[v6 상따] {n_settled}건 · 일손익 {'+' if day_pnl >= 0 else ''}{round(day_pnl):,}원"]
+                 if settled_rows else ["[v6 상따] 정산 없음"])
     for r in settled_rows:
         if r["entry"] is None:
             res_lines.append(f"  · {r['name']} {r['reason']}")
@@ -227,12 +256,17 @@ def run_scalp_v5(cfg) -> dict:
         {"name": f"🗺️ {today.isoformat()} 종가 매수 계획 (스캔 {now_hm})",
          "value": "\n".join(plan_lines)[:1024], "inline": False},
     ]
-    embed = {"title": "⚡ 단타 v5 상따 · KR", "color": 0xE67E22, "fields": fields,
-             "footer": {"text": f"오버나잇(종가→익일시가) · 가상 300만 · 잔고 {state.models['v5']['cash']:,.0f}원"}}
-    md = (f"### ⚡ 단타 v5 상따 · KR · {today.isoformat()}\n"
+    embed = {"title": "⚡ 단타 v6 상따 · KR", "color": 0xE67E22, "fields": fields,
+             "footer": {"text": f"오버나잇(종가→익일시가) · 코스닥 {V6_REGIME_MA}일선 국면필터 · 가상 300만 · 잔고 {state.models['v6']['cash']:,.0f}원"}}
+    md = (f"### ⚡ 단타 v6 상따 · KR · {today.isoformat()}\n"
+          f"> v5 + 코스닥 {V6_REGIME_MA}일선 국면게이트\n"
           f"**{settled_date} 정산**\n" + "\n".join(res_lines + log_lines) +
           "\n\n**종가 매수 계획**\n" + "\n".join(plan_lines) + "\n")
     notify_embeds(cfg.creds.scalp_webhook, [embed], md)
     VaultWriter(cfg).append_scalp(md)
-    _DM.record_done(cfg.state_dir, "scalp_v5_kr", datetime.now(_DM.KST))
+    _DM.record_done(cfg.state_dir, "scalp_v6_kr", datetime.now(_DM.KST))
     return {"settled": n_settled, "planned": len(items), "scanned": scanned}
+
+
+# 하위호환 별칭 — 기존 import/CLI(scalp-v5)·테스트가 계속 동작하도록. v6가 정본.
+run_scalp_v5 = run_scalp_v6
