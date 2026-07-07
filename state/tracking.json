@@ -3,39 +3,33 @@
     "ticker": "AMD",
     "name": "AMD",
     "kind": "BUY_WATCH",
-    "date": "2026-07-02",
-    "ref_price": 841457.84,
-    "score": 60.9,
-    "rank": 17,
-    "target": 891945.31,
-    "stop": 820421.39,
-    "block_reason": null,
-    "bars": 4,
-    "max_up": 0.46,
-    "max_down": -5.89,
-    "last_update": "2026-07-07",
-    "last_ret": 0.42,
-    "ret_d1": -5.24,
-    "ret_d3": -5.88
+    "date": "2026-07-08",
+    "ref_price": 781406.0,
+    "score": 70.5,
+    "rank": 3,
+    "target": 828290.36,
+    "stop": 757963.82,
+    "block_reason": "AI 관망(75) — 매수 보류",
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-07-08"
   },
   "BYD": {
     "ticker": "BYD",
     "name": "BYD",
     "kind": "BUY_WATCH",
-    "date": "2026-07-02",
-    "ref_price": 136872.25,
-    "score": 60.6,
-    "rank": 18,
-    "target": 145084.59,
-    "stop": 133450.44,
+    "date": "2026-07-08",
+    "ref_price": 134249.04,
+    "score": 69.8,
+    "rank": 5,
+    "target": 142303.98,
+    "stop": 130221.57,
     "block_reason": null,
-    "bars": 4,
-    "max_up": 0.03,
-    "max_down": -1.79,
-    "last_update": "2026-07-07",
-    "last_ret": -0.65,
-    "ret_d1": -1.11,
-    "ret_d3": -1.78
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-07-08"
   },
   "MU": {
     "ticker": "MU",
@@ -62,20 +56,17 @@
     "ticker": "NVDA",
     "name": "엔비디아",
     "kind": "BLOCKED",
-    "date": "2026-07-02",
-    "ref_price": 307379.16,
-    "score": 35.0,
-    "rank": 27,
-    "target": 325821.91,
-    "stop": 299694.68,
+    "date": "2026-07-08",
+    "ref_price": 298157.92,
+    "score": 45.0,
+    "rank": 32,
+    "target": 316047.4,
+    "stop": 289213.18,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 4,
-    "max_up": 0.03,
-    "max_down": -3.07,
-    "last_update": "2026-07-07",
-    "last_ret": -2.63,
-    "ret_d1": -2.4,
-    "ret_d3": -3.06
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-07-08"
   },
   "INTC": {
     "ticker": "INTC",
@@ -88,32 +79,31 @@
     "target": 209464.0,
     "stop": 192667.36,
     "block_reason": null,
-    "bars": 4,
+    "bars": 5,
     "max_up": 0.03,
-    "max_down": -6.86,
-    "last_update": "2026-07-07",
-    "last_ret": -5.35,
+    "max_down": -15.42,
+    "last_update": "2026-07-08",
+    "last_ret": -15.42,
     "ret_d1": -6.22,
-    "ret_d3": -6.85
+    "ret_d3": -6.85,
+    "ret_d5": -15.42,
+    "closed": true
   },
   "QCOM": {
     "ticker": "QCOM",
     "name": "퀄컴",
     "kind": "BLOCKED",
-    "date": "2026-07-02",
-    "ref_price": 283016.58,
-    "score": 52.5,
-    "rank": 24,
-    "target": 299997.57,
-    "stop": 275941.17,
+    "date": "2026-07-08",
+    "ref_price": 277022.07,
+    "score": 50.0,
+    "rank": 29,
+    "target": 293643.39,
+    "stop": 268711.41,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 4,
-    "max_up": 0.89,
-    "max_down": -4.76,
-    "last_update": "2026-07-07",
-    "last_ret": 0.85,
-    "ret_d1": -4.1,
-    "ret_d3": -4.75
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-07-08"
   },
   "ARM": {
     "ticker": "ARM",
@@ -168,11 +158,12 @@
     "target": 274091.74,
     "stop": 250819.8,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -4.26,
+    "last_update": "2026-07-08",
+    "last_ret": -4.26,
+    "ret_d1": -4.26
   },
   "ASML": {
     "ticker": "ASML",
@@ -185,11 +176,12 @@
     "target": 2962258.62,
     "stop": 2710746.09,
     "block_reason": null,
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -5.34,
+    "last_update": "2026-07-08",
+    "last_ret": -5.34,
+    "ret_d1": -5.34
   },
   "GBTC": {
     "ticker": "GBTC",
@@ -202,11 +194,12 @@
     "target": 80180.81,
     "stop": 73373.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -1.0,
+    "last_update": "2026-07-08",
+    "last_ret": -1.0,
+    "ret_d1": -1.0
   },
   "GE": {
     "ticker": "GE",
@@ -261,11 +254,12 @@
     "target": 28631.36,
     "stop": 26200.4,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 2.35,
     "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "last_update": "2026-07-08",
+    "last_ret": 2.35,
+    "ret_d1": 2.35
   },
   "MSTR": {
     "ticker": "MSTR",
@@ -278,11 +272,12 @@
     "target": 163559.09,
     "stop": 149672.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -4.47,
+    "last_update": "2026-07-08",
+    "last_ret": -4.47,
+    "ret_d1": -4.47
   },
   "STRC": {
     "ticker": "STRC",
@@ -295,11 +290,12 @@
     "target": 143773.6,
     "stop": 131566.41,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -3.38,
+    "last_update": "2026-07-08",
+    "last_ret": -3.38,
+    "ret_d1": -3.38
   },
   "UMH": {
     "ticker": "UMH",
@@ -312,11 +308,12 @@
     "target": 25011.87,
     "stop": 22888.22,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -1.12,
+    "last_update": "2026-07-08",
+    "last_ret": -1.12,
+    "ret_d1": -1.12
   },
   "NFLX": {
     "ticker": "NFLX",
@@ -329,11 +326,12 @@
     "target": 123387.54,
     "stop": 112911.24,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -0.91,
+    "last_update": "2026-07-08",
+    "last_ret": -0.91,
+    "ret_d1": -0.91
   },
   "MSFT": {
     "ticker": "MSFT",
@@ -346,11 +344,12 @@
     "target": 627715.05,
     "stop": 574418.49,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -0.59,
+    "last_update": "2026-07-08",
+    "last_ret": -0.59,
+    "ret_d1": -0.59
   },
   "META": {
     "ticker": "META",
@@ -363,11 +362,12 @@
     "target": 974326.58,
     "stop": 891600.74,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 1.4,
     "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "last_update": "2026-07-08",
+    "last_ret": 1.4,
+    "ret_d1": 1.4
   },
   "AVGO": {
     "ticker": "AVGO",
@@ -380,11 +380,12 @@
     "target": 606874.54,
     "stop": 555347.46,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -1.95,
+    "last_update": "2026-07-08",
+    "last_ret": -1.95,
+    "ret_d1": -1.95
   },
   "AMZN": {
     "ticker": "AMZN",
@@ -397,11 +398,12 @@
     "target": 396294.44,
     "stop": 362646.8,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -0.39,
+    "last_update": "2026-07-08",
+    "last_ret": -0.39,
+    "ret_d1": -0.39
   },
   "GOOGL": {
     "ticker": "GOOGL",
@@ -414,11 +416,12 @@
     "target": 594798.72,
     "stop": 544296.94,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -0.97,
+    "last_update": "2026-07-08",
+    "last_ret": -0.97,
+    "ret_d1": -0.97
   },
   "AAPL": {
     "ticker": "AAPL",
@@ -431,11 +434,12 @@
     "target": 507476.33,
     "stop": 464388.71,
     "block_reason": null,
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -1.76,
+    "last_update": "2026-07-08",
+    "last_ret": -1.76,
+    "ret_d1": -1.76
   },
   "TSLA": {
     "ticker": "TSLA",
@@ -448,11 +452,12 @@
     "target": 681325.81,
     "stop": 623477.39,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "max_down": -5.1,
+    "last_update": "2026-07-08",
+    "last_ret": -5.1,
+    "ret_d1": -5.1
   },
   "PLTR": {
     "ticker": "PLTR",
@@ -465,11 +470,12 @@
     "target": 215124.76,
     "stop": 196859.45,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 0.24,
     "max_down": -0.04,
-    "last_update": "2026-07-07",
-    "last_ret": -0.04
+    "last_update": "2026-07-08",
+    "last_ret": 0.24,
+    "ret_d1": 0.24
   },
   "403870": {
     "ticker": "403870",
@@ -482,11 +488,11 @@
     "target": 47965.0,
     "stop": 43892.5,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -1.99,
-    "last_update": "2026-07-07",
-    "last_ret": -1.99,
+    "max_down": -8.29,
+    "last_update": "2026-07-08",
+    "last_ret": -8.29,
     "ret_d1": -1.99
   },
   "079550": {
@@ -500,10 +506,12 @@
     "target": 840580.0,
     "stop": 769210.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 0.76,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 0.76,
+    "ret_d1": 0.76
   },
   "010120": {
     "ticker": "010120",
@@ -516,10 +524,12 @@
     "target": 223130.0,
     "stop": 204185.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -2.14,
+    "last_update": "2026-07-08",
+    "last_ret": -2.14,
+    "ret_d1": -2.14
   },
   "035420.KS": {
     "ticker": "035420.KS",
@@ -637,10 +647,12 @@
     "target": 235000.0,
     "stop": 196425.3,
     "block_reason": "손익비 1.61 부족(<1.75)",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -2.06,
+    "last_update": "2026-07-08",
+    "last_ret": -2.06,
+    "ret_d1": -2.06
   },
   "005380.KS": {
     "ticker": "005380.KS",
@@ -653,11 +665,11 @@
     "target": 527350.0,
     "stop": 564510.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
     "max_down": -4.22,
-    "last_update": "2026-07-07",
-    "last_ret": -4.22,
+    "last_update": "2026-07-08",
+    "last_ret": -3.62,
     "ret_d1": -4.12
   },
   "278470": {
@@ -671,10 +683,12 @@
     "target": 421350.0,
     "stop": 385575.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 3.14,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 3.14,
+    "ret_d1": 3.14
   },
   "329180": {
     "ticker": "329180",
@@ -687,10 +701,12 @@
     "target": 586180.0,
     "stop": 536410.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -0.18,
+    "last_update": "2026-07-08",
+    "last_ret": -0.18,
+    "ret_d1": -0.18
   },
   "105560": {
     "ticker": "105560",
@@ -703,10 +719,12 @@
     "target": 182214.0,
     "stop": 166743.0,
     "block_reason": null,
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 0.76,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 0.76,
+    "ret_d1": 0.76
   },
   "373220": {
     "ticker": "373220",
@@ -719,10 +737,12 @@
     "target": 357220.0,
     "stop": 326890.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -1.48,
+    "last_update": "2026-07-08",
+    "last_ret": -1.48,
+    "ret_d1": -1.48
   },
   "011070": {
     "ticker": "011070",
@@ -756,10 +776,12 @@
     "target": 190270.0,
     "stop": 174115.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 5.35,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 5.35,
+    "ret_d1": 5.35
   },
   "010130": {
     "ticker": "010130",
@@ -772,10 +794,12 @@
     "target": 1131020.0,
     "stop": 1034990.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 2.53,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 2.53,
+    "ret_d1": 2.53
   },
   "000270": {
     "ticker": "000270",
@@ -788,10 +812,12 @@
     "target": 162074.0,
     "stop": 148313.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 0.52,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 0.52,
+    "ret_d1": 0.52
   },
   "035420": {
     "ticker": "035420",
@@ -804,10 +830,12 @@
     "target": 210198.0,
     "stop": 192351.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -0.55,
+    "last_update": "2026-07-08",
+    "last_ret": -0.55,
+    "ret_d1": -0.55
   },
   "034020": {
     "ticker": "034020",
@@ -820,10 +848,12 @@
     "target": 87026.0,
     "stop": 79637.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -0.61,
+    "last_update": "2026-07-08",
+    "last_ret": -0.61,
+    "ret_d1": -0.61
   },
   "277810": {
     "ticker": "277810",
@@ -836,10 +866,12 @@
     "target": 512510.0,
     "stop": 468995.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -4.96,
+    "last_update": "2026-07-08",
+    "last_ret": -4.96,
+    "ret_d1": -4.96
   },
   "058470": {
     "ticker": "058470",
@@ -852,10 +884,12 @@
     "target": 78228.0,
     "stop": 71586.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -2.57,
+    "last_update": "2026-07-08",
+    "last_ret": -2.57,
+    "ret_d1": -2.57
   },
   "006400": {
     "ticker": "006400",
@@ -868,10 +902,12 @@
     "target": 470375.0,
     "stop": 430437.5,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 0.28,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 0.28,
+    "ret_d1": 0.28
   },
   "028260": {
     "ticker": "028260",
@@ -905,10 +941,12 @@
     "target": 1221120.0,
     "stop": 1117440.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 6.08,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 6.08,
+    "ret_d1": 6.08
   },
   "068270": {
     "ticker": "068270",
@@ -921,10 +959,12 @@
     "target": 187938.0,
     "stop": 171981.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 0.51,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 0.51,
+    "ret_d1": 0.51
   },
   "055550": {
     "ticker": "055550",
@@ -958,10 +998,12 @@
     "target": 92008.0,
     "stop": 84196.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -2.76,
+    "last_update": "2026-07-08",
+    "last_ret": -2.76,
+    "ret_d1": -2.76
   },
   "247540": {
     "ticker": "247540",
@@ -974,10 +1016,12 @@
     "target": 129956.0,
     "stop": 118922.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -1.96,
+    "last_update": "2026-07-08",
+    "last_ret": -1.96,
+    "ret_d1": -1.96
   },
   "000100": {
     "ticker": "000100",
@@ -990,10 +1034,12 @@
     "target": 74412.0,
     "stop": 68094.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 0.14,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 0.14,
+    "ret_d1": 0.14
   },
   "035720": {
     "ticker": "035720",
@@ -1006,10 +1052,12 @@
     "target": 37577.0,
     "stop": 34386.5,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -0.14,
+    "last_update": "2026-07-08",
+    "last_ret": -0.14,
+    "ret_d1": -0.14
   },
   "214150": {
     "ticker": "214150",
@@ -1022,10 +1070,12 @@
     "target": 50880.0,
     "stop": 46560.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -0.52,
+    "last_update": "2026-07-08",
+    "last_ret": -0.52,
+    "ret_d1": -0.52
   },
   "042700": {
     "ticker": "042700",
@@ -1038,10 +1088,12 @@
     "target": 228960.0,
     "stop": 209520.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -2.55,
+    "last_update": "2026-07-08",
+    "last_ret": -2.55,
+    "ret_d1": -2.55
   },
   "012450": {
     "ticker": "012450",
@@ -1054,10 +1106,12 @@
     "target": 1145860.0,
     "stop": 1048570.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 3.79,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 3.79,
+    "ret_d1": 3.79
   },
   "064350": {
     "ticker": "064350",
@@ -1070,10 +1124,12 @@
     "target": 194192.0,
     "stop": 177704.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 1.75,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 1.75,
+    "ret_d1": 1.75
   },
   "012330": {
     "ticker": "012330",
@@ -1086,10 +1142,12 @@
     "target": 523640.0,
     "stop": 479180.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 0.2,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 0.2,
+    "ret_d1": 0.2
   },
   "298040": {
     "ticker": "298040",
@@ -1102,10 +1160,12 @@
     "target": 3192720.0,
     "stop": 2921640.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "max_down": -3.65,
+    "last_update": "2026-07-08",
+    "last_ret": -3.65,
+    "ret_d1": -3.65
   },
   "TSM": {
     "ticker": "TSM",
@@ -1139,12 +1199,13 @@
     "target": 381882.66,
     "stop": 351259.99,
     "block_reason": null,
-    "bars": 2,
+    "bars": 3,
     "max_up": 0.19,
-    "max_down": -0.88,
-    "last_update": "2026-07-07",
-    "last_ret": -0.88,
-    "ret_d1": 0.0
+    "max_down": -9.03,
+    "last_update": "2026-07-08",
+    "last_ret": -9.03,
+    "ret_d1": 0.0,
+    "ret_d3": -9.03
   },
   "JTBC": {
     "ticker": "JTBC",
@@ -1157,32 +1218,28 @@
     "target": 197781.66,
     "stop": 180988.88,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
     "max_down": -16.36,
-    "last_update": "2026-07-07",
-    "last_ret": -16.36
+    "last_update": "2026-07-08",
+    "last_ret": -1.0,
+    "ret_d1": -1.0
   },
   "KLA": {
     "ticker": "KLA",
     "name": "KLA",
     "kind": "BLOCKED",
-    "date": "2026-07-01",
-    "ref_price": 190519.83,
-    "score": 43.8,
-    "rank": 26,
-    "target": 201951.02,
-    "stop": 185756.83,
+    "date": "2026-07-08",
+    "ref_price": 128473.19,
+    "score": 48.0,
+    "rank": 30,
+    "target": 136181.58,
+    "stop": 124618.99,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 5,
-    "max_up": 28.42,
-    "max_down": -38.71,
-    "last_update": "2026-07-07",
-    "last_ret": -14.91,
-    "ret_d1": -19.05,
-    "ret_d3": -24.51,
-    "ret_d5": -14.91,
-    "closed": true
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-07-08"
   },
   "TLB": {
     "ticker": "TLB",
@@ -1195,32 +1252,28 @@
     "target": 147030.63,
     "stop": 134546.9,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 5.62,
+    "bars": 1,
+    "max_up": 14.48,
     "max_down": 0.0,
-    "last_update": "2026-07-07",
-    "last_ret": 5.62
+    "last_update": "2026-07-08",
+    "last_ret": 14.48,
+    "ret_d1": 14.48
   },
   "TSMC": {
     "ticker": "TSMC",
     "name": "TSMC",
-    "kind": "BLOCKED",
-    "date": "2026-07-01",
-    "ref_price": 288512.88,
-    "score": 43.9,
-    "rank": 25,
-    "target": 305823.65,
-    "stop": 281300.06,
-    "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 5,
+    "kind": "BUY_WATCH",
+    "date": "2026-07-08",
+    "ref_price": 155123.61,
+    "score": 69.9,
+    "rank": 4,
+    "target": 164431.03,
+    "stop": 150469.9,
+    "block_reason": null,
+    "bars": 0,
     "max_up": 0.0,
-    "max_down": -55.28,
-    "last_update": "2026-07-07",
-    "last_ret": -45.12,
-    "ret_d1": -51.7,
-    "ret_d3": -31.38,
-    "ret_d5": -45.12,
-    "closed": true
+    "max_down": 0.0,
+    "last_update": "2026-07-08"
   },
   "207940": {
     "ticker": "207940",
@@ -1233,10 +1286,12 @@
     "target": 1490360.0,
     "stop": 1363820.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
-    "max_up": 0.0,
+    "bars": 1,
+    "max_up": 1.14,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 1.14,
+    "ret_d1": 1.14
   },
   "005490": {
     "ticker": "005490",
@@ -1249,10 +1304,12 @@
     "target": 334430.0,
     "stop": 306035.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 0,
+    "bars": 1,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08",
+    "last_ret": 0.0,
+    "ret_d1": 0.0
   },
   "DX": {
     "ticker": "DX",
@@ -1265,11 +1322,11 @@
     "target": 21235.59,
     "stop": 19532.74,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 3,
+    "bars": 4,
     "max_up": 1.2,
     "max_down": -0.69,
-    "last_update": "2026-07-07",
-    "last_ret": 1.16,
+    "last_update": "2026-07-08",
+    "last_ret": -0.47,
     "ret_d1": -0.69,
     "ret_d3": 1.2
   },
@@ -1284,11 +1341,11 @@
     "target": 43825.95,
     "stop": 40311.61,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 3,
-    "max_up": 0.38,
+    "bars": 4,
+    "max_up": 2.24,
     "max_down": -2.45,
-    "last_update": "2026-07-07",
-    "last_ret": -2.45,
+    "last_update": "2026-07-08",
+    "last_ret": 2.24,
     "ret_d1": -0.69,
     "ret_d3": -2.41
   },
@@ -1303,11 +1360,11 @@
     "target": 161120.0,
     "stop": 148200.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 3,
+    "bars": 4,
     "max_up": 6.71,
     "max_down": 0.0,
-    "last_update": "2026-07-07",
-    "last_ret": 3.42,
+    "last_update": "2026-07-08",
+    "last_ret": 4.08,
     "ret_d1": 6.71,
     "ret_d3": 3.36
   },
@@ -1322,11 +1379,11 @@
     "target": 222070.0,
     "stop": 204262.5,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 3,
-    "max_up": 9.07,
+    "bars": 4,
+    "max_up": 10.74,
     "max_down": -2.15,
-    "last_update": "2026-07-07",
-    "last_ret": 9.07,
+    "last_update": "2026-07-08",
+    "last_ret": 10.74,
     "ret_d1": -2.15,
     "ret_d3": 9.07
   },
@@ -1341,12 +1398,13 @@
     "target": 249630.0,
     "stop": 229612.5,
     "block_reason": null,
-    "bars": 2,
-    "max_up": 3.18,
+    "bars": 3,
+    "max_up": 4.03,
     "max_down": -0.85,
-    "last_update": "2026-07-07",
-    "last_ret": 3.18,
-    "ret_d1": 0.0
+    "last_update": "2026-07-08",
+    "last_ret": 4.03,
+    "ret_d1": 0.0,
+    "ret_d3": 4.03
   },
   "XAI": {
     "ticker": "XAI",
@@ -1359,12 +1417,13 @@
     "target": 210330.15,
     "stop": 193464.05,
     "block_reason": "AI 관망(75) — 매수 보류",
-    "bars": 2,
+    "bars": 3,
     "max_up": 31.44,
-    "max_down": -45.69,
-    "last_update": "2026-07-07",
-    "last_ret": 31.44,
-    "ret_d1": 4.45
+    "max_down": -45.79,
+    "last_update": "2026-07-08",
+    "last_ret": -45.79,
+    "ret_d1": 4.45,
+    "ret_d3": -45.79
   },
   "GLW": {
     "ticker": "GLW",
@@ -1377,11 +1436,11 @@
     "target": 319045.54,
     "stop": 291956.77,
     "block_reason": null,
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.19,
-    "max_down": -0.94,
-    "last_update": "2026-07-07",
-    "last_ret": -0.94,
+    "max_down": -6.75,
+    "last_update": "2026-07-08",
+    "last_ret": -6.75,
     "ret_d1": -0.9
   },
   "HWM": {
@@ -1395,11 +1454,11 @@
     "target": 438401.89,
     "stop": 401179.09,
     "block_reason": "AI 관망(70) — 매수 보류",
-    "bars": 1,
+    "bars": 2,
     "max_up": 2.89,
     "max_down": 0.0,
-    "last_update": "2026-07-07",
-    "last_ret": 2.85,
+    "last_update": "2026-07-08",
+    "last_ret": 0.83,
     "ret_d1": 2.89
   },
   "LVMH": {
@@ -1413,11 +1472,11 @@
     "target": 271208.5,
     "stop": 248181.37,
     "block_reason": null,
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -27.16,
-    "last_update": "2026-07-07",
-    "last_ret": -27.16,
+    "max_down": -33.58,
+    "last_update": "2026-07-08",
+    "last_ret": -33.58,
     "ret_d1": -13.41
   },
   "006360.KS": {
@@ -1431,10 +1490,10 @@
     "target": 32542.0,
     "stop": 29779.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.65,
     "max_down": 0.0,
-    "last_update": "2026-07-07",
+    "last_update": "2026-07-08",
     "last_ret": 0.65,
     "ret_d1": 0.65
   },
@@ -1449,11 +1508,11 @@
     "target": 296800.0,
     "stop": 271600.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -4.29,
-    "last_update": "2026-07-07",
-    "last_ret": -4.11,
+    "max_down": -5.18,
+    "last_update": "2026-07-08",
+    "last_ret": -5.18,
     "ret_d1": -4.29
   },
   "034730.KS": {
@@ -1467,11 +1526,11 @@
     "target": 734580.0,
     "stop": 672210.0,
     "block_reason": "손익비 1.59 부족(<1.75)",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -7.5,
-    "last_update": "2026-07-07",
-    "last_ret": -7.5,
+    "max_down": -9.67,
+    "last_update": "2026-07-08",
+    "last_ret": -9.67,
     "ret_d1": -7.36
   },
   "475150.KS": {
@@ -1485,11 +1544,11 @@
     "target": 47541.0,
     "stop": 43504.5,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -1.45,
-    "last_update": "2026-07-07",
-    "last_ret": -1.45,
+    "max_down": -4.35,
+    "last_update": "2026-07-08",
+    "last_ret": -4.35,
     "ret_d1": -0.78
   },
   "000660.KS": {
@@ -1503,11 +1562,11 @@
     "target": 2587460.0,
     "stop": 2367770.0,
     "block_reason": "손익비 1.38 부족(<1.75)",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -7.01,
-    "last_update": "2026-07-07",
-    "last_ret": -6.8,
+    "max_down": -9.83,
+    "last_update": "2026-07-08",
+    "last_ret": -9.83,
     "ret_d1": -7.01
   },
   "028050.KS": {
@@ -1521,11 +1580,11 @@
     "target": 50986.0,
     "stop": 46657.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
     "max_down": -1.56,
-    "last_update": "2026-07-07",
-    "last_ret": -1.35,
+    "last_update": "2026-07-08",
+    "last_ret": -1.14,
     "ret_d1": -1.56
   },
   "009150.KS": {
@@ -1539,11 +1598,11 @@
     "target": 2270000.0,
     "stop": 1860976.5,
     "block_reason": null,
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -9.84,
-    "last_update": "2026-07-07",
-    "last_ret": -9.84,
+    "max_down": -15.14,
+    "last_update": "2026-07-08",
+    "last_ret": -15.14,
     "ret_d1": -9.73
   },
   "005930.KS": {
@@ -1557,11 +1616,11 @@
     "target": 362500.0,
     "stop": 304742.4,
     "block_reason": "손익비 1.52 부족(<1.75)",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -6.56,
-    "last_update": "2026-07-07",
-    "last_ret": -6.48,
+    "max_down": -7.57,
+    "last_update": "2026-07-08",
+    "last_ret": -7.57,
     "ret_d1": -6.56
   },
   "068760": {
@@ -1575,11 +1634,11 @@
     "target": 44202.0,
     "stop": 40449.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
-    "bars": 1,
+    "bars": 2,
     "max_up": 3.12,
     "max_down": 0.0,
-    "last_update": "2026-07-07",
-    "last_ret": 2.64,
+    "last_update": "2026-07-08",
+    "last_ret": 0.0,
     "ret_d1": 3.12
   },
   "004170.KS": {
@@ -1593,11 +1652,11 @@
     "target": 776000.0,
     "stop": 660858.0,
     "block_reason": "손익비 1.31 부족(<1.75)",
-    "bars": 1,
+    "bars": 2,
     "max_up": 0.0,
-    "max_down": -1.54,
-    "last_update": "2026-07-07",
-    "last_ret": -1.54,
+    "max_down": -4.63,
+    "last_update": "2026-07-08",
+    "last_ret": -4.63,
     "ret_d1": -0.98
   },
   "402340.KS": {
@@ -1611,9 +1670,43 @@
     "target": 1480820.0,
     "stop": 1468191.0,
     "block_reason": "손익비 -0.89 부족(<1.75)",
+    "bars": 1,
+    "max_up": 0.0,
+    "max_down": -2.93,
+    "last_update": "2026-07-08",
+    "last_ret": -2.93,
+    "ret_d1": -2.93
+  },
+  "DELL": {
+    "ticker": "DELL",
+    "name": "Dell Technologies",
+    "kind": "BUY_WATCH",
+    "date": "2026-07-08",
+    "ref_price": 631774.44,
+    "score": 65.2,
+    "rank": 7,
+    "target": 669680.91,
+    "stop": 612821.21,
+    "block_reason": null,
     "bars": 0,
     "max_up": 0.0,
     "max_down": 0.0,
-    "last_update": "2026-07-07"
+    "last_update": "2026-07-08"
+  },
+  "NBIS": {
+    "ticker": "NBIS",
+    "name": "Nebius Group N.V. Class A Ordinary Shares",
+    "kind": "BLOCKED",
+    "date": "2026-07-08",
+    "ref_price": 295523.52,
+    "score": 30.1,
+    "rank": 33,
+    "target": 313254.93,
+    "stop": 286657.81,
+    "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-07-08"
   }
 }
