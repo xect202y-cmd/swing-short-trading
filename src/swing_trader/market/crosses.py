@@ -206,6 +206,33 @@ def match_names(items: list[dict], names: set[str], name2ticker: dict) -> list[d
 
 
 # ── 실행(스캔 → state → 디스코드) ────────────────────────────────────────────
+def _push_hermes(hold_dead: list[dict], watch_golden: list[dict]) -> None:
+    """헤르메스 대시보드 앱으로 웹푸시 — 보유 데드/보유·관심 골든만. env 없으면 조용히 스킵.
+    HERMES_BASE_URL(앱 도메인) + HERMES_PUSH_SECRET(= 앱 PUSH_SEND_SECRET) 필요."""
+    import os
+    base = os.getenv("HERMES_BASE_URL", "https://hermes-dashboard-five-tau.vercel.app")
+    secret = os.getenv("HERMES_PUSH_SECRET", "")
+    if not secret or (not hold_dead and not watch_golden):
+        return
+    import json as _json
+    import urllib.request
+    def _send(title: str, body: str):
+        try:
+            req = urllib.request.Request(
+                f"{base}/api/push/send",
+                data=_json.dumps({"title": title, "body": body, "url": "/picks"}).encode(),
+                headers={"Content-Type": "application/json", "Authorization": f"Bearer {secret}"})
+            urllib.request.urlopen(req, timeout=8).read()
+        except Exception:  # noqa: BLE001 — 푸시 실패가 파이프라인을 막지 않게
+            pass
+    if hold_dead:
+        names = ", ".join(d["name"] for d in hold_dead[:3])
+        _send("⚠️ 보유 종목 데드크로스", f"{names} — 50/200일 데드크로스, 대응 검토")
+    if watch_golden:
+        names = ", ".join(g["name"] for g in watch_golden[:3])
+        _send("✨ 관심 종목 골든크로스", f"{names} — 추가매수·신규진입 검토")
+
+
 def run_crosses(cfg) -> dict:
     from ..main import VaultReader, _load_notes
     from ..notify.discord import notify_embeds
@@ -234,6 +261,9 @@ def run_crosses(cfg) -> dict:
     }
     (Path(cfg.state_dir) / "crosses.json").write_text(
         json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # 헤르메스 앱 푸시 — 보유 데드(대응) 또는 보유·관심 골든(진입)일 때만(전시장 전체는 도배).
+    _push_hermes(hold_dead, watch_golden)
 
     # 디스코드 — 매치가 있거나 골든이 하나라도 있으면 발송(정보성, 매일 도배 방지)
     if golden or hold_dead:
