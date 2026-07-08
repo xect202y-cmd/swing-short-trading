@@ -19,7 +19,8 @@
       "buyLow": 346.13,
       "buyHigh": 373.99,
       "stop": 345.66,
-      "target": 430.09
+      "target": 430.09,
+      "upside_pct": 15.0
     }
   ],
   "golden_count": 1,
