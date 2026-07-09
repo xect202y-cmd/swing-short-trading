@@ -1,0 +1,21 @@
+{
+  "asOf": "2026-07-08",
+  "realized_krw": 0.0,
+  "open": [
+    {
+      "ticker": "NBIS",
+      "entry_date": "2026-07-08",
+      "entry_usd": 216.47999572753906,
+      "fx_entry": 1512.71,
+      "qty": 1,
+      "bars_held": 0
+    }
+  ],
+  "trades": [],
+  "equity_hist": [
+    {
+      "date": "2026-07-08",
+      "equity": 327471
+    }
+  ]
+}
