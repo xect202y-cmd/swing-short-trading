@@ -10,6 +10,7 @@ Step 1(현재): 러너 + 가상계좌 코어. 스케줄·디스코드·옵시디
 from __future__ import annotations
 
 import json
+import math
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -33,6 +34,8 @@ def _emas(df):
         ma5=c.rolling(5, min_periods=1).mean().to_numpy(float),
         ma20=c.rolling(20, min_periods=1).mean().to_numpy(float),
         ma60=c.rolling(60, min_periods=1).mean().to_numpy(float),
+        ma50=c.rolling(50, min_periods=1).mean().to_numpy(float),
+        ma200=c.rolling(200, min_periods=200).mean().to_numpy(float),   # 골든크로스 랭킹용
         va20=df["volume"].astype(float).rolling(20, min_periods=5).mean().to_numpy(float),
         dates=[d.strftime("%Y-%m-%d") for d in df.index],
     )
@@ -110,14 +113,14 @@ def step_day(st: dict, arrs: dict, d: str) -> dict:
             still.append(pos)
     st["open"] = still
 
-    # (2) 진입 pass — 슬롯 여유만큼, 등락 무관 스캔순
+    # (2) 진입 pass — 후보 수집 → 모멘텀 랭킹(60일선 대비 추세강도) → 슬롯만큼
+    #     (골든크로스 랭킹은 백테스트서 모멘텀에 밀려 미채택 — golden은 기록용 태그로만 유지)
     held_tickers = {p["ticker"] for p in st["open"]}
     slots = MAX_CONCURRENT - len(st["open"])
     if slots > 0:
         alloc = st["seed"] * (1.0 / MAX_CONCURRENT)
+        cands = []
         for tk, a in arrs.items():
-            if slots <= 0:
-                break
             if tk in held_tickers:
                 continue
             i = _bar_index(a, d)
@@ -126,13 +129,21 @@ def step_day(st: dict, arrs: dict, d: str) -> dict:
             entry_px = float(a["open"][i + 1]) if i + 1 < len(a["open"]) else None
             if not entry_px or entry_px <= 0:
                 continue
+            m200 = a["ma200"][i]
+            golden = bool(m200 == m200 and a["ma50"][i] > m200)   # NaN이면 False
+            momentum = a["close"][i] / a["ma60"][i] - 1.0          # 60일선 대비 추세강도(2차 정렬)
+            cands.append((golden, momentum, tk, entry_px))
+        cands.sort(key=lambda x: x[1], reverse=True)               # 모멘텀(60일선 대비 추세강도) 큰 순
+        for golden, momentum, tk, entry_px in cands:
+            if slots <= 0:
+                break
             budget = min(alloc, st["cash"])
             qty = int(budget // entry_px)
             if qty < 1:
                 continue
             st["cash"] -= qty * entry_px
             st["open"].append({"ticker": tk, "entry_date": d, "entry": entry_px,
-                               "qty": qty, "bars_held": 0})
+                               "qty": qty, "bars_held": 0, "golden": golden})
             held_tickers.add(tk)
             slots -= 1
     st["asOf"] = d
