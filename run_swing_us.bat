@@ -9,6 +9,8 @@ cd /d "%~dp0"
 "%~dp0.venv\Scripts\swing-trader.exe" run-once --market us --no-brief >> "%~dp0swing.log" 2>&1
 REM scalp paper cycle: settle yesterday's plan + build today's plan (Discord orange embed)
 "%~dp0.venv\Scripts\swing-trader.exe" scalp-run --market us >> "%~dp0swing.log" 2>&1
+REM v9 US swing: v7 trend-following applied to S&P500 market scan (momentum ranking, MOC fills)
+"%~dp0.venv\Scripts\swing-trader.exe" swing-v9-us >> "%~dp0swing.log" 2>&1
 REM sync local main to origin so the marker commit fast-forwards (self-heal after a cloud fallback day)
 git fetch origin main
 git merge --ff-only origin/main

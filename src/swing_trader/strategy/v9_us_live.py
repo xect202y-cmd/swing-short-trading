@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import math
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 # v7 채택 파라미터(config·run_version_compare와 동일)
@@ -148,3 +148,113 @@ def step_day(st: dict, arrs: dict, d: str) -> dict:
             slots -= 1
     st["asOf"] = d
     return st
+
+
+# ── 라이브 사이클 ──────────────────────────────────────────────────────────
+def _load_us_universe(cfg) -> dict:
+    """S&P500 ∪ 관심종목(US) 일봉 패널 — crosses 캐시(state/us_panel.pkl) 재사용·갱신."""
+    import pickle
+    import FinanceDataReader as fdr
+    from ..market import crosses as _CR
+    from ..obsidian.reader import VaultReader
+    p = Path(cfg.state_dir) / _CR._US_CACHE
+    us: dict = {}
+    if p.exists():
+        try:
+            us = pickle.load(open(p, "rb"))
+        except Exception:  # noqa: BLE001
+            us = {}
+    codes = [str(r["Symbol"]) for _, r in fdr.StockListing("S&P500").iterrows()]
+    try:
+        wl = [str(n.ticker) for n in VaultReader(cfg).stock_notes()
+              if getattr(n, "ticker", None) and not str(n.ticker)[:1].isdigit()]
+        codes += [c for c in wl if c not in codes]
+    except Exception:  # noqa: BLE001
+        pass
+    us = _CR._refresh(us, codes, (date.today() - timedelta(days=620)).isoformat())
+    pickle.dump(us, open(p, "wb"))
+    return {k: v for k, v in us.items() if v is not None}
+
+
+def run_v9_us(cfg) -> dict:
+    """v9 US 스윙 1사이클(미국 종가 후 실행) — 확정봉 종가(MOC) 체결. 보유 청산 판정 → 신규 진입(모멘텀 랭킹).
+
+    체결 모델: 신호 확정일 종가에 진입/청산(MOC). 백테스트(익일시가 진입)와 진입 타이밍만 소폭 상이."""
+    from ..notify.discord import notify_embeds
+    from ..obsidian.writer import VaultWriter
+    from ..state import daily_marker as _DM
+    panel = _load_us_universe(cfg)
+    arrs = {tk: _emas(df) for tk, df in panel.items() if df is not None and len(df) >= 65}
+    if not arrs:
+        return {"exited": 0, "entered": 0, "held": 0, "skipped": "패널 없음"}
+    d = max(a["dates"][-1] for a in arrs.values())     # 최신 US 종가일
+    st = load_state(cfg.state_dir)
+    exits_done, entries_done = [], []
+    if st.get("asOf") != d:                            # 같은 종가일 재실행 멱등
+        # (1) 보유 청산 — 확정봉 d 기준, 종가 체결
+        still = []
+        for pos in st["open"]:
+            a = arrs.get(pos["ticker"])
+            j = _bar_index(a, d) if a else None
+            if j is None:
+                still.append(pos); continue
+            held = pos["bars_held"] + 1
+            done, r, why = exit_today(a, j, pos["entry"], held)
+            if done:
+                gross = pos["qty"] * pos["entry"]
+                st["cash"] += gross * (1 + r - COST); st["realized"] += gross * (r - COST)
+                st["trades"].append({"ticker": pos["ticker"], "entry_date": pos["entry_date"], "exit_date": d,
+                                     "entry": round(pos["entry"], 2), "ret_pct": round(r * 100, 2),
+                                     "pnl": round(gross * (r - COST), 2), "reason": why})
+                exits_done.append((pos["ticker"], round(r * 100, 2), why))
+            else:
+                pos["bars_held"] = held; still.append(pos)
+        st["open"] = still
+        # (2) 신규 진입 — 확정봉 d, 모멘텀 랭킹, 종가 체결
+        held_t = {p["ticker"] for p in st["open"]}; slots = MAX_CONCURRENT - len(st["open"])
+        if slots > 0:
+            alloc = st["seed"] / MAX_CONCURRENT
+            cands = []
+            for tk, a in arrs.items():
+                i = _bar_index(a, d)
+                if i is None or i < 60 or tk in held_t:
+                    continue
+                up = a["close"][i] > a["ma60"][i] and a["ma20"][i] > a["ma60"][i]
+                pull = a["close"][i] <= a["ma20"][i] * 1.01 and a["close"][i] > a["close"][i - 1]
+                if not (up and pull and a["close"][i] * a["vol"][i] >= MIN_TV_USD):
+                    continue
+                m200 = a["ma200"][i]; gc = bool(m200 == m200 and a["ma50"][i] > m200)
+                cands.append((a["close"][i] / a["ma60"][i] - 1.0, tk, float(a["close"][i]), gc))
+            cands.sort(key=lambda x: x[0], reverse=True)
+            for mom, tk, px, gc in cands:
+                if slots <= 0:
+                    break
+                qty = int(min(alloc, st["cash"]) // px)
+                if qty < 1:
+                    continue
+                st["cash"] -= qty * px
+                st["open"].append({"ticker": tk, "entry_date": d, "entry": px, "qty": qty, "bars_held": 0, "golden": gc})
+                entries_done.append((tk, round(mom * 100, 1))); slots -= 1
+        st["asOf"] = d
+        save_state(cfg.state_dir, st)
+
+    # (3) 브리핑(디스코드 ✨ + 옵시디언)
+    equity = st["cash"] + sum(p["qty"] * p["entry"] for p in st["open"])
+    acct = (equity - st["seed"]) / st["seed"] * 100
+    ex_lines = [f"  · {t} {r:+.1f}% ({w})" for t, r, w in exits_done] or ["  · 없음"]
+    en_lines = [f"  · {t} (모멘텀 +{m}%)" for t, m in entries_done] or ["  · 없음"]
+    op_lines = [f"  · {p['ticker']} {p['bars_held']}일 · 진입 {p['entry']:,.2f}" for p in st["open"][:15]] or ["  · 없음"]
+    fields = [{"name": f"📤 청산 {len(exits_done)}건", "value": "\n".join(ex_lines)[:1024], "inline": False},
+              {"name": f"📥 신규 진입 {len(entries_done)}건", "value": "\n".join(en_lines)[:1024], "inline": False},
+              {"name": f"📊 보유 {len(st['open'])}종목", "value": "\n".join(op_lines)[:1024], "inline": False}]
+    embed = {"title": f"📈 스윙 v9 · US · {d}", "color": 0x2ECC71, "fields": fields,
+             "footer": {"text": f"v7 추세추종 + US 시장스캔(모멘텀 랭킹) · 시드 ${st['seed']:,.0f} · 계좌 {acct:+.1f}%"}}
+    md = (f"### 📈 스윙 v9 · US · {d}\n> v7 추세추종을 S&P500 시장스캔에 적용(모멘텀 랭킹·최대 {MAX_CONCURRENT}보유)\n"
+          f"**청산 {len(exits_done)}건**\n" + "\n".join(ex_lines) +
+          f"\n\n**신규 진입 {len(entries_done)}건**\n" + "\n".join(en_lines) +
+          f"\n\n**보유 {len(st['open'])} · 계좌수익 {acct:+.1f}%**\n" + "\n".join(op_lines) + "\n")
+    wh = getattr(cfg.creds, "swing_webhook", None) or getattr(cfg.creds, "scalp_webhook", None)
+    notify_embeds(wh, [embed], md)
+    VaultWriter(cfg).append_swing_us(md)
+    _DM.record_done(cfg.state_dir, "swing_v9_us", datetime.now(_DM.KST))
+    return {"exited": len(exits_done), "entered": len(entries_done), "held": len(st["open"]), "acct_pct": round(acct, 1)}

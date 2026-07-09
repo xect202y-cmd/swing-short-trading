@@ -59,6 +59,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("scalp-compare", help="단타 v1/v2 백테스트 리플레이 → state/scalp_compare.json")
     sub.add_parser("v6-compare", help="v4/v5/v6 동일조건 regime 비교 → state/v6_compare.json + 볼트문서")
     sr = sub.add_parser("scalp-run", help="단타 페이퍼 1사이클(이전 계획 정산+오늘 계획) → 디스코드 ⚡")
+    sub.add_parser("swing-v9-us", help="스윙 v9 US — S&P500 시장스캔에 v7 추세추종 기계적용(모멘텀 랭킹) → 디스코드 📈")
     sub.add_parser("scalp-v6", help="단타 v6 오버나잇 상따+코스닥 국면게이트 — 15시 장중 스캔(정산+종가매수 계획) → 디스코드 ⚡")
     sub.add_parser("scalp-v5", help="[별칭] scalp-v6 과 동일(하위호환)")
     sub.add_parser("crosses", help="골든/데드 크로스 스캔(KR 전시장+US S&P500, 50/200일) → state/crosses.json + 디스코드 ✨")
@@ -132,6 +133,12 @@ def main(argv: list[str] | None = None) -> int:
         r = run_crosses(cfg)
         print(f"✅ crosses: 골든 {r['golden']}건(보유·관심 {r['watch_golden']}) · 데드 {r['dead']}건(보유 {r['hold_dead']})")
         return 0
+    if args.cmd == "swing-v9-us":
+        from swing_trader.strategy.v9_us_live import run_v9_us
+        r = run_v9_us(cfg)
+        print(f"✅ swing-v9-us: 청산 {r['exited']}건 · 진입 {r['entered']}건 · 보유 {r['held']} · 계좌 {r.get('acct_pct','?')}%")
+        return 0
+
     if args.cmd in ("scalp-v6", "scalp-v5"):
         from swing_trader.scalp.v5_live import run_scalp_v6
         r = run_scalp_v6(cfg)
