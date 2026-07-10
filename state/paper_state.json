@@ -1,6 +1,25 @@
 {
-  "cash": 4654110.61,
+  "cash": 3829405.42,
   "realized": -344360.45,
-  "last_bar_date": "2026-07-09",
-  "positions": {}
+  "last_bar_date": "2026-07-10",
+  "positions": {
+    "AMD": {
+      "name": "AMD",
+      "quantity": 1,
+      "avg_price": 824581.5,
+      "stop": 799444.34,
+      "target1": 873619.59,
+      "target2": 894223.82,
+      "bars_held": 0,
+      "entry_score": 78.0,
+      "entry_date": "2026-07-10",
+      "entry_reasons": [
+        "목표가까지 상승여력 5%+",
+        "🎯 기법 부합: 눌림목매매, 스윙트레이딩",
+        "🤖 AI 매수(85): 현재가는 20일 이동평균선 위에 있으며, 눌림목 매매 조건에 부합하여 매수하기에 적합하다."
+      ],
+      "partial_done": false,
+      "high_water": 0.0
+    }
+  }
 }
