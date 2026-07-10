@@ -14,7 +14,7 @@
     "max_up": 5.47,
     "max_down": -0.65,
     "last_update": "2026-07-10",
-    "last_ret": 5.47,
+    "last_ret": 5.32,
     "ret_d1": -0.64
   },
   "BYD": {
@@ -32,7 +32,7 @@
     "max_up": 0.15,
     "max_down": -2.94,
     "last_update": "2026-07-10",
-    "last_ret": -1.89,
+    "last_ret": -2.04,
     "ret_d1": -2.93
   },
   "MU": {
@@ -71,7 +71,7 @@
     "max_up": 2.73,
     "max_down": 0.0,
     "last_update": "2026-07-10",
-    "last_ret": 2.53,
+    "last_ret": 2.38,
     "ret_d1": 2.73
   },
   "INTC": {
@@ -87,8 +87,9 @@
     "block_reason": null,
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-10"
+    "max_down": -0.15,
+    "last_update": "2026-07-10",
+    "last_ret": -0.15
   },
   "QCOM": {
     "ticker": "QCOM",
@@ -105,7 +106,7 @@
     "max_up": 4.0,
     "max_down": 0.0,
     "last_update": "2026-07-10",
-    "last_ret": 4.0,
+    "last_ret": 3.85,
     "ret_d1": 1.06
   },
   "ARM": {
@@ -121,8 +122,9 @@
     "block_reason": null,
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-10"
+    "max_down": -0.15,
+    "last_update": "2026-07-10",
+    "last_ret": -0.15
   },
   "RTX": {
     "ticker": "RTX",
@@ -158,9 +160,9 @@
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -7.63,
+    "max_down": -7.77,
     "last_update": "2026-07-10",
-    "last_ret": -7.63,
+    "last_ret": -7.77,
     "ret_d1": -4.26,
     "ret_d3": -7.63
   },
@@ -179,7 +181,7 @@
     "max_up": 0.0,
     "max_down": -5.34,
     "last_update": "2026-07-10",
-    "last_ret": -2.67,
+    "last_ret": -2.82,
     "ret_d1": -5.34,
     "ret_d3": -2.67
   },
@@ -198,7 +200,7 @@
     "max_up": 0.0,
     "max_down": -4.31,
     "last_update": "2026-07-10",
-    "last_ret": -2.35,
+    "last_ret": -2.49,
     "ret_d1": -1.0,
     "ret_d3": -2.35
   },
@@ -217,7 +219,7 @@
     "max_up": 1.31,
     "max_down": -0.01,
     "last_update": "2026-07-10",
-    "last_ret": 1.31,
+    "last_ret": 1.16,
     "ret_d1": 1.31
   },
   "IBM": {
@@ -256,7 +258,7 @@
     "max_up": 4.25,
     "max_down": -0.04,
     "last_update": "2026-07-10",
-    "last_ret": 4.25,
+    "last_ret": 4.1,
     "ret_d1": 2.35,
     "ret_d3": 4.25
   },
@@ -275,7 +277,7 @@
     "max_up": 0.0,
     "max_down": -8.72,
     "last_update": "2026-07-10",
-    "last_ret": -8.27,
+    "last_ret": -8.41,
     "ret_d1": -4.47,
     "ret_d3": -8.27
   },
@@ -292,9 +294,9 @@
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -4.74,
+    "max_down": -4.88,
     "last_update": "2026-07-10",
-    "last_ret": -4.74,
+    "last_ret": -4.88,
     "ret_d1": -3.38,
     "ret_d3": -4.74
   },
@@ -313,7 +315,7 @@
     "max_up": 0.0,
     "max_down": -3.6,
     "last_update": "2026-07-10",
-    "last_ret": -2.38,
+    "last_ret": -2.52,
     "ret_d1": -1.12,
     "ret_d3": -2.38
   },
@@ -332,7 +334,7 @@
     "max_up": 0.0,
     "max_down": -2.56,
     "last_update": "2026-07-10",
-    "last_ret": -2.26,
+    "last_ret": -2.41,
     "ret_d1": -0.91,
     "ret_d3": -2.26
   },
@@ -351,7 +353,7 @@
     "max_up": 0.0,
     "max_down": -2.87,
     "last_update": "2026-07-10",
-    "last_ret": -2.16,
+    "last_ret": -2.3,
     "ret_d1": -0.59,
     "ret_d3": -2.16
   },
@@ -370,7 +372,7 @@
     "max_up": 3.56,
     "max_down": -1.55,
     "last_update": "2026-07-10",
-    "last_ret": 3.56,
+    "last_ret": 3.41,
     "ret_d1": 1.4,
     "ret_d3": 3.56
   },
@@ -389,7 +391,7 @@
     "max_up": 5.61,
     "max_down": -1.95,
     "last_update": "2026-07-10",
-    "last_ret": 5.61,
+    "last_ret": 5.46,
     "ret_d1": -1.95,
     "ret_d3": 5.61
   },
@@ -408,7 +410,7 @@
     "max_up": 0.0,
     "max_down": -2.22,
     "last_update": "2026-07-10",
-    "last_ret": -0.39,
+    "last_ret": -0.53,
     "ret_d1": -0.39,
     "ret_d3": -0.39
   },
@@ -425,9 +427,9 @@
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -3.58,
+    "max_down": -3.72,
     "last_update": "2026-07-10",
-    "last_ret": -3.58,
+    "last_ret": -3.72,
     "ret_d1": -0.97,
     "ret_d3": -3.58
   },
@@ -446,7 +448,7 @@
     "max_up": 0.0,
     "max_down": -1.78,
     "last_update": "2026-07-10",
-    "last_ret": -0.43,
+    "last_ret": -0.57,
     "ret_d1": -1.76,
     "ret_d3": -0.43
   },
@@ -465,7 +467,7 @@
     "max_up": 0.0,
     "max_down": -8.01,
     "last_update": "2026-07-10",
-    "last_ret": -4.65,
+    "last_ret": -4.79,
     "ret_d1": -5.1,
     "ret_d3": -4.65
   },
@@ -482,9 +484,9 @@
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 3,
     "max_up": 0.39,
-    "max_down": -4.15,
+    "max_down": -4.29,
     "last_update": "2026-07-10",
-    "last_ret": -4.15,
+    "last_ret": -4.29,
     "ret_d1": 0.24,
     "ret_d3": -4.15
   },
@@ -503,7 +505,7 @@
     "max_up": 0.0,
     "max_down": -12.15,
     "last_update": "2026-07-10",
-    "last_ret": -9.17,
+    "last_ret": -10.28,
     "ret_d1": -1.99,
     "ret_d3": -11.82
   },
@@ -522,7 +524,7 @@
     "max_up": 0.76,
     "max_down": -12.99,
     "last_update": "2026-07-10",
-    "last_ret": -12.36,
+    "last_ret": -11.48,
     "ret_d1": 0.76,
     "ret_d3": -12.36
   },
@@ -541,7 +543,7 @@
     "max_up": 0.0,
     "max_down": -11.07,
     "last_update": "2026-07-10",
-    "last_ret": -6.08,
+    "last_ret": -5.32,
     "ret_d1": -2.14,
     "ret_d3": -6.08
   },
@@ -569,23 +571,18 @@
   "034730": {
     "ticker": "034730",
     "name": "SK",
-    "kind": "BLOCKED",
-    "date": "2026-07-01",
-    "ref_price": 781000.0,
-    "score": 53.2,
-    "rank": 13,
-    "target": 827860.0,
-    "stop": 761475.0,
-    "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 5,
+    "kind": "BUY_WATCH",
+    "date": "2026-07-10",
+    "ref_price": 646000.0,
+    "score": 62.1,
+    "rank": 9,
+    "target": 684760.0,
+    "stop": 626620.0,
+    "block_reason": null,
+    "bars": 0,
     "max_up": 0.0,
-    "max_down": -17.8,
-    "last_update": "2026-07-07",
-    "last_ret": -17.8,
-    "ret_d1": -13.44,
-    "ret_d3": -11.65,
-    "ret_d5": -17.8,
-    "closed": true
+    "max_down": 0.0,
+    "last_update": "2026-07-10"
   },
   "000660": {
     "ticker": "000660",
@@ -623,7 +620,7 @@
     "max_up": 0.0,
     "max_down": -0.45,
     "last_update": "2026-07-10",
-    "last_ret": -0.45,
+    "last_ret": -0.15,
     "ret_d1": -0.45
   },
   "005930": {
@@ -638,10 +635,10 @@
     "stop": 277905.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 1,
-    "max_up": 0.44,
+    "max_up": 0.52,
     "max_down": 0.0,
     "last_update": "2026-07-10",
-    "last_ret": 0.44,
+    "last_ret": 0.52,
     "ret_d1": 0.44
   },
   "005935.KS": {
@@ -657,9 +654,9 @@
     "block_reason": "손익비 1.61 부족(<1.75)",
     "bars": 3,
     "max_up": 0.0,
-    "max_down": -5.16,
+    "max_down": -5.5,
     "last_update": "2026-07-10",
-    "last_ret": -5.16,
+    "last_ret": -5.5,
     "ret_d1": -2.06,
     "ret_d3": -5.16
   },
@@ -678,7 +675,7 @@
     "max_up": 0.0,
     "max_down": -9.35,
     "last_update": "2026-07-10",
-    "last_ret": -9.15,
+    "last_ret": -7.74,
     "ret_d1": -4.12,
     "ret_d3": -9.35
   },
@@ -697,7 +694,7 @@
     "max_up": 3.14,
     "max_down": -7.8,
     "last_update": "2026-07-10",
-    "last_ret": -7.8,
+    "last_ret": -5.66,
     "ret_d1": 3.14,
     "ret_d3": -7.8
   },
@@ -716,7 +713,7 @@
     "max_up": 0.0,
     "max_down": -7.78,
     "last_update": "2026-07-10",
-    "last_ret": -7.78,
+    "last_ret": -6.69,
     "ret_d1": -0.18,
     "ret_d3": -7.78
   },
@@ -732,10 +729,10 @@
     "stop": 166743.0,
     "block_reason": null,
     "bars": 3,
-    "max_up": 2.62,
+    "max_up": 3.43,
     "max_down": 0.0,
     "last_update": "2026-07-10",
-    "last_ret": 2.62,
+    "last_ret": 3.43,
     "ret_d1": 0.76,
     "ret_d3": 2.62
   },
@@ -754,7 +751,7 @@
     "max_up": 0.0,
     "max_down": -4.75,
     "last_update": "2026-07-10",
-    "last_ret": -3.86,
+    "last_ret": -2.23,
     "ret_d1": -1.48,
     "ret_d3": -3.86
   },
@@ -771,9 +768,9 @@
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 2,
     "max_up": 0.0,
-    "max_down": -7.25,
+    "max_down": -7.37,
     "last_update": "2026-07-10",
-    "last_ret": -7.25,
+    "last_ret": -7.37,
     "ret_d1": -5.16
   },
   "066570": {
@@ -791,7 +788,7 @@
     "max_up": 9.75,
     "max_down": 0.0,
     "last_update": "2026-07-10",
-    "last_ret": 0.84,
+    "last_ret": 0.28,
     "ret_d1": 5.35,
     "ret_d3": 0.84
   },
@@ -810,7 +807,7 @@
     "max_up": 2.53,
     "max_down": -3.0,
     "last_update": "2026-07-10",
-    "last_ret": -0.66,
+    "last_ret": -0.19,
     "ret_d1": 2.53,
     "ret_d3": -0.66
   },
@@ -829,7 +826,7 @@
     "max_up": 4.19,
     "max_down": -3.92,
     "last_update": "2026-07-10",
-    "last_ret": -3.92,
+    "last_ret": -2.68,
     "ret_d1": 0.52,
     "ret_d3": -3.92
   },
@@ -848,7 +845,7 @@
     "max_up": 0.0,
     "max_down": -3.73,
     "last_update": "2026-07-10",
-    "last_ret": -3.68,
+    "last_ret": -2.98,
     "ret_d1": -0.55,
     "ret_d3": -3.68
   },
@@ -867,7 +864,7 @@
     "max_up": 0.0,
     "max_down": -8.16,
     "last_update": "2026-07-10",
-    "last_ret": -7.19,
+    "last_ret": -5.97,
     "ret_d1": -0.61,
     "ret_d3": -7.19
   },
@@ -886,7 +883,7 @@
     "max_up": 0.0,
     "max_down": -8.89,
     "last_update": "2026-07-10",
-    "last_ret": -8.69,
+    "last_ret": -8.27,
     "ret_d1": -4.96,
     "ret_d3": -8.69
   },
@@ -905,7 +902,7 @@
     "max_up": 0.0,
     "max_down": -4.2,
     "last_update": "2026-07-10",
-    "last_ret": -1.49,
+    "last_ret": -2.3,
     "ret_d1": -2.57,
     "ret_d3": -1.49
   },
@@ -924,7 +921,7 @@
     "max_up": 0.28,
     "max_down": -7.04,
     "last_update": "2026-07-10",
-    "last_ret": -7.04,
+    "last_ret": -6.03,
     "ret_d1": 0.28,
     "ret_d3": -7.04
   },
@@ -932,22 +929,17 @@
     "ticker": "028260",
     "name": "삼성물산",
     "kind": "BLOCKED",
-    "date": "2026-07-01",
-    "ref_price": 444500.0,
-    "score": 55.2,
-    "rank": 10,
-    "target": 471170.0,
-    "stop": 433387.5,
-    "block_reason": "대형 이벤트 임박(D-0~1) — 신규매수 제한",
-    "bars": 5,
-    "max_up": 1.8,
-    "max_down": -10.46,
-    "last_update": "2026-07-07",
-    "last_ret": -2.81,
-    "ret_d1": -9.67,
-    "ret_d3": -2.47,
-    "ret_d5": -2.81,
-    "closed": true
+    "date": "2026-07-10",
+    "ref_price": 387500.0,
+    "score": 47.9,
+    "rank": 35,
+    "target": 410750.0,
+    "stop": 375875.0,
+    "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-07-10"
   },
   "003230": {
     "ticker": "003230",
@@ -964,7 +956,7 @@
     "max_up": 6.08,
     "max_down": -5.21,
     "last_update": "2026-07-10",
-    "last_ret": -5.21,
+    "last_ret": -3.39,
     "ret_d1": 6.08,
     "ret_d3": -5.21
   },
@@ -983,7 +975,7 @@
     "max_up": 1.13,
     "max_down": -2.43,
     "last_update": "2026-07-10",
-    "last_ret": -2.43,
+    "last_ret": -1.75,
     "ret_d1": 0.51,
     "ret_d3": -2.43
   },
@@ -1023,7 +1015,7 @@
     "max_up": 0.0,
     "max_down": -8.53,
     "last_update": "2026-07-10",
-    "last_ret": -5.65,
+    "last_ret": -5.41,
     "ret_d1": -2.76,
     "ret_d3": -5.65
   },
@@ -1042,7 +1034,7 @@
     "max_up": 0.0,
     "max_down": -7.1,
     "last_update": "2026-07-10",
-    "last_ret": -5.14,
+    "last_ret": -5.06,
     "ret_d1": -1.96,
     "ret_d3": -5.14
   },
@@ -1061,7 +1053,7 @@
     "max_up": 0.14,
     "max_down": -3.85,
     "last_update": "2026-07-10",
-    "last_ret": -3.85,
+    "last_ret": -3.28,
     "ret_d1": 0.14,
     "ret_d3": -3.85
   },
@@ -1077,10 +1069,10 @@
     "stop": 34386.5,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 3,
-    "max_up": 0.0,
+    "max_up": 0.14,
     "max_down": -3.53,
     "last_update": "2026-07-10",
-    "last_ret": -1.97,
+    "last_ret": 0.14,
     "ret_d1": -0.14,
     "ret_d3": -1.97
   },
@@ -1099,7 +1091,7 @@
     "max_up": 1.25,
     "max_down": -1.35,
     "last_update": "2026-07-10",
-    "last_ret": 1.25,
+    "last_ret": 0.94,
     "ret_d1": -0.52,
     "ret_d3": 1.25
   },
@@ -1118,7 +1110,7 @@
     "max_up": 1.39,
     "max_down": -2.55,
     "last_update": "2026-07-10",
-    "last_ret": 1.39,
+    "last_ret": 0.46,
     "ret_d1": -2.55,
     "ret_d3": 1.39
   },
@@ -1137,7 +1129,7 @@
     "max_up": 3.79,
     "max_down": -13.41,
     "last_update": "2026-07-10",
-    "last_ret": -13.41,
+    "last_ret": -13.23,
     "ret_d1": 3.79,
     "ret_d3": -13.41
   },
@@ -1156,7 +1148,7 @@
     "max_up": 1.75,
     "max_down": -9.61,
     "last_update": "2026-07-10",
-    "last_ret": -9.61,
+    "last_ret": -7.75,
     "ret_d1": 1.75,
     "ret_d3": -9.61
   },
@@ -1175,7 +1167,7 @@
     "max_up": 2.63,
     "max_down": -4.86,
     "last_update": "2026-07-10",
-    "last_ret": -4.86,
+    "last_ret": -2.43,
     "ret_d1": 0.2,
     "ret_d3": -4.86
   },
@@ -1194,7 +1186,7 @@
     "max_up": 0.0,
     "max_down": -9.4,
     "last_update": "2026-07-10",
-    "last_ret": -4.61,
+    "last_ret": -4.45,
     "ret_d1": -3.65,
     "ret_d3": -4.61
   },
@@ -1232,8 +1224,9 @@
     "block_reason": null,
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-10"
+    "max_down": -0.15,
+    "last_update": "2026-07-10",
+    "last_ret": -0.15
   },
   "JTBC": {
     "ticker": "JTBC",
@@ -1250,7 +1243,7 @@
     "max_up": 1.19,
     "max_down": -41.39,
     "last_update": "2026-07-10",
-    "last_ret": 1.19,
+    "last_ret": -26.07,
     "ret_d1": -1.0,
     "ret_d3": 1.19
   },
@@ -1269,7 +1262,7 @@
     "max_up": 44.56,
     "max_down": -12.56,
     "last_update": "2026-07-10",
-    "last_ret": 17.64,
+    "last_ret": 16.81,
     "ret_d1": 44.56
   },
   "TLB": {
@@ -1287,7 +1280,7 @@
     "max_up": 48.82,
     "max_down": -0.72,
     "last_update": "2026-07-10",
-    "last_ret": 48.82,
+    "last_ret": 26.68,
     "ret_d1": 14.48,
     "ret_d3": 48.82
   },
@@ -1306,7 +1299,7 @@
     "max_up": 17.2,
     "max_down": -30.14,
     "last_update": "2026-07-10",
-    "last_ret": -30.14,
+    "last_ret": 8.67,
     "ret_d1": 17.2
   },
   "207940": {
@@ -1324,7 +1317,7 @@
     "max_up": 1.14,
     "max_down": -4.62,
     "last_update": "2026-07-10",
-    "last_ret": -4.62,
+    "last_ret": -2.42,
     "ret_d1": 1.14,
     "ret_d3": -4.62
   },
@@ -1343,7 +1336,7 @@
     "max_up": 0.0,
     "max_down": -2.69,
     "last_update": "2026-07-10",
-    "last_ret": -2.54,
+    "last_ret": -1.11,
     "ret_d1": 0.0,
     "ret_d3": -2.54
   },
@@ -1360,8 +1353,9 @@
     "block_reason": null,
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-10"
+    "max_down": -0.15,
+    "last_update": "2026-07-10",
+    "last_ret": -0.15
   },
   "SM": {
     "ticker": "SM",
@@ -1376,9 +1370,9 @@
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 1,
     "max_up": 0.0,
-    "max_down": -2.2,
+    "max_down": -2.34,
     "last_update": "2026-07-10",
-    "last_ret": -2.2,
+    "last_ret": -2.34,
     "ret_d1": -2.2
   },
   "003670": {
@@ -1393,10 +1387,10 @@
     "stop": 144336.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 1,
-    "max_up": 1.88,
+    "max_up": 3.36,
     "max_down": 0.0,
     "last_update": "2026-07-10",
-    "last_ret": 1.88,
+    "last_ret": 3.36,
     "ret_d1": 1.88
   },
   "352820": {
@@ -1414,29 +1408,24 @@
     "max_up": 0.0,
     "max_down": -3.34,
     "last_update": "2026-07-10",
-    "last_ret": -3.34,
+    "last_ret": -3.12,
     "ret_d1": -3.34
   },
   "259960": {
     "ticker": "259960",
     "name": "크래프톤",
-    "kind": "BUY_WATCH",
-    "date": "2026-07-04",
-    "ref_price": 235500.0,
-    "score": 68.0,
-    "rank": 8,
-    "target": 249630.0,
-    "stop": 229612.5,
-    "block_reason": null,
-    "bars": 5,
-    "max_up": 4.25,
-    "max_down": -0.85,
-    "last_update": "2026-07-10",
-    "last_ret": 3.4,
-    "ret_d1": 0.0,
-    "ret_d3": 4.03,
-    "ret_d5": 3.4,
-    "closed": true
+    "kind": "BLOCKED",
+    "date": "2026-07-10",
+    "ref_price": 246000.0,
+    "score": 46.3,
+    "rank": 46,
+    "target": 260760.0,
+    "stop": 238620.0,
+    "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
+    "bars": 0,
+    "max_up": 0.0,
+    "max_down": 0.0,
+    "last_update": "2026-07-10"
   },
   "XAI": {
     "ticker": "XAI",
@@ -1450,9 +1439,10 @@
     "stop": 163139.48,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 0,
-    "max_up": 0.0,
+    "max_up": 4.16,
     "max_down": 0.0,
-    "last_update": "2026-07-10"
+    "last_update": "2026-07-10",
+    "last_ret": 4.16
   },
   "GLW": {
     "ticker": "GLW",
@@ -1469,7 +1459,7 @@
     "max_up": 0.19,
     "max_down": -8.26,
     "last_update": "2026-07-10",
-    "last_ret": -3.65,
+    "last_ret": -3.79,
     "ret_d1": -0.9,
     "ret_d3": -8.25
   },
@@ -1488,7 +1478,7 @@
     "max_up": 2.89,
     "max_down": -1.47,
     "last_update": "2026-07-10",
-    "last_ret": -0.21,
+    "last_ret": -0.36,
     "ret_d1": 2.89,
     "ret_d3": -1.47
   },
@@ -1507,7 +1497,7 @@
     "max_up": 0.0,
     "max_down": -42.37,
     "last_update": "2026-07-10",
-    "last_ret": -42.37,
+    "last_ret": -37.59,
     "ret_d1": -13.41,
     "ret_d3": -23.11
   },
@@ -1523,10 +1513,10 @@
     "stop": 29779.0,
     "block_reason": "추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입",
     "bars": 4,
-    "max_up": 0.65,
+    "max_up": 2.61,
     "max_down": -8.63,
     "last_update": "2026-07-10",
-    "last_ret": -0.98,
+    "last_ret": 2.61,
     "ret_d1": 0.65,
     "ret_d3": -8.63
   },
@@ -1545,7 +1535,7 @@
     "max_up": 0.0,
     "max_down": -7.5,
     "last_update": "2026-07-10",
-    "last_ret": -4.64,
+    "last_ret": -3.57,
     "ret_d1": -4.29,
     "ret_d3": -7.5
   },
@@ -1564,7 +1554,7 @@
     "max_up": 0.0,
     "max_down": -12.12,
     "last_update": "2026-07-10",
-    "last_ret": -6.78,
+    "last_ret": -7.36,
     "ret_d1": -7.36,
     "ret_d3": -10.39
   },
@@ -1583,7 +1573,7 @@
     "max_up": 0.0,
     "max_down": -6.24,
     "last_update": "2026-07-10",
-    "last_ret": -3.9,
+    "last_ret": -2.45,
     "ret_d1": -0.78,
     "ret_d3": -6.24
   },
@@ -1602,7 +1592,7 @@
     "max_up": 0.0,
     "max_down": -9.83,
     "last_update": "2026-07-10",
-    "last_ret": -7.01,
+    "last_ret": -8.28,
     "ret_d1": -7.01,
     "ret_d3": -9.34
   },
@@ -1621,7 +1611,7 @@
     "max_up": 0.0,
     "max_down": -10.81,
     "last_update": "2026-07-10",
-    "last_ret": -10.81,
+    "last_ret": -9.56,
     "ret_d1": -1.56,
     "ret_d3": -7.59
   },
@@ -1640,7 +1630,7 @@
     "max_up": 0.0,
     "max_down": -20.34,
     "last_update": "2026-07-10",
-    "last_ret": -18.54,
+    "last_ret": -19.26,
     "ret_d1": -9.73,
     "ret_d3": -20.34
   },
@@ -1659,7 +1649,7 @@
     "max_up": 0.0,
     "max_down": -10.77,
     "last_update": "2026-07-10",
-    "last_ret": -10.15,
+    "last_ret": -10.07,
     "ret_d1": -6.56,
     "ret_d3": -10.77
   },
@@ -1678,7 +1668,7 @@
     "max_up": 3.12,
     "max_down": -2.76,
     "last_update": "2026-07-10",
-    "last_ret": -2.76,
+    "last_ret": -1.8,
     "ret_d1": 3.12,
     "ret_d3": -1.44
   },
@@ -1697,7 +1687,7 @@
     "max_up": 0.0,
     "max_down": -12.34,
     "last_update": "2026-07-10",
-    "last_ret": -8.27,
+    "last_ret": -9.4,
     "ret_d1": -0.98,
     "ret_d3": -12.2
   },
@@ -1716,7 +1706,7 @@
     "max_up": 1.65,
     "max_down": -3.87,
     "last_update": "2026-07-10",
-    "last_ret": 1.65,
+    "last_ret": 1.43,
     "ret_d1": -2.93,
     "ret_d3": 1.65
   },
@@ -1735,7 +1725,7 @@
     "max_up": 7.43,
     "max_down": 0.0,
     "last_update": "2026-07-10",
-    "last_ret": 7.43,
+    "last_ret": 7.27,
     "ret_d1": 2.6
   },
   "NBIS": {
@@ -1753,7 +1743,7 @@
     "max_up": 10.28,
     "max_down": 0.0,
     "last_update": "2026-07-10",
-    "last_ret": 10.28,
+    "last_ret": 10.12,
     "ret_d1": 9.92
   },
   "FB": {
@@ -1771,7 +1761,7 @@
     "max_up": 0.83,
     "max_down": -0.01,
     "last_update": "2026-07-10",
-    "last_ret": 0.83,
+    "last_ret": 0.68,
     "ret_d1": 0.83
   },
   "AMAT": {
@@ -1787,7 +1777,8 @@
     "block_reason": null,
     "bars": 0,
     "max_up": 0.0,
-    "max_down": 0.0,
-    "last_update": "2026-07-10"
+    "max_down": -0.15,
+    "last_update": "2026-07-10",
+    "last_ret": -0.15
   }
 }

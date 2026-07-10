@@ -1,48 +1,41 @@
 {
   "ok": true,
-  "date": "2026-07-03",
-  "n_closed": 11,
+  "date": "2026-07-10",
+  "n_closed": 14,
   "headline": {
-    "win_rate": 36.4,
-    "profit_factor": 0.41,
-    "return_pct": -4.67
+    "win_rate": 28.6,
+    "profit_factor": 0.32,
+    "return_pct": -6.95
   },
   "suggestions": [
     {
-      "title": "승률 개선 필요",
-      "insight": "현재 승률이 36.4%로 매우 낮아, 지속적인 손실이 우려됨. 이를 개선할 필요가 있음.",
+      "title": "승률 개선",
+      "insight": "전반적으로 낮은 승률(28.6%)을 개선하기 위한 매매 기준이 필요하다. 손익비 측면에서도 부족한 점이 확인됨.",
       "config_key": "risk.min_reward_risk",
-      "current": 1.5,
-      "suggested": 1.75
+      "current": 1.75,
+      "suggested": 2.0
     },
     {
-      "title": "손익 비율 조정",
-      "insight": "현재 손익비가 0.41로 이익을 극대화하기 위한 조정이 필요함.",
-      "config_key": "risk.min_reward_risk",
-      "current": 1.5,
-      "suggested": 1.6
-    },
-    {
-      "title": "매수 기법 다양화",
-      "insight": "현재 매수 진입 유형이 한정적이므로 다양한 진입 기법을 허용해 유연성을 높여야 함.",
-      "config_key": "ai.min_score",
-      "current": 75,
-      "suggested": 70
-    },
-    {
-      "title": "과도한 차단 사유",
-      "insight": "차단 사유가 너무 많아 기회를 잃는 경우가 많음. 평가 기준을 완화할 필요가 있음.",
-      "config_key": "risk.max_stop_pct",
-      "current": -5.0,
-      "suggested": -7.0
-    },
-    {
-      "title": "진입 시점 최적화",
-      "insight": "현재 진입 조건이 엄격해 매수 기회를 놓치고 있으므로, 트렌드와 연관된 조건을 완화해야 함.",
+      "title": "차단 기준 재조정",
+      "insight": "차단사유 중 '추세 미충족'이 너무 많아 유효한 매수 후보가 제한됨. 진입 조건을 완화하거나 다른 전략을 도입해 검토 필요.",
       "config_key": "risk.require_uptrend",
       "current": true,
       "suggested": false
+    },
+    {
+      "title": "매수 타입 다양화",
+      "insight": "BUY 진입유형 중 '추세추종'과 '돌파' 유형의 비율이 낮아 다양한 매매 전략을 시도해야 함.",
+      "config_key": "capital.max_positions",
+      "current": 3,
+      "suggested": 5
+    },
+    {
+      "title": "손익비 향상",
+      "insight": "손익비가 낮은 매매가 많아 평균 수익률을 올릴 필요가 있음. 손익비 기준을 강화해야 할 것으로 보임.",
+      "config_key": "risk.min_reward_risk",
+      "current": 1.75,
+      "suggested": 1.85
     }
   ],
-  "next_action": "제안한 수정안을 바탕으로 로직을 조정하고 테스트를 진행해 보세요."
+  "next_action": "위 수정안을 고려하여 매매 전략을 조정하십시오."
 }
