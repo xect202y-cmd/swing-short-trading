@@ -1,25 +1,6 @@
 {
-  "asOf": "2026-07-10",
-  "cash": 3829405.0,
-  "holdingsValue": 824169.0,
-  "positions": [
-    {
-      "flag": "🇺🇸",
-      "mkt": "US",
-      "name": "AMD",
-      "ticker": "AMD",
-      "avg": 824581.5,
-      "cur": 824169.4214355468,
-      "ret": -0.04997426748637601,
-      "pnl": -412.07856445317157,
-      "qty": 1,
-      "days": 0,
-      "stop": 799444.34,
-      "target": 873619.59,
-      "entry_date": "2026-07-10",
-      "entry_score": 78.0,
-      "review": "진입 78점 → 재점검",
-      "fx": 1507.48
-    }
-  ]
+ "asOf": "2026-07-10",
+ "cash": 4653574.42,
+ "holdingsValue": 0,
+ "positions": []
 }
