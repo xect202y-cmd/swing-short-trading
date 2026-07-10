@@ -6,7 +6,8 @@ set PYTHONUTF8=1
 cd /d "%~dp0"
 >> "%~dp0swing.log" echo.
 >> "%~dp0swing.log" echo ===== %date% %time% SWING US run =====
-"%~dp0.venv\Scripts\swing-trader.exe" run-once --market us --no-brief >> "%~dp0swing.log" 2>&1
+REM (2026-07-10) 중/단기 스윙은 한국 전용 — US 관심종목 스윙 비활성(US는 V1 US 시장스캔이 전담).
+REM "%~dp0.venv\Scripts\swing-trader.exe" run-once --market us --no-brief >> "%~dp0swing.log" 2>&1
 REM scalp paper cycle: settle yesterday's plan + build today's plan (Discord orange embed)
 "%~dp0.venv\Scripts\swing-trader.exe" scalp-run --market us >> "%~dp0swing.log" 2>&1
 REM V1 US swing: v7 trend-following applied to S&P500 market scan (momentum ranking, MOC fills)
