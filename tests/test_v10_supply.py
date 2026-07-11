@@ -45,3 +45,29 @@ def test_supply_ok_false_on_net_selling():
 def test_supply_ok_none_when_missing():
     assert supply_ok(None, "2026-07-09", 3) is None
     assert supply_ok(_series([("2026-07-09", 100)]), "2026-07-09", 3) is None   # 표본부족
+
+
+# Tests for SupplyProvider (Step 1: Failing tests)
+from swing_trader.market.supply import SupplyProvider
+
+
+def test_supply_provider_uses_injected_fetcher_and_caches(tmp_path):
+    html = FIX.read_bytes().decode("euc-kr", "replace")
+    calls = {"n": 0}
+
+    def fake_fetch(ticker, page):
+        calls["n"] += 1
+        return html if page == 1 else ""      # page2는 빈 표 → 조회 종료
+
+    sp = SupplyProvider(tmp_path, max_pages=5, fetcher=fake_fetch)
+    s1 = sp.institution_netbuy("005930")
+    assert s1 is not None and len(s1) >= 5
+    n_after_first = calls["n"]
+    s2 = sp.institution_netbuy("005930")       # 두 번째 호출은 캐시 → fetch 안 함
+    assert calls["n"] == n_after_first
+    assert list(s2.index) == list(s1.index)
+
+
+def test_supply_provider_none_on_total_failure(tmp_path):
+    sp = SupplyProvider(tmp_path, fetcher=lambda t, p: None)
+    assert sp.institution_netbuy("000000") is None
