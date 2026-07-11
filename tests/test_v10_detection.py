@@ -51,3 +51,21 @@ def test_breakout_mask_rejects_low_volume():
     df = _df(closes, opens, vols)
     m = v10.breakout_mask(df, high_n=252, vol_x=2.0, body_min=0.03, min_tv_eok=0)
     assert not m[-1]
+
+
+def test_find_geogamjjareum_first_dry_down_candle():
+    # 돌파봉(B) 다음: [양봉, 거래량마름 짧은음봉(D), ...]. D를 잡아야.
+    closes = [100, 110, 111, 109.5, 112]     # idx1 돌파 가정
+    opens  = [100, 105, 110, 110.0, 109.5]   # idx3: open110>close109.5 → 음봉(-0.45%)
+    vols   = [1e6, 3e6, 2e6, 5e5, 2e6]       # idx3: 거래량 5e5 << 돌파봉 3e6
+    df = _df(closes, opens, vols)
+    j = v10.find_geogamjjareum(df, 1, window=3, vol_dry=0.7, body_max=0.03)
+    assert j == 3
+
+
+def test_find_geogamjjareum_none_when_no_dry_candle():
+    closes = [100, 110, 112, 114, 116]        # 계속 양봉
+    opens  = [100, 105, 110, 112, 114]
+    vols   = [1e6, 3e6, 3e6, 3e6, 3e6]        # 거래량 안 마름
+    df = _df(closes, opens, vols)
+    assert v10.find_geogamjjareum(df, 1, window=3, vol_dry=0.7, body_max=0.03) is None

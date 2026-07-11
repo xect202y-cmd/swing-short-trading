@@ -45,3 +45,24 @@ def hist_vol_mask(df: pd.DataFrame, ratio: float = 0.9) -> np.ndarray:
     with np.errstate(invalid="ignore"):
         m = v >= prev_vmax * ratio
     return np.nan_to_num(m, nan=0.0).astype(bool)
+
+
+def find_geogamjjareum(df: pd.DataFrame, breakout_idx: int, *,
+                       window: int, vol_dry: float, body_max: float) -> int | None:
+    """돌파봉 B 다음 window봉 내 '거감짜름'(음봉+거래량마름+짧은몸통+5일선유지) 첫 봉 인덱스."""
+    c, o, v = _arr(df, "close"), _arr(df, "open"), _arr(df, "volume")
+    ma5 = pd.Series(c).rolling(5, min_periods=1).mean().to_numpy()
+    va20_raw = pd.Series(v).rolling(20, min_periods=5).mean().to_numpy()
+    va20 = np.nan_to_num(va20_raw, nan=np.inf)
+    vol_b = v[breakout_idx]
+    n = len(c)
+    for j in range(breakout_idx + 1, min(breakout_idx + window, n - 1) + 1):
+        if o[j] <= 0:
+            continue
+        down = c[j] < o[j]
+        dry = v[j] < va20[j] and v[j] < vol_b * vol_dry
+        short = abs(c[j] - o[j]) / o[j] <= body_max
+        trend = c[j] >= ma5[j]
+        if down and dry and short and trend:
+            return j
+    return None
