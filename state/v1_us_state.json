@@ -10,7 +10,8 @@
       "qty": 1,
       "bars_held": 0,
       "cur_usd": 216.48,
-      "mark_fx": 1498.87
+      "mark_fx": 1498.87,
+      "name": "Nebius Group N.V. Class A Ordinary Shares"
     },
     {
       "ticker": "KLAC",
@@ -20,7 +21,8 @@
       "qty": 1,
       "bars_held": 0,
       "cur_usd": 231.52,
-      "mark_fx": 1498.87
+      "mark_fx": 1498.87,
+      "name": "KLA Corporation"
     },
     {
       "ticker": "MGM",
@@ -30,7 +32,8 @@
       "qty": 7,
       "bars_held": 0,
       "cur_usd": 46.88,
-      "mark_fx": 1498.87
+      "mark_fx": 1498.87,
+      "name": "MGM Resorts"
     },
     {
       "ticker": "WSM",
@@ -40,7 +43,8 @@
       "qty": 1,
       "bars_held": 0,
       "cur_usd": 221.75,
-      "mark_fx": 1498.87
+      "mark_fx": 1498.87,
+      "name": "Williams-Sonoma, Inc."
     },
     {
       "ticker": "HRL",
@@ -50,7 +54,8 @@
       "qty": 13,
       "bars_held": 0,
       "cur_usd": 24.73,
-      "mark_fx": 1498.87
+      "mark_fx": 1498.87,
+      "name": "Hormel Foods"
     }
   ],
   "trades": [],
