@@ -134,3 +134,19 @@ def test_adopt_reloads_fresh_config_despite_cache(tmp_path, monkeypatch):
     versions = json.loads((tmp_path / "logic_versions.json").read_text(encoding="utf-8"))
     assert versions[-1]["snapshot"]["take1_pct"] == 6.5      # fresh value, NOT cached 6.0
     CFG.load_config.cache_clear()
+
+
+def test_adopt_raise_leaves_proposal_pending(tmp_path):
+    import pytest
+    cfgfile = tmp_path / "config.yaml"
+    cfgfile.write_text("risk:\n  take1_pct: 6.0\n", encoding="utf-8")
+    cfg = _cfg(tmp_path)
+    # proposal 의 current(5.0) 가 파일값(6.0) 과 불일치 → set_config_value 가 ValueError
+    P.upsert(tmp_path, {"id": "A9", "config_key": "risk.take1_pct",
+                        "current": 5.0, "suggested": 5.5, "status": "pending"})
+    with pytest.raises(ValueError):
+        EV.adopt(cfg, "A9", cfgfile)
+    assert P.find(tmp_path, "A9")["status"] == "pending"            # 부분채택 없음
+    assert not (tmp_path / "logic_versions.json").exists()          # 버전 미기록
+    assert not (tmp_path / "learned_rules.json").exists()           # 학습 미기록
+    assert cfgfile.read_text(encoding="utf-8") == "risk:\n  take1_pct: 6.0\n"  # 파일 불변
