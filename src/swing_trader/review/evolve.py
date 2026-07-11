@@ -90,6 +90,8 @@ def adopt(cfg, pid, config_path) -> dict:
         return {"ok": False, "reason": f"제안 #{pid} 이미 {prop.get('status')}"}
     set_config_value(config_path, prop["config_key"], prop["suggested"],
                      expected_current=prop["current"])
+    if hasattr(load_config, "cache_clear"):
+        load_config.cache_clear()   # @cache 무효화 — 방금 쓴 config.yaml 을 새로 읽음
     new_cfg = load_config(str(config_path))
     note = (f"자가개선 채택 #{pid}: {prop['config_key']} "
             f"{prop['current']}→{prop['suggested']} (OOS 검증)")

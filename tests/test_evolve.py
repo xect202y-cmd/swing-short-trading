@@ -113,3 +113,24 @@ def test_reject_records_and_learns(tmp_path):
     assert r["ok"] and P.find(tmp_path, "B7")["status"] == "rejected"
     rules = json.loads((tmp_path / "learned_rules.json").read_text(encoding="utf-8"))
     assert any(k.startswith("reject:risk.take1_pct") for k in rules)
+
+
+def test_adopt_reloads_fresh_config_despite_cache(tmp_path, monkeypatch):
+    import shutil
+    from swing_trader import config as CFG
+    from swing_trader.strategy.config_writer import set_config_value
+    cfgfile = tmp_path / "config.yaml"
+    shutil.copy(CFG.PROJECT_ROOT / "config.yaml", cfgfile)
+    set_config_value(cfgfile, "risk.take1_pct", 6.0)          # known starting value
+    CFG.load_config.cache_clear()
+    primed = CFG.load_config(str(cfgfile))                    # prime @cache with 6.0
+    assert float(primed.get("risk", "take1_pct")) == 6.0
+    cfg = _cfg(tmp_path)
+    P.upsert(tmp_path, {"id": "A3", "config_key": "risk.take1_pct",
+                        "current": 6.0, "suggested": 6.5, "status": "pending"})
+    monkeypatch.setattr(EV.LV, "snapshot", lambda c: {"take1_pct": float(c.get("risk", "take1_pct"))})
+    r = EV.adopt(cfg, "A3", cfgfile)
+    assert r["ok"]
+    versions = json.loads((tmp_path / "logic_versions.json").read_text(encoding="utf-8"))
+    assert versions[-1]["snapshot"]["take1_pct"] == 6.5      # fresh value, NOT cached 6.0
+    CFG.load_config.cache_clear()
