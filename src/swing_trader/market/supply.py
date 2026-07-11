@@ -19,7 +19,7 @@ def parse_frgn_html(html: str) -> pd.Series:
     """네이버 frgn HTML → 기관 순매매량 Series(index 'YYYY-MM-DD' 오름차순)."""
     try:
         tables = pd.read_html(io.StringIO(html))
-    except (ValueError, ImportError, Exception):
+    except (ValueError, ImportError):
         return pd.Series(dtype=float)
     for t in tables:
         if t.shape[1] < 9:
