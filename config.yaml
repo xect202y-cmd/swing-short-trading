@@ -129,7 +129,7 @@ v10:
   regime_gate: true      # 시황 게이트(코스닥/코스피 50일선)
   regime_ma: 50
   min_tv_eok: 50         # 거래대금 최소(억)
-  supply_max_pages: 60   # 후보 종목당 네이버 frgn 최대 조회 page(≈600거래일)
+  supply_max_pages: 20   # 후보 종목당 네이버 frgn 최대 조회 page(≈200거래일 — 현 패널 후보 최고령 ~17page 커버)
 
 scalp:
   # 단타 v4 채택(2026-07-05): 유튜브 3편(CIS 순행·Aziz ABCD·강창권 눌림목) 수렴 — '급등 후 첫 조정 반등'.
