@@ -170,6 +170,18 @@ class VaultWriter:
             f.write(content + "\n")
         return path
 
+    def append_swing_v10(self, content: str, d: date | None = None) -> Path:
+        """v10 신고가 거감짜름 일일 로그 — 신호 폴더에 날짜별 누적(append_swing_us 미러)."""
+        d = d or today_kst()
+        path = self._path("signals_dir", "SwingV10", d)
+        new = not path.exists()
+        with path.open("a", encoding="utf-8") as f:
+            if new:
+                f.write(f"---\ntype: 스윙V10\n날짜: {d.isoformat()}\ntags: [스윙, v10, 거감짜름, 페이퍼]\n---\n"
+                        f"# 🆕 스윙 v10 페이퍼 · {d.isoformat()}\n\n")
+            f.write(content + "\n")
+        return path
+
     def write_scalp_backtest(self, content: str, d: date | None = None) -> Path:
         """단타 로직 정의+백테스트 결과 영구 기록 — 나중에 결과 브리핑/회고의 근거 문서."""
         d = d or today_kst()
