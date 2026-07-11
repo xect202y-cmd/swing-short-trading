@@ -103,3 +103,24 @@ def scan_candidates(df: pd.DataFrame, ticker: str, *, high_n: int, vol_x: float,
                 continue
         i += 1
     return out
+
+
+def index_up_days(index_code: str, ma: int, reader=None) -> "set[str] | None":
+    """지수(KS11/KQ11) 종가 ≥ ma일선인 날짜 집합. 실패 시 None(페일오픈)."""
+    try:
+        if reader is None:
+            import FinanceDataReader as fdr
+            reader = lambda code: fdr.DataReader(code, "2023-01-01")["Close"].astype(float)
+        s = reader(index_code)
+        up = s >= s.rolling(ma).mean()
+        return {d.strftime("%Y-%m-%d") for d, u in up.items() if bool(u)}
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def regime_ok(market: str, date: str, kospi_up, kosdaq_up) -> bool:
+    """시장별 국면 게이트. up집합 None(데이터 없음)이면 페일오픈(True)."""
+    up = kosdaq_up if str(market).upper() == "KOSDAQ" else kospi_up
+    if up is None:
+        return True
+    return date in up
