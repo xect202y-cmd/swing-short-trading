@@ -221,6 +221,6 @@ def run_v1_us(cfg) -> dict:
     wh = getattr(cfg.creds, "swing_webhook", None) or getattr(cfg.creds, "scalp_webhook", None)
     notify_embeds(wh, [embed], md)
     VaultWriter(cfg).append_swing_us(md)
-    _DM.record_done(cfg.state_dir, "swing_v1_us", datetime.now(_DM.KST))
+    _DM.record_done(cfg.state_dir, "us", datetime.now(_DM.KST))   # V1 US=US 스윙 라이브 → 'us' 마커(클라우드 페일오버 정합)
     return {"exited": len(exits_done), "entered": len(entries_done), "held": len(st["open"]),
             "realized_krw": round(st["realized_krw"])}

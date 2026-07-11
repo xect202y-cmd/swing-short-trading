@@ -65,9 +65,9 @@ jobs:
             else
               echo "::group::run-once $M (클라우드 보충)"
               if [ "$M" = "us" ]; then
-                swing-trader run-once --market us --no-brief; echo "exit=$?"
+                swing-trader swing-v1-us; echo "exit=$?"          # US 스윙 라이브(구 run-once --market us 은퇴)
               else
-                swing-trader run-once --market kr; echo "exit=$?"
+                swing-trader swing-v10; echo "exit=$?"            # KR 스윙 v10 채택모델(구 run-once --market kr/v9 은퇴)
               fi
               echo "::endgroup::"
               ALERT="$ALERT $M"

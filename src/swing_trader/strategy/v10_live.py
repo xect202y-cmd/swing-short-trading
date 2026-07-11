@@ -177,6 +177,6 @@ def run_v10_live(cfg) -> dict:
           f"**청산 {exited} · 진입 {entered} · 보유 {len(pos)}**\n" + "\n".join(op_lines) + "\n")
     _notify(cfg, embed, md)
     _write_vault(cfg, md, d)
-    _DM.record_done(cfg.state_dir, "swing_v10", datetime.now(_DM.KST))
+    _DM.record_done(cfg.state_dir, "kr", datetime.now(_DM.KST))   # v10=KR 스윙 채택모델 → 'kr' 마커(클라우드 페일오버 정합)
     return {"exited": exited, "entered": entered, "held": len(pos),
             "realized": round(broker.realized_pnl), "asOf": d}
