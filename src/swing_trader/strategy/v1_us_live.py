@@ -103,16 +103,22 @@ def _load_us_universe(cfg):
             us = pickle.load(open(p, "rb"))
         except Exception:  # noqa: BLE001
             us = {}
-    codes = [str(r["Symbol"]) for _, r in fdr.StockListing("S&P500").iterrows()]
+    sp = fdr.StockListing("S&P500")
+    codes = [str(r["Symbol"]) for _, r in sp.iterrows()]
+    names = {str(r["Symbol"]): str(r["Name"]) for _, r in sp.iterrows()}   # 티커→종목명
     try:
-        wl = [str(n.ticker) for n in VaultReader(cfg).stock_notes()
-              if getattr(n, "ticker", None) and not str(n.ticker)[:1].isdigit()]
-        codes += [c for c in wl if c not in codes]
+        for n in VaultReader(cfg).stock_notes():
+            tk = getattr(n, "ticker", None)
+            if tk and not str(tk)[:1].isdigit():
+                tk = str(tk)
+                if tk not in codes:
+                    codes.append(tk)
+                names.setdefault(tk, getattr(n, "display_name", None) or getattr(n, "name", None) or tk)
     except Exception:  # noqa: BLE001
         pass
     us = _CR._refresh(us, codes, (date.today() - timedelta(days=620)).isoformat())
     pickle.dump(us, open(p, "wb"))
-    return {k: v for k, v in us.items() if v is not None}
+    return {k: v for k, v in us.items() if v is not None}, names
 
 
 def run_v1_us(cfg) -> dict:
@@ -123,7 +129,7 @@ def run_v1_us(cfg) -> dict:
     from ..state import daily_marker as _DM
     seed = float(cfg.get("capital", "seed", default=5_000_000))
     fx = get_usdkrw()
-    panel = _load_us_universe(cfg)
+    panel, names = _load_us_universe(cfg)
     arrs = {tk: _emas(df) for tk, df in panel.items() if df is not None and len(df) >= 65}
     if not arrs:
         return {"exited": 0, "entered": 0, "held": 0, "skipped": "패널 없음"}
@@ -193,6 +199,7 @@ def run_v1_us(cfg) -> dict:
         a = arrs.get(pos["ticker"])
         pos["cur_usd"] = round(float(a["close"][-1]), 4) if a is not None and len(a["close"]) else pos["entry_usd"]
         pos["mark_fx"] = round(fx, 2)
+        pos["name"] = names.get(pos["ticker"]) or pos.get("name") or pos["ticker"]
     us_hold = sum(p["qty"] * p.get("cur_usd", p["entry_usd"]) * fx for p in st["open"])
     if _did_cycle:
         st["equity_hist"].append({"date": d, "equity": round(st["realized_krw"] + us_hold)})
