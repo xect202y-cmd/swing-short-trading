@@ -24,36 +24,61 @@ v9 +0.75%/1.37; 단일 5개월 국면 유의). 사용자 결정:
 
 ---
 
-## A. v10 라이브 채택 (swing-short-trading, 3면)
+## A. v10 라이브 채택 (swing-short-trading, 3면) — **Option B (브로커 재사용)**
+
+> 아키텍처 결정(2026-07-11, 계정 토폴로지 조사 후 수정): 독립 루프가 `open_positions.json`을
+> 직접 R/W하는 Option A는 폐기. `open_positions.json`은 **손실 있는 파생 스냅샷**(high_water·
+> target2·sector 누락)이고, 독립 ledger는 대시보드가 읽는 closed_trades/equity_history와
+> split-brain을 만든다(현재도 그 패턴으로 계정이 어긋나 있음 — A0 참조). 대신 v10_live는
+> 기존 `PaperBroker`+`PositionManager`+`briefer`/`analytics`를 **재사용**하고 진입 소스만 교체.
+
+### A0. 선행 정리 — 페이퍼 계정 split-brain 재조정 (v10과 별개 버그)
+현재 `paper_state.json`(브로커 truth: AMD 1주·현금 3,829,405)과 `open_positions.json`
+(대시보드: flat·현금 3,000,440)이 어긋나 있음(7-10 손편집이 대시보드만 고치고 브로커 매도 누락).
+- **결정: AMD 청산 확정.** `paper_state.json`을 flat KR 계정으로 정리 — AMD 포지션 제거,
+  현금을 대시보드 기준(3,000,440)으로 재조정, `positions: {}`. 가짜돈이라 손익 영향 0.
+- 방법: 일회성 재조정(스크립트 또는 브로커 `place_sell_order`+`save`) — 손편집 금지, 브로커가
+  authoritative가 되게. 이후 open_positions.json은 브로커에서 재파생되어 일치.
+- 이건 v10 진입 전 **prerequisite**(Task로 분리).
 
 ### A1. 라이브 루프 — `strategy/v10_live.py :: run_v10_live(cfg) -> dict`
-`v1_us_live.py::run_v1_us` 골격을 클론한 EOD 사이클(멱등):
+`main.run_once`의 KR 사이클을 본떠, **진입만 v10 전시장 스캔으로 교체**한 EOD 사이클(멱등):
 ```
-1. 패널 로드(코스피+코스닥, krx_universe.load_cache) + 최신 확정봉 날짜 d(멱등 키)
-2. 기존 KR 스윙 페이퍼 계정 인수 — open_positions.json 의 positions/cash 를 v10 이 운용
-   (v9 이 쓰던 그 계정. 별도 v10 시드 안 만듦. asOf!=d 일 때만 아래 실행)
-   (a) 청산 — 인수한 보유 포함 open 포지션을 v7 규칙(rules.decide_exit mode="v7":
-       5일선 이탈/대량거래량 음봉/손절/max_hold)으로 청산 → 실현손익
-   (b) 신규 진입 — 오늘(d) 거감짜름 진입 후보(scan_candidates 에서 entry_date==d)
-       → 수급 게이트(SupplyProvider, 라이브=페일오픈) + 시황 게이트(regime_ok)
-       → 랭킹 상위 N(모멘텀/신고가 강도) 매수, 시드 대비 사이징
-3. 시가평가(마크투마켓) 항상 갱신(가격/포지션 최신)
-4. 저장 — 인수 계정에 반영. 대시보드 성과탭이 읽는 open_positions.json 갱신
-   (briefer._save_open_positions 규약 준수) + v10 자체 이력(trades/equity)
-5. 디스코드 embed(🚀 스윙 V10 · d, 청산/신규진입/보유 3필드) via notify_embeds(discord_webhook_url)
-6. 옵시디언 VaultWriter(cfg).append_swing_v10(md) — signals_dir, 접미사 SwingV10
-7. daily_marker.record_done(state_dir, "swing_v10", now)
+1. 브로커 인수 — PaperBroker(state_path=state_dir/"paper_state.json", seed, price_fn, fee/slip)
+   (main.run_once:209-215 와 동일 인스턴스화 → positions/cash 완전 충실도로 인수)
+2. 패널 로드(krx_universe.load_cache, 코스피+코스닥) + 최신 확정봉 날짜 d(멱등 키)
+   panel 없으면 명확 에러(synthetic 금지). broker.advance_bar(d)(하루 1회 bars_held++)
+3. asOf(=broker.last_bar_date)!=d 일 때만:
+   (a) 청산 — PositionManager(cfg, broker, provider).check_and_exit() **그대로 재사용**
+       (v7 규칙: 5일선/대량음봉/손절/max_hold). 인수 보유 포함 전 포지션에 적용. → closed
+   (b) 신규 진입 — v10 전시장 스캔: 각 패널 종목 scan_candidates 에서 entry_date==d 후보
+       → SupplyProvider(라이브 페일오픈) + regime_ok 게이트 → rank 상위, 슬롯=
+       capital.max_positions - 보유수 만큼 broker.place_buy_order(사이징=alloc_pct)
+       (OrderManager.evaluate_buy 안전게이트 재사용 또는 v10용 최소 게이트)
+4. broker.save() → paper_state.json (브로커 truth)
+5. 영속화(대시보드 파일 전부 단일 브로커에서 파생):
+   - analytics.record_closed_trades(state_dir, closed) → closed_trades.json
+   - briefer._positions_data(cfg, broker, provider) → open_positions.json (재파생)
+   - analytics.record_equity(state_dir, d, broker.get_cash_balance(), holdings_value, seed)
+     → equity_history.json
+6. 디스코드 embed(🚀 스윙 V10 · d, 청산/신규진입/보유 3필드) via notify_embeds(discord_webhook_url)
+7. 옵시디언 VaultWriter(cfg).append_swing_v10(md) — signals_dir, 접미사 SwingV10
+8. daily_marker.record_done(state_dir, "swing_v10", now)
 반환 {"exited","entered","held","realized"}
 ```
-- **계정**: 신규 시드 없이 **기존 KR 스윙 페이퍼 계정 인수**(open_positions.json). 보유종목 그대로.
-- **엔트리 재사용**: `scan_candidates`(거감짜름) + `SupplyProvider`(라이브 페일오픈) +
-  `regime_ok` + `_v7_exit`/`decide_exit(mode="v7")` — v10 백테스트에서 만든 순수 로직 재사용.
+- **청산 0줄 신규**: `PositionManager.check_and_exit`(→`rules.decide_exit(mode="v7")`) 그대로.
+  진입/청산 seam이 이미 분리돼 있음(진입=Signal 소비, 청산=Position 소비, 공유 상태 없음).
+- **진입 교체**: `SignalEngine.scan(notes)` 대신 v10 `scan_candidates`(전시장 패널) — 노트 기반
+  아님. v10 백테스트 순수 로직(scan_candidates/SupplyProvider/regime_ok) 재사용.
+- **패널 신선도**: `krx_panel.pkl`은 수동 `fetch_panel`로만 갱신 → 라이브는 실행 전 패널 나이
+  체크(오래되면 경고/갱신). 갱신 스케줄은 A4 bat에 포함.
 
 ### A2. config
 - `regime.adopted_version: v9 → v10` (앱 성과탭 "채택됨" 배지 기준).
-- `v10` 블록에 라이브 노브 추가: `alloc_pct`(신규 진입 사이징), `rank`(신규 진입 랭킹 키).
-  보유/현금은 인수 계정 사용(신규 시드 없음), 동시보유 상한은 `capital.max_positions`(=3) 재사용.
-- `regime.logic_mode`/`enabled`는 v10 청산이 v7과 동일하므로 현행 유지.
+- `v10` 블록에 라이브 노브 추가: `alloc_pct`(신규 진입 사이징, 예 0.20), `rank`(신규 진입
+  랭킹 키, 예 "momentum"|"newhigh_strength"). 보유/현금은 인수 브로커 사용(신규 시드 없음),
+  동시보유 상한 `capital.max_positions`(=3) 재사용.
+- `regime.logic_mode`(v7)/`enabled` 현행 유지 — v10 청산이 v7과 동일.
 
 ### A3. 앱 노출 — version_compare.json
 - 대시보드 성과탭·모델시트는 `state/version_compare.json`의 `versions[]` + `adopted`를
