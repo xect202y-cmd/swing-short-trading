@@ -320,11 +320,23 @@ def _realism_lines(cfg: Config) -> list[str]:
     ]
 
 
+def _us_sleeve_krw(state_dir) -> float:
+    """V1 US 슬리브 보유 마크가치(원) — 현금 공유풀 설계상 스윙 자산곡선/보유평가에 합산."""
+    import json
+    from pathlib import Path
+    try:
+        d = json.loads((Path(state_dir) / "v1_us_state.json").read_text(encoding="utf-8"))
+        return float(sum((p.get("qty") or 0) * (p.get("cur_usd") or p.get("entry_usd") or 0)
+                         * (p.get("mark_fx") or p.get("fx_entry") or 0) for p in d.get("open", [])))
+    except Exception:  # noqa: BLE001
+        return 0.0
+
+
 # ── Daily ──
 def daily_brief(cfg: Config, broker, provider, signals: list[Signal], activity: dict) -> tuple[dict, str]:
     d = today_kst().isoformat()
     pos, hv = _positions_data(cfg, broker, provider)
-    A.record_equity(cfg.state_dir, d, broker.get_cash_balance(), hv, _seed(cfg))
+    A.record_equity(cfg.state_dir, d, broker.get_cash_balance(), hv + _us_sleeve_krw(cfg.state_dir), _seed(cfg))
     m = A.compute_metrics(A.load_closed(cfg.state_dir), A.load_equity(cfg.state_dir), _seed(cfg))
     blocked = activity.get("blocked", [])
     cash = broker.get_cash_balance()
