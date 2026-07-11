@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-07-08",
+  "asOf": "2026-07-10",
   "realized_krw": 0.0,
   "open": [
     {
@@ -8,7 +8,49 @@
       "entry_usd": 216.47999572753906,
       "fx_entry": 1512.71,
       "qty": 1,
-      "bars_held": 0
+      "bars_held": 0,
+      "cur_usd": 216.48,
+      "mark_fx": 1498.87
+    },
+    {
+      "ticker": "KLAC",
+      "entry_date": "2026-07-10",
+      "entry_usd": 231.52000427246094,
+      "fx_entry": 1498.87,
+      "qty": 1,
+      "bars_held": 0,
+      "cur_usd": 231.52,
+      "mark_fx": 1498.87
+    },
+    {
+      "ticker": "MGM",
+      "entry_date": "2026-07-10",
+      "entry_usd": 46.880001068115234,
+      "fx_entry": 1498.87,
+      "qty": 7,
+      "bars_held": 0,
+      "cur_usd": 46.88,
+      "mark_fx": 1498.87
+    },
+    {
+      "ticker": "WSM",
+      "entry_date": "2026-07-10",
+      "entry_usd": 221.75,
+      "fx_entry": 1498.87,
+      "qty": 1,
+      "bars_held": 0,
+      "cur_usd": 221.75,
+      "mark_fx": 1498.87
+    },
+    {
+      "ticker": "HRL",
+      "entry_date": "2026-07-10",
+      "entry_usd": 24.729999542236328,
+      "fx_entry": 1498.87,
+      "qty": 13,
+      "bars_held": 0,
+      "cur_usd": 24.73,
+      "mark_fx": 1498.87
     }
   ],
   "trades": [],
@@ -16,6 +58,10 @@
     {
       "date": "2026-07-08",
       "equity": 327471
+    },
+    {
+      "date": "2026-07-10",
+      "equity": 1977609
     }
   ]
 }
