@@ -312,7 +312,8 @@ def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool | None = 
     max_hold = int(max_hold if max_hold is not None else cfg.get("risk", "max_hold_days", default=20))
     fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
     slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
-    min_tv_eok = float(min_tv_eok if min_tv_eok is not None else cfg.get("risk", "min_trading_value_eok", default=30))
+    min_tv_eok = float(min_tv_eok if min_tv_eok is not None
+                       else cfg.get("risk", "min_trading_value_eok", default=30))
     require_uptrend = bool(require_uptrend if require_uptrend is not None
                            else cfg.get("risk", "require_uptrend", default=False))
     return {"take": take, "stop": stop, "take2": take2, "trail": trail, "max_hold": max_hold,

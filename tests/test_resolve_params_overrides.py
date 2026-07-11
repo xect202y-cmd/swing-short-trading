@@ -18,3 +18,4 @@ def test_resolve_params_defaults_from_cfg_when_none():
     p = BT._resolve_params(_Cfg())
     assert p["max_hold"] == 20            # cfg.get default
     assert p["require_uptrend"] is False  # cfg.get default
+    assert p["min_tv_eok"] == 30.0        # cfg.get default
