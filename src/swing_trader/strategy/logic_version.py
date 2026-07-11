@@ -23,7 +23,7 @@ def snapshot(cfg) -> dict:
     for k in ("default_stop_pct", "max_stop_pct", "take1_pct", "take2_pct", "min_reward_risk",
               "daily_loss_limit", "account_loss_limit", "min_trading_value_eok",
               "momentum_exit_days", "soft_hold_days", "max_hold_days", "partial_exit_pct", "trail_pct",
-              "require_uptrend"):
+              "require_uptrend", "momentum_min_pct"):
         flat[f"risk.{k}"] = rk.get(k)
     sc = cfg.get("scoring", default={})
     for k, v in (sc.get("weights", {}) or {}).items():

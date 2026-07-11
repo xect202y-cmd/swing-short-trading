@@ -561,7 +561,8 @@ def _params_from_snapshot(snap: dict, cfg: Config) -> dict:
     slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
     return {"take": take, "stop": stop, "take2": take2, "trail": trail, "max_hold": max_hold,
             "runner": partial > 0, "require_uptrend": bool(g("require_uptrend", False)),
-            "cost": 2 * (fee + slip), "min_tv_eok": float(g("min_trading_value_eok", 30))}
+            "cost": 2 * (fee + slip), "min_tv_eok": float(g("min_trading_value_eok", 30)),
+            "momentum_min_pct": float(g("momentum_min_pct", 0.0) or 0.0)}
 
 
 def _core_logic(p: dict) -> list[str]:
@@ -663,7 +664,7 @@ def run_version_compare(cfg: Config) -> Path:
                 for d, r in _BT._v7_stock_trades(
                         dfs[n.ticker], stop=p["stop"], take1=None, volspike=2.5,
                         max_hold=p["max_hold"], cost=p["cost"], min_tv_eok=p["min_tv_eok"],
-                        require_uptrend=True):
+                        require_uptrend=True, momentum_min_pct=p["momentum_min_pct"]):
                     trades.append(_HN.Trade(n.ticker, d, r))
         elif is_v6:
             if reg_maps is None:
@@ -693,10 +694,13 @@ def run_version_compare(cfg: Config) -> Path:
         for t in sorted(oos, key=lambda t: t.entry):
             eq *= (1 + pfrac * t.ret)
             curve.append({"date": t.entry, "equity": round(eq)})
+        core = _core_logic_v8() if is_v8 else (_core_logic_v7() if is_v7 else (_core_logic_v6() if is_v6 else _core_logic(p)))
+        if is_v7 and p.get("momentum_min_pct", 0) > 0:   # v9 = v7 + 모멘텀 진입필터
+            core = list(core) + [f"진입 품질필터: 종가 60일선 대비 +{p['momentum_min_pct']:.0f}%↑ 강세만 진입 — 약한 진입 제거(승률·PF·MDD 개선)"]
         out.append({
             "label": f"v{vnum}",
             "title": _version_title(vnum, v.get("note")),
-            "core_logic": _core_logic_v8() if is_v8 else (_core_logic_v7() if is_v7 else (_core_logic_v6() if is_v6 else _core_logic(p))),
+            "core_logic": core,
             "oos": {"expectancy": rep.expectancy, "profit_factor": rep.profit_factor,
                     "max_drawdown": rep.max_drawdown, "sharpe": rep.sharpe, "win_rate": rep.win_rate,
                     "n_trades": rep.n_trades, "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},

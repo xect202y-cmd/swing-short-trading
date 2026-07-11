@@ -105,7 +105,7 @@ def _v7_exit(close, open_, vol, ma5, va20, entry_idx: int, entry: float,
 
 
 def _v7_stock_trades(df, *, stop, take1, volspike, max_hold, cost, min_tv_eok,
-                     require_uptrend=True):
+                     require_uptrend=True, momentum_min_pct=0.0):
     """v7 — 강세(정배열) 종목의 20일선 눌림 반등 진입 → 5일선 이탈/대량거래량 음봉까지 홀딩.
 
     유튜브 스윙 3편(Farley 마스터 스윙·성경호 신고가 눌림) 수렴 기법:
@@ -127,8 +127,10 @@ def _v7_stock_trades(df, *, stop, take1, volspike, max_hold, cost, min_tv_eok,
     while i < len(close) - 2:
         tv_eok = close[i] * vol[i] / 1e8
         uptrend = (not require_uptrend) or (close[i] > ma60[i] and ma20[i] > ma60[i])
+        # v9 진입 품질필터: 종가가 60일선 대비 momentum_min_pct%↑ 강세일 때만(0이면 v7과 동일).
+        momentum_ok = momentum_min_pct <= 0 or (ma60[i] > 0 and (close[i] / ma60[i] - 1) * 100 >= momentum_min_pct)
         if (close[i] <= ma20[i] * 1.01 and close[i] > close[i - 1]
-                and tv_eok >= min_tv_eok and open_[i + 1] > 0 and uptrend):
+                and tv_eok >= min_tv_eok and open_[i + 1] > 0 and uptrend and momentum_ok):
             entry = float(open_[i + 1])
             ret, jend = _v7_exit(close, open_, vol, ma5, va20, i + 1, entry,
                                  stop=stop, take1=take1, volspike=volspike, max_hold=max_hold)
