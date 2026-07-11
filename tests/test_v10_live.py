@@ -156,3 +156,17 @@ def test_run_v10_live_two_same_day_candidates_both_placed(tmp_path, monkeypatch)
     # sector=None(둘 다 '기타' 버킷)이면 2번째 진입이 섹터한도로 오탐 차단됐던 버그의 재현조건.
     r1 = VL.run_v10_live(_live_cfg(tmp_path, seed=1_500_000))
     assert r1["entered"] == 2 and r1["held"] == 2
+
+
+def test_version_compare_includes_v10_entry(tmp_path):
+    from swing_trader import main as m
+    # v10_compare.json 최소본 준비
+    (tmp_path).mkdir(exist_ok=True)
+    (tmp_path / "v10_compare.json").write_text(json.dumps({
+        "v10": {"oos": {"expectancy": 3.34, "profit_factor": 3.0, "max_drawdown": -45.1,
+                        "win_rate": 33.3, "n_trades": 183, "sharpe": None}},
+        "verdict": {"winner": "v10"}}), encoding="utf-8")
+    entry = m._v10_versions_entry(tmp_path)     # 신규 순수 헬퍼
+    assert entry is not None
+    assert entry["label"] == "v10"
+    assert entry["oos"]["expectancy"] == 3.34 and entry["oos"]["n_trades"] == 183

@@ -666,6 +666,30 @@ def _slot_replay(signals: list, price: dict, *, seed: float, maxpos: int) -> dic
             "n_signals": len(signals), "maxpos": maxpos, "curve": dated}
 
 
+def _v10_versions_entry(state_dir) -> dict | None:
+    """v10_compare.json(백테 결과)에서 대시보드 버전비교용 v10 엔트리 생성. 없으면 None."""
+    import json
+    p = state_dir / "v10_compare.json"
+    if not p.exists():
+        return None
+    try:
+        d = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    oos = (d.get("v10") or {}).get("oos") or {}
+    return {
+        "label": "v10", "title": "v10 · 신고가 거감짜름",
+        "core_logic": ["52주 신고가 장대양봉 대량거래 돌파 → 첫 거감짜름(거래량 마름 짧은음봉) 종가 매수",
+                       "기관 연속 순매수 게이트(백테 하드/라이브 페일오픈) + 코스닥/코스피 50일선 시황",
+                       "청산 v7(5일선 이탈/대량음봉/−3%/max_hold)"],
+        "oos": {"expectancy": oos.get("expectancy"), "profit_factor": oos.get("profit_factor"),
+                "max_drawdown": oos.get("max_drawdown"), "sharpe": oos.get("sharpe"),
+                "win_rate": oos.get("win_rate"), "n_trades": oos.get("n_trades"),
+                "cum_return_pct": None},
+        "equity": [], "replay": None,
+    }
+
+
 def run_version_compare(cfg: Config) -> Path:
     """각 로직 버전을 백테스트 리플레이 → 가상 시드계좌 OOS 곡선+핵심로직 → state/version_compare.json.
 
@@ -773,6 +797,9 @@ def run_version_compare(cfg: Config) -> Path:
     lookback = int(cfg.get("backtest", "lookback_days", default=500))
     path = cfg.state_dir / "version_compare.json"
     adopted = str(cfg.get("regime", "adopted_version", default="") or "").strip() or None
+    v10e = _v10_versions_entry(cfg.state_dir)
+    if v10e and not any(x.get("label") == "v10" for x in out):
+        out.append(v10e)
     path.write_text(json.dumps({
         "as_of": _DM.today_kst().isoformat(), "seed": seed,
         "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days, "lookback_days": lookback,
