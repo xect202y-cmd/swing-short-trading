@@ -25,6 +25,7 @@ def buy_blocks(
     event_risk: RiskLevel,
     min_trading_value_eok: float,
     require_uptrend: bool = False,
+    momentum_min_pct: float = 0.0,
 ) -> list[str]:
     """매수 차단 사유(있으면 BLOCKED)."""
     b: list[str] = []
@@ -33,6 +34,12 @@ def buy_blocks(
         ma20v, ma60v = tech.ma.get(20), tech.ma.get(60)
         if ma20v and ma60v and not (tech.price > ma60v and ma20v > ma60v):
             b.append("추세 미충족(60일선 하회 또는 역배열) — 상승배열에서만 진입")
+    if momentum_min_pct > 0:
+        # v9 진입 품질필터: 종가가 60일선 대비 momentum_min_pct%↑ 강세일 때만(약한 진입 제거).
+        # 검증(2026-07-11): +5%↑ 시 승률 31→34%·PF 1.79→1.88·MDD −29→−23%·기대값 개선.
+        ma60v = tech.ma.get(60)
+        if ma60v and (tech.price / ma60v - 1) * 100 < momentum_min_pct:
+            b.append(f"모멘텀 미충족(60일선 대비 +{momentum_min_pct:.0f}% 미만) — 강세 확인 후 진입(v9)")
     if event_risk == RiskLevel.HIGH:
         b.append("대형 이벤트 임박(D-0~1) — 신규매수 제한")
     if macro_risk == RiskLevel.HIGH:

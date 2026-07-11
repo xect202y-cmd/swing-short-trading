@@ -67,8 +67,9 @@ class SignalEngine:
         if self.regime is not None and str(self.cfg.get("regime", "logic_mode", default="v6")) == "v6":
             from .regime_policy import policy_for
             require_uptrend = policy_for(self.regime).require_uptrend
+        momentum_min = float(self.cfg.get("risk", "momentum_min_pct", default=0.0))
         blocks = rules.buy_blocks(note, tech, macro.risk, ev_risk, min_tv,
-                                  require_uptrend=require_uptrend)
+                                  require_uptrend=require_uptrend, momentum_min_pct=momentum_min)
 
         # 목표/손절 산출 방식 — 고정/ATR/지지저항 후보 모두 계산(비교·저장), 채택값으로 플랜
         rk = self.cfg.get("risk", default={})

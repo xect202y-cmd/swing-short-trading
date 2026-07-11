@@ -58,6 +58,7 @@ risk:
   # v5: true→false — 추세 조건 완화로 진입 기회 확대(승률·손익비는 R:R 게이트 1.75로 보완).
   # v7 채택(2026-07-05): false→true — 강세(정배열) 종목만 진입(신고가 강세주 프록시).
   require_uptrend: true
+  momentum_min_pct: 5.0       # v9(2026-07-11): 종가 60일선 대비 +5%↑ 강세만 진입(약한 진입 제거). 승률31→34·PF1.79→1.88·MDD-29→-23
   # 목표/손절 산출 방식: 고정비율 | ATR | 지지저항 (노트에 값 있으면 노트 우선)
   target_stop_method: "고정비율"
   atr_target_mult: 2.0       # ATR 방식 목표 = +n*ATR
@@ -125,9 +126,9 @@ regime:
   # v7 채택(2026-07-05): 유튜브 마스터스윙 3편 수렴 기법. OOS(97종목·500일)서 v7이 기대값
   # 1.37·PF 1.91로 v5(0.75·1.46) 포함 전 버전 최고. 익절 고정 없이 5일선 이탈/대량거래량 음봉까지
   # 홀딩(승자 달리게) — v5 +6% 고정익절이 승자 자르던 병목 해소. 진입은 정배열(강세주)만.
-  adopted_version: v7        # 대시보드 '채택됨' 배지 + 실전 로직 기준
-  enabled: false             # regime 가변 게이팅 OFF → 단일 v7 추세추종 로직으로 매매(페이퍼).
-  logic_mode: v7             # v7=추세추종 청산(5일선/대량음봉까지 홀딩). position_manager가 이 값으로 청산분기.
+  adopted_version: v9        # 대시보드 '채택됨' 배지. v9 = v7 추세추종 + 모멘텀 +5% 진입필터(risk.momentum_min_pct, 2026-07-11 채택)
+  enabled: false             # regime 가변 게이팅 OFF → 단일 v9 추세추종 로직으로 매매(페이퍼).
+  logic_mode: v7             # 청산은 v7 그대로(5일선/대량음봉 홀딩) — v9는 진입필터만 추가. position_manager 분기 유지.
   index_kr: "^KS11"          # 코스피 지수(regime 판별용 — v6 백테/비교에서만 사용)
   index_us: "^GSPC"          # S&P500 지수
   crash_dd: -0.12            # 60일 고점대비 낙폭 이 값 이하 → CRASH
