@@ -1,3 +1,5 @@
+import pytest
+
 from swing_trader.review import proposals as P
 
 
@@ -34,3 +36,20 @@ def test_store_roundtrip(tmp_path):
     assert P.set_status(tmp_path, "A3", "adopted") is True
     assert P.find(tmp_path, "A3")["status"] == "adopted"
     assert P.set_status(tmp_path, "ZZ", "adopted") is False
+
+
+def test_load_ignores_wrong_shape_json(tmp_path):
+    (tmp_path / "pending_proposals.json").write_text("[1,2,3]", encoding="utf-8")
+    assert P.load(tmp_path) == []
+    (tmp_path / "pending_proposals.json").write_text('{"proposals": "oops"}', encoding="utf-8")
+    assert P.load(tmp_path) == []
+
+
+def test_candidate_params_rejects_t2():
+    with pytest.raises(ValueError):
+        P.candidate_params("risk.min_reward_risk", 2.0)
+
+
+def test_direction_bool_true_and_unknown():
+    assert P.direction(False, True) == "=true"
+    assert P.direction(None, "x") == "?"

@@ -22,6 +22,9 @@ def classify(config_key: str | None) -> str:
 
 
 def candidate_params(config_key: str, suggested) -> dict:
+    """T1 config_key → harness._resolve_params 오버라이드 kwarg. T2 키면 ValueError(호출 전 classify 필수)."""
+    if config_key not in T1_KEYS:
+        raise ValueError(f"candidate_params 는 T1 키만 — '{config_key}' 는 T2(백테 불가)")
     return {T1_KEYS[config_key]: suggested}
 
 
@@ -48,9 +51,13 @@ def load(state_dir: Path) -> list[dict]:
     if not p.exists():
         return []
     try:
-        return json.loads(p.read_text(encoding="utf-8")).get("proposals", [])
+        data = json.loads(p.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return []
+    if not isinstance(data, dict):
+        return []
+    ps = data.get("proposals", [])
+    return ps if isinstance(ps, list) else []
 
 
 def save(state_dir: Path, proposals: list[dict]) -> None:
