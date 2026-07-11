@@ -11,6 +11,10 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
+from ..market.supply import supply_ok
+from .backtest import _v7_exit
+from .harness import Trade
+
 
 def _arr(df: pd.DataFrame, col: str) -> np.ndarray:
     s = df[col]
@@ -124,3 +128,32 @@ def regime_ok(market: str, date: str, kospi_up, kosdaq_up) -> bool:
     if up is None:
         return True
     return date in up
+
+
+def ticker_trades(df, ticker, market, netbuy, kospi_up, kosdaq_up, *,
+                  params: dict, mode: str, cost: float) -> list[Trade]:
+    """한 종목의 v10 거래 목록. 수급/시황 게이트 후 v7 청산으로 수익률 산출."""
+    cands = scan_candidates(
+        df, ticker, high_n=params["high_n"], vol_x=params["vol_x"],
+        body_min=params["body_min"], min_tv_eok=params["min_tv_eok"],
+        window=params["window"], vol_dry=params["vol_dry"], body_max=params["body_max"])
+    if not cands:
+        return []
+    close = _arr(df, "close"); open_ = _arr(df, "open"); vol = _arr(df, "volume")
+    ma5 = pd.Series(close).rolling(5, min_periods=1).mean().to_numpy()
+    va20 = pd.Series(vol).rolling(20, min_periods=5).mean().to_numpy()
+    out: list[Trade] = []
+    for cand in cands:
+        if not regime_ok(market, cand.entry_date, kospi_up, kosdaq_up):
+            continue
+        ok = supply_ok(netbuy, cand.entry_date, params["supply_days"])
+        if ok is False:
+            continue
+        if ok is None and mode == "backtest":     # 하드게이트: 미검증 드롭
+            continue
+        # ok is True, 또는 (ok is None and mode=="live") → 진입(페일오픈)
+        ret, _jend = _v7_exit(close, open_, vol, ma5, va20, cand.entry_idx, cand.entry_price,
+                              stop=params["stop"], take1=params["take1"],
+                              volspike=params["volspike"], max_hold=params["max_hold"])
+        out.append(Trade(ticker, cand.entry_date, float(ret) - cost))
+    return out
