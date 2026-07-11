@@ -37,3 +37,14 @@ def parse_frgn_html(html: str) -> pd.Series:
         if rows:
             return pd.Series(rows).sort_index()
     return pd.Series(dtype=float)
+
+
+def supply_ok(netbuy: "pd.Series | None", entry_date: str, supply_days: int) -> "bool | None":
+    """진입일까지 최근 supply_days 기관 순매수 게이트. 데이터 부족/None → None(판단 위임)."""
+    if netbuy is None or len(netbuy) == 0:
+        return None
+    s = netbuy[netbuy.index <= entry_date].tail(supply_days)
+    if len(s) < supply_days:
+        return None
+    positives = int((s > 0).sum())
+    return bool(s.sum() > 0 and positives >= supply_days - 1)
