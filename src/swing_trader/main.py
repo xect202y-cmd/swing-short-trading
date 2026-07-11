@@ -683,11 +683,13 @@ def _v7v9_portfolio(dfs: dict, notes: list, *, stop, max_hold, cost, min_tv,
                 held.add(tk)
             curve.append(cash + sum(pos["alloc"] * (price[pos["ticker"]].get(d, pos["entry_price"]) / pos["entry_price"]) for pos in openpos))
         if not curve:
-            return {"cum_pct": None, "mdd_pct": None, "n_signals": len(sig)}
+            return {"cum_pct": None, "mdd_pct": None, "n_signals": len(sig), "curve": []}
         peak = curve[0]; mdd = 0.0
         for e in curve:
             peak = max(peak, e); mdd = min(mdd, e / peak - 1)
-        return {"cum_pct": round((curve[-1] / seed - 1) * 100, 1), "mdd_pct": round(mdd * 100, 1), "n_signals": len(sig)}
+        dated = [{"date": dt, "equity": round(e)} for dt, e in zip(all_dates, curve)]
+        return {"cum_pct": round((curve[-1] / seed - 1) * 100, 1), "mdd_pct": round(mdd * 100, 1),
+                "n_signals": len(sig), "curve": dated}
 
     return {"seed": seed, "maxpos": maxpos, "v7": _replay(0.0), "v9": _replay(5.0)}
 
