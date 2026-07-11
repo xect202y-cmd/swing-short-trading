@@ -64,6 +64,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("scalp-v5", help="[별칭] scalp-v6 과 동일(하위호환)")
     sub.add_parser("crosses", help="골든/데드 크로스 스캔(KR 전시장+US S&P500, 50/200일) → state/crosses.json + 디스코드 ✨")
     sub.add_parser("swing-v10-backtest", help="스윙 v10(신고가 거감짜름) 전시장 백테스트 → v9 OOS A/B → state/v10_compare.json 📈")
+    sub.add_parser("swing-v10", help="스윙 v10(신고가 거감짜름) KR 라이브 1사이클 → 3면 브리핑 🚀")
     sub.add_parser("evolve", help="자가개선 — AI제안→하니스 A/B→개선이면 Discord 제안(사람 승인 대기)")
     ad = sub.add_parser("adopt", help="제안 채택 — config 적용+로직 버전 기록")
     ad.add_argument("id", help="제안 ID(예: A3)")
@@ -167,6 +168,11 @@ def main(argv: list[str] | None = None) -> int:
         from swing_trader.strategy.v1_us_live import run_v1_us
         r = run_v1_us(cfg)
         print(f"✅ swing-v1-us: 청산 {r['exited']}건 · 진입 {r['entered']}건 · 보유 {r['held']} · 실현 {r.get('realized_krw','?')}원")
+        return 0
+    if args.cmd == "swing-v10":
+        from swing_trader.strategy.v10_live import run_v10_live
+        r = run_v10_live(cfg)
+        print(f"✅ swing-v10: 청산 {r['exited']} · 진입 {r['entered']} · 보유 {r['held']} · 실현 {r['realized']:,}원 ({r['asOf']})")
         return 0
 
     if args.cmd in ("scalp-v6", "scalp-v5"):
