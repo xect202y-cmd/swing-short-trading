@@ -63,6 +63,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("scalp-v6", help="단타 v6 오버나잇 상따+코스닥 국면게이트 — 15시 장중 스캔(정산+종가매수 계획) → 디스코드 ⚡")
     sub.add_parser("scalp-v5", help="[별칭] scalp-v6 과 동일(하위호환)")
     sub.add_parser("crosses", help="골든/데드 크로스 스캔(KR 전시장+US S&P500, 50/200일) → state/crosses.json + 디스코드 ✨")
+    sub.add_parser("swing-v10-backtest", help="스윙 v10(신고가 거감짜름) 전시장 백테스트 → v9 OOS A/B → state/v10_compare.json 📈")
     sub.add_parser("evolve", help="자가개선 — AI제안→하니스 A/B→개선이면 Discord 제안(사람 승인 대기)")
     ad = sub.add_parser("adopt", help="제안 채택 — config 적용+로직 버전 기록")
     ad.add_argument("id", help="제안 ID(예: A3)")
@@ -137,6 +138,13 @@ def main(argv: list[str] | None = None) -> int:
         from swing_trader.market.crosses import run_crosses
         r = run_crosses(cfg)
         print(f"✅ crosses: 골든 {r['golden']}건(보유·관심 {r['watch_golden']}) · 데드 {r['dead']}건(보유 {r['hold_dead']})")
+        return 0
+    if args.cmd == "swing-v10-backtest":
+        from swing_trader.main import run_v10_backtest
+        r = run_v10_backtest(cfg)
+        c = r["counts"]
+        print(f"✅ v10 백테스트: 패널 {c['panel']} · v10 {c['v10_trades']}건 · v9 {c['v9_trades']}건 "
+              f"· OOS 승자: {r['verdict']['winner']}")
         return 0
     if args.cmd == "evolve":
         r = M.run_evolve(cfg)

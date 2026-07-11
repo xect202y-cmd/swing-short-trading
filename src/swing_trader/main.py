@@ -1241,3 +1241,75 @@ def run_adopt(cfg: Config, pid: str, config_path: str | None) -> dict:
 def run_reject(cfg: Config, pid: str) -> dict:
     from .review import evolve as _EV
     return _EV.reject(cfg, pid)
+
+
+def build_v10_compare(v10_trades, v9_trades, oos_frac: float = 0.3, min_oos: int = 100) -> dict:
+    """v10 vs v9 IS/OOS 성과 비교 dict. 승자는 OOS 기대값(표본 충족 시)으로 판정."""
+    from .strategy.harness import report_from_trades, split_oos
+
+    def side(trades):
+        is_t, oos_t = split_oos(trades, oos_frac)
+        r_is, r_oos = report_from_trades(is_t), report_from_trades(oos_t)
+        return {"is": r_is.__dict__, "oos": r_oos.__dict__}
+
+    a, b = side(v10_trades), side(v9_trades)
+    av, bv = a["oos"]["expectancy"], b["oos"]["expectancy"]
+    enough = (a["oos"]["n_trades"] >= min_oos and b["oos"]["n_trades"] >= min_oos)
+    if av is None or bv is None:
+        winner = "표본부족"
+    elif not enough:
+        winner = f"표본부족(OOS<{min_oos}) — 참고: {'v10' if av > bv else 'v9'} 우세"
+    else:
+        winner = "v10" if av > bv else ("v9" if bv > av else "동일")
+    return {"v10": a, "v9": b, "verdict": {"winner": winner,
+            "v10_oos_expectancy": av, "v9_oos_expectancy": bv}}
+
+
+def run_v10_backtest(cfg: Config) -> dict:
+    """전시장 패널로 v10 거래 생성 → v9와 OOS A/B → state/v10_compare.json + 볼트 문서."""
+    from .market.supply import SupplyProvider
+    from .scalp.krx_universe import list_universe, load_cache
+    from .strategy.backtest import _v7_stock_trades
+    from .strategy.harness import Trade
+    from .strategy.v10_new_high import index_up_days, v10_market_trades
+
+    state_dir = cfg.state_dir
+    panel = load_cache(state_dir)
+    panel = {k: v for k, v in panel.items() if v is not None}
+    if not panel:
+        raise RuntimeError("전시장 패널 없음 — 먼저 크로스/단타 패널 수집(krx_universe.fetch_panel) 필요. "
+                           "synthetic 폴백은 성과로 쓰지 않음.")
+    market_of = {u["code"]: u["market"] for u in list_universe()}
+    ma = int(cfg.get("v10", "regime_ma", default=50))
+    gate = bool(cfg.get("v10", "regime_gate", default=True))
+    kospi_up = index_up_days("KS11", ma) if gate else None
+    kosdaq_up = index_up_days("KQ11", ma) if gate else None
+    max_pages = int(cfg.get("v10", "supply_max_pages", default=60))
+    supply = SupplyProvider(state_dir, max_pages=max_pages)
+
+    v10_trades = v10_market_trades(panel, market_of, supply, cfg, mode="backtest",
+                                   kospi_up=kospi_up, kosdaq_up=kosdaq_up)
+    # v9 비교군: 동일 패널에 v7/모멘텀 진입(코스닥 포함) — per-ticker.
+    mom = float(cfg.get("risk", "momentum_min_pct", default=5.0))
+    min_tv = float(cfg.get("risk", "min_trading_value_eok", default=30))
+    fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
+    slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
+    cost = 2 * (fee + slip)
+    v9_trades: list[Trade] = []
+    for tk, df in panel.items():
+        for e, r in _v7_stock_trades(df, stop=-0.03, take1=None, volspike=2.5, max_hold=40,
+                                     cost=cost, min_tv_eok=min_tv, require_uptrend=True,
+                                     momentum_min_pct=mom):
+            v9_trades.append(Trade(tk, e, r))
+
+    oos_frac = float(cfg.get("backtest", "oos_fraction", default=0.3))
+    min_oos = int(cfg.get("backtest", "min_oos_trades", default=100))
+    compare = build_v10_compare(v10_trades, v9_trades, oos_frac, min_oos)
+    compare["counts"] = {"panel": len(panel), "v10_trades": len(v10_trades),
+                         "v9_trades": len(v9_trades)}
+    (state_dir / "v10_compare.json").write_text(
+        json.dumps(compare, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    log.info("v10_compare → %s (패널 %d · v10 %d · v9 %d 거래 · OOS 승자 %s)",
+             state_dir / "v10_compare.json", len(panel), len(v10_trades), len(v9_trades),
+             compare["verdict"]["winner"])
+    return compare
