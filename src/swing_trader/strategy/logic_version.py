@@ -38,6 +38,10 @@ def snapshot(cfg) -> dict:
     rg = cfg.get("regime", default={})
     for k in ("enabled", "logic_mode"):
         flat[f"regime.{k}"] = rg.get(k)
+    v10 = cfg.get("v10", default={})
+    for k in ("high_n", "vol_x", "body_min", "window", "vol_dry", "body_max",
+              "supply_days", "supply_required", "regime_gate", "regime_ma", "min_tv_eok"):
+        flat[f"v10.{k}"] = v10.get(k)
     return flat
 
 
