@@ -6,15 +6,12 @@ adopt/reject : 사람 승인/거절(버전 적용·학습 기록).
 from __future__ import annotations
 
 from ..models import now_kst
-from ..state.daily_marker import today_kst
 from ..notify.discord import notify
+from ..state.daily_marker import today_kst
 from ..strategy import harness as HN
-from ..strategy import logic_version as LV
-from ..strategy.config_writer import set_config_value
-from ..config import load_config
-from .learning_log import LearningLog
-from . import proposals as P
 from . import logic_reviewer as LR
+from . import proposals as P
+from .learning_log import LearningLog
 
 
 def evaluate(cfg, provider, notes, days) -> dict:
