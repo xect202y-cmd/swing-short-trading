@@ -1,107 +1,107 @@
 [
-  {
-    "date": "2026-06-23",
-    "cash": 2553120.0,
-    "holdings": 2396805.0,
-    "equity": 4949925.0,
-    "return_pct": -1.0
-  },
-  {
-    "date": "2026-06-24",
-    "cash": 3037805.0,
-    "holdings": 1975879.0,
-    "equity": 5013684.0,
-    "return_pct": 0.27
-  },
-  {
-    "date": "2026-06-25",
-    "cash": 3578453.0,
-    "holdings": 1496585.0,
-    "equity": 5075038.0,
-    "return_pct": 1.5
-  },
-  {
-    "date": "2026-06-26",
-    "cash": 4115379.0,
-    "holdings": 960468.0,
-    "equity": 5075846.0,
-    "return_pct": 1.52
-  },
-  {
-    "date": "2026-06-29",
-    "cash": 2185525.0,
-    "holdings": 2896579.0,
-    "equity": 5082104.0,
-    "return_pct": 1.64
-  },
-  {
-    "date": "2026-06-30",
-    "cash": 2107303.0,
-    "holdings": 2955358.0,
-    "equity": 5062662.0,
-    "return_pct": 1.25
-  },
-  {
-    "date": "2026-07-01",
-    "cash": 3059951.0,
-    "holdings": 2022000.0,
-    "equity": 5081951.0,
-    "return_pct": 1.64
-  },
-  {
-    "date": "2026-07-02",
-    "cash": 4766291.0,
-    "holdings": 0.0,
-    "equity": 4766291.0,
-    "return_pct": -4.67
-  },
-  {
-    "date": "2026-07-03",
-    "cash": 4766291.0,
-    "holdings": 0.0,
-    "equity": 4766291.0,
-    "return_pct": -4.67
-  },
-  {
-    "date": "2026-07-04",
-    "cash": 4766291.0,
-    "holdings": 0.0,
-    "equity": 4766291.0,
-    "return_pct": -4.67
-  },
-  {
-    "date": "2026-07-06",
-    "cash": 2109565.0,
-    "holdings": 2661000.0,
-    "equity": 4770565.0,
-    "return_pct": -4.59
-  },
-  {
-    "date": "2026-07-07",
-    "cash": 3857429.0,
-    "holdings": 816000.0,
-    "equity": 4673429.0,
-    "return_pct": -6.53
-  },
-  {
-    "date": "2026-07-08",
-    "cash": 4654111.0,
-    "holdings": 0.0,
-    "equity": 4654111.0,
-    "return_pct": -6.92
-  },
-  {
-    "date": "2026-07-09",
-    "cash": 4654111.0,
-    "holdings": 0.0,
-    "equity": 4654111.0,
-    "return_pct": -6.92
-  },
-  {
-    "date": "2026-07-10",
-    "cash": 3829405.0,
-    "holdings": 822967.0,
-    "equity": 4652372.0,
-    "return_pct": -6.95
-  }
+ {
+  "date": "2026-06-23",
+  "cash": 2553120.0,
+  "holdings": 2396805.0,
+  "equity": 4949925.0,
+  "return_pct": -1.0
+ },
+ {
+  "date": "2026-06-24",
+  "cash": 3037805.0,
+  "holdings": 1975879.0,
+  "equity": 5013684.0,
+  "return_pct": 0.27
+ },
+ {
+  "date": "2026-06-25",
+  "cash": 3578453.0,
+  "holdings": 1496585.0,
+  "equity": 5075038.0,
+  "return_pct": 1.5
+ },
+ {
+  "date": "2026-06-26",
+  "cash": 4115379.0,
+  "holdings": 960468.0,
+  "equity": 5075846.0,
+  "return_pct": 1.52
+ },
+ {
+  "date": "2026-06-29",
+  "cash": 2185525.0,
+  "holdings": 2896579.0,
+  "equity": 5082104.0,
+  "return_pct": 1.64
+ },
+ {
+  "date": "2026-06-30",
+  "cash": 2107303.0,
+  "holdings": 2955358.0,
+  "equity": 5062662.0,
+  "return_pct": 1.25
+ },
+ {
+  "date": "2026-07-01",
+  "cash": 3059951.0,
+  "holdings": 2022000.0,
+  "equity": 5081951.0,
+  "return_pct": 1.64
+ },
+ {
+  "date": "2026-07-02",
+  "cash": 4766291.0,
+  "holdings": 0.0,
+  "equity": 4766291.0,
+  "return_pct": -4.67
+ },
+ {
+  "date": "2026-07-03",
+  "cash": 4766291.0,
+  "holdings": 0.0,
+  "equity": 4766291.0,
+  "return_pct": -4.67
+ },
+ {
+  "date": "2026-07-04",
+  "cash": 4766291.0,
+  "holdings": 0.0,
+  "equity": 4766291.0,
+  "return_pct": -4.67
+ },
+ {
+  "date": "2026-07-06",
+  "cash": 2109565.0,
+  "holdings": 2661000.0,
+  "equity": 4770565.0,
+  "return_pct": -4.59
+ },
+ {
+  "date": "2026-07-07",
+  "cash": 3857429.0,
+  "holdings": 816000.0,
+  "equity": 4673429.0,
+  "return_pct": -6.53
+ },
+ {
+  "date": "2026-07-08",
+  "cash": 4654111.0,
+  "holdings": 327471,
+  "equity": 4981582,
+  "return_pct": -0.37
+ },
+ {
+  "date": "2026-07-09",
+  "cash": 4654111.0,
+  "holdings": 327471,
+  "equity": 4981582,
+  "return_pct": -0.37
+ },
+ {
+  "date": "2026-07-10",
+  "cash": 3000441,
+  "holdings": 1977609,
+  "equity": 4978050,
+  "return_pct": -0.44
+ }
 ]
