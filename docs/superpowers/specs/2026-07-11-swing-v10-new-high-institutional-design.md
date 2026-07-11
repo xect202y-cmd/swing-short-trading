@@ -87,8 +87,11 @@ B 다음 `window`봉 이내 **첫** 봉 j 중 다음을 모두 만족:
 
 ## 5. 기관 수급 게이트 (④)
 
-- 데이터: pykrx `get_market_trading_value_by_date(fromdate, todate, ticker)` → **기관합계 순매수**(원) 시계열.
-  (구현 시 실제 컬럼명/함수 시그니처 검증 — 대안 `get_market_net_purchases_of_equities`.)
+- 데이터 소스 결정 (2026-07-11 검증):
+  - ~~pykrx `get_market_trading_value_by_date`~~ → **KRX 로그인(KRX_ID/KRX_PW) 필요**, 미설정 시 빈 DataFrame(0,0) 반환. 사용자 계정 없음 → **부적합.**
+  - **채택: 네이버 금융 `finance.naver.com/item/frgn.naver?code=&page=N`** — 무로그인, 깊은 이력(~10거래일/page, 수백 page). `pandas.read_html`로 파싱, **기관 순매매량**(주식수, +=순매수) 컬럼 사용. 코드베이스 기존 철학(FDR·네이버 기반·무로그인·캐시)과 일치.
+  - KRX_ID/KRX_PW가 .env에 있으면 pykrx 우선 시도(선택), 없으면 네이버 폴백.
+- 파싱: 테이블 인덱스 3(shape ~20×9), 컬럼 위치 5=기관 순매매량, 6=외국인 순매매량. euc-kr 디코드.
 - 게이트: D까지 최근 `supply_days`일 **기관 순매수 합 > 0 AND ≥(supply_days−1)일 양(+)**. `supply_days=3`.
 - 실패 모드:
   - **백테스트(하드)**: 수급 조회 실패 → 그 거래 **드롭**(하드게이트 미검증 = 진입 안 함). `supply_required=true`.
