@@ -181,15 +181,24 @@ def run_v1_us(cfg) -> dict:
                 st["open"].append({"ticker": tk, "entry_date": d, "entry_usd": px_usd,
                                    "fx_entry": fx, "qty": qty, "bars_held": 0})
                 entries_done.append((tk, round(mom * 100, 1), round(cost_krw))); slots -= 1
-        # (3) 공유현금 되쓰기 + US 상태 저장
+        # (3) 공유현금 되쓰기
         _write_shared_cash(cfg.state_dir, shared_raw, cash)
-        us_hold = sum(p["qty"] * p["entry_usd"] * fx for p in st["open"])
-        st["equity_hist"].append({"date": d, "equity": round(st["realized_krw"] + us_hold)})
         st["asOf"] = d
-        save_state(cfg.state_dir, st)
+        _did_cycle = True
+    else:
+        _did_cycle = False
 
-    # (4) 브리핑(디스코드 📈 + 옵시디언) — 원화
-    us_hold = sum(p["qty"] * p["entry_usd"] * fx for p in st["open"])
+    # (3.5) 보유 마킹 — 현재가(패널 최신 종가) × 현재 환율. 매 실행 갱신(수익률·평가손익 표시용).
+    for pos in st["open"]:
+        a = arrs.get(pos["ticker"])
+        pos["cur_usd"] = round(float(a["close"][-1]), 4) if a is not None and len(a["close"]) else pos["entry_usd"]
+        pos["mark_fx"] = round(fx, 2)
+    us_hold = sum(p["qty"] * p.get("cur_usd", p["entry_usd"]) * fx for p in st["open"])
+    if _did_cycle:
+        st["equity_hist"].append({"date": d, "equity": round(st["realized_krw"] + us_hold)})
+    save_state(cfg.state_dir, st)
+
+    # (4) 브리핑(디스코드 📈 + 옵시디언) — 원화 (us_hold = 마크 기준 평가액)
     ex_lines = [f"  · {t} {r:+.1f}% ({p:+,}원 · {w})" for t, r, p, w in exits_done] or ["  · 없음"]
     en_lines = [f"  · {t} (모멘텀 +{m}% · {c:,}원)" for t, m, c in entries_done] or ["  · 없음"]
     op_lines = [f"  · {p['ticker']} {p['qty']}주 · 진입 ${p['entry_usd']:,.2f} · {p['bars_held']}일" for p in st["open"][:15]] or ["  · 없음"]
