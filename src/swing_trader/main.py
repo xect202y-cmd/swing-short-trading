@@ -1244,11 +1244,16 @@ def run_reject(cfg: Config, pid: str) -> dict:
 
 
 def build_v10_compare(v10_trades, v9_trades, oos_frac: float = 0.3, min_oos: int = 100) -> dict:
-    """v10 vs v9 IS/OOS 성과 비교 dict. 승자는 OOS 기대값(표본 충족 시)으로 판정."""
-    from .strategy.harness import report_from_trades, split_oos
+    """v10 vs v9 IS/OOS 성과 비교 dict. 승자는 OOS 기대값(표본 충족 시)으로 판정.
+    두 arm 모두 UNION 거래의 공통 컷 날짜로 분할 — v10은 히스토리 요구(≈252봉) 때문에
+    거래 시작이 v9보다 늦어, 각자 자기 스팬으로 나누면 OOS가 서로 다른 달력구간을 가리켜
+    편향된 비교가 된다."""
+    from .strategy.harness import oos_cutoff, report_from_trades, split_at
+
+    cut = oos_cutoff(v10_trades + v9_trades, oos_frac)
 
     def side(trades):
-        is_t, oos_t = split_oos(trades, oos_frac)
+        is_t, oos_t = split_at(trades, cut)
         r_is, r_oos = report_from_trades(is_t), report_from_trades(oos_t)
         return {"is": r_is.__dict__, "oos": r_oos.__dict__}
 
@@ -1261,7 +1266,7 @@ def build_v10_compare(v10_trades, v9_trades, oos_frac: float = 0.3, min_oos: int
         winner = f"표본부족(OOS<{min_oos}) — 참고: {'v10' if av > bv else 'v9'} 우세"
     else:
         winner = "v10" if av > bv else ("v9" if bv > av else "동일")
-    return {"v10": a, "v9": b, "verdict": {"winner": winner,
+    return {"v10": a, "v9": b, "oos_cutoff": cut, "verdict": {"winner": winner,
             "v10_oos_expectancy": av, "v9_oos_expectancy": bv}}
 
 
@@ -1295,9 +1300,11 @@ def run_v10_backtest(cfg: Config) -> dict:
     fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
     slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
     cost = 2 * (fee + slip)
+    v9_stop = float(cfg.get("risk", "default_stop_pct", default=-3.0)) / 100
+    v9_max_hold = int(cfg.get("risk", "max_hold_days", default=40))
     v9_trades: list[Trade] = []
     for tk, df in panel.items():
-        for e, r in _v7_stock_trades(df, stop=-0.03, take1=None, volspike=2.5, max_hold=40,
+        for e, r in _v7_stock_trades(df, stop=v9_stop, take1=None, volspike=2.5, max_hold=v9_max_hold,
                                      cost=cost, min_tv_eok=min_tv, require_uptrend=True,
                                      momentum_min_pct=mom):
             v9_trades.append(Trade(tk, e, r))

@@ -27,7 +27,7 @@ def breakout_mask(df: pd.DataFrame, *, high_n: int, vol_x: float,
                   body_min: float, min_tv_eok: float) -> np.ndarray:
     """각 봉이 신고가 돌파 셋업(B)인지 bool 배열. 전일까지의 최고가를 당일 종가가 돌파."""
     c, o, v = _arr(df, "close"), _arr(df, "open"), _arr(df, "volume")
-    prev_high = pd.Series(c).shift(1).rolling(high_n, min_periods=max(20, high_n // 2)).max().to_numpy()
+    prev_high = pd.Series(c).shift(1).rolling(high_n, min_periods=high_n).max().to_numpy()
     va20_prev = pd.Series(v).shift(1).rolling(20, min_periods=5).mean().to_numpy()
     with np.errstate(invalid="ignore", divide="ignore"):
         body = np.where(o > 0, (c - o) / o, 0.0)

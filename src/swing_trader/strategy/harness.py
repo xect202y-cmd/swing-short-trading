@@ -88,6 +88,26 @@ def split_oos(trades: list[Trade], frac: float = 0.3) -> tuple[list[Trade], list
     return is_, oos
 
 
+def oos_cutoff(trades: list[Trade], frac: float = 0.3) -> str | None:
+    """여러 arm 공통 OOS 컷 날짜 — 전체 거래 스팬의 (1-frac) 지점. 표본 없음/스팬0이면 None."""
+    if not trades:
+        return None
+    entries = sorted(t.entry for t in trades)
+    start = date.fromisoformat(entries[0])
+    span = (date.fromisoformat(entries[-1]) - start).days
+    if span <= 0:
+        return None
+    return (start + timedelta(days=int(span * (1 - frac)))).isoformat()
+
+
+def split_at(trades: list[Trade], cut: str | None) -> tuple[list[Trade], list[Trade]]:
+    """주어진 컷 날짜로 (인샘플, 아웃오브샘플) 분할. cut None이면 (전체, [])."""
+    ordered = sorted(trades, key=lambda t: t.entry)
+    if cut is None:
+        return ordered, []
+    return [t for t in ordered if t.entry < cut], [t for t in ordered if t.entry >= cut]
+
+
 def simulate_trades(cfg, provider, notes, days: int, **params) -> list[Trade]:
     """전 종목 백테스트 → 날짜 붙은 Trade 리스트. params 는 _resolve_params 오버라이드
     (take_pct/stop_pct/runner/take2_pct/trail_pct)."""

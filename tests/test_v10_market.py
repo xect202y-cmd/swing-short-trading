@@ -104,3 +104,29 @@ def test_build_v10_compare_picks_winner_by_oos_expectancy():
     out = m.build_v10_compare(v10_tr, v9_tr, oos_frac=0.3, min_oos=5)
     assert out["verdict"]["winner"] == "v10"
     assert out["v10"]["oos"]["n_trades"] >= 5
+
+
+def test_build_v10_compare_uses_shared_oos_cutoff_across_arms():
+    # v10은 히스토리 요구(≈252봉) 때문에 v9보다 훨씬 늦게(9~12월)만 거래 — 각자 자기 스팬으로
+    # 나누면(구 split_oos per-arm) v10의 컷은 11-17, v9의 컷은 09-12로 서로 다른 달력구간을
+    # OOS로 잡아 비교가 편향된다. UNION 기준 공통 컷(09-12)으로 나눠야 공정하다.
+    from swing_trader.strategy.harness import oos_cutoff, split_at
+
+    v9_tr = [T("B", f"2026-{mo:02d}-01", -0.01) for mo in range(1, 13)] + [T("B", "2026-12-31", -0.01)]
+    v10_tr = [T("A", f"2026-{mo:02d}-15", 0.02) for mo in range(9, 13)]
+
+    out = m.build_v10_compare(v10_tr, v9_tr, oos_frac=0.3, min_oos=1)
+
+    expected_cut = oos_cutoff(v10_tr + v9_tr, 0.3)
+    assert out["oos_cutoff"] == expected_cut
+
+    v10_is, v10_oos = split_at(v10_tr, expected_cut)
+    v9_is, v9_oos = split_at(v9_tr, expected_cut)
+    assert out["v10"]["is"]["n_trades"] == len(v10_is)
+    assert out["v10"]["oos"]["n_trades"] == len(v10_oos)
+    assert out["v9"]["is"]["n_trades"] == len(v9_is)
+    assert out["v9"]["oos"]["n_trades"] == len(v9_oos)
+    # v10 스팬만으로 독립 계산한 컷(구 동작)과는 달라야 함 — 실제로 공유 컷이 적용됐다는 증거.
+    v10_own_cut = oos_cutoff(v10_tr, 0.3)
+    assert expected_cut != v10_own_cut
+    assert (len(v10_is), len(v10_oos)) != (3, 1)   # 구 per-arm 분할 결과(회귀 방지)
