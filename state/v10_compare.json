@@ -1,0 +1,69 @@
+{
+  "v10": {
+    "is": {
+      "n_trades": 61,
+      "win_rate": 36.1,
+      "avg_win": 7.377,
+      "avg_loss": -2.502,
+      "expectancy": 1.061,
+      "profit_factor": 1.66,
+      "max_drawdown": -4.35,
+      "sharpe": 0.151,
+      "trades_per_year": 371.1,
+      "start": "2025-11-10",
+      "end": "2026-01-09"
+    },
+    "oos": {
+      "n_trades": 183,
+      "win_rate": 33.3,
+      "avg_win": 15.006,
+      "avg_loss": -2.499,
+      "expectancy": 3.336,
+      "profit_factor": 3.0,
+      "max_drawdown": -11.08,
+      "sharpe": 0.212,
+      "trades_per_year": 430.9,
+      "start": "2026-01-13",
+      "end": "2026-06-17"
+    }
+  },
+  "v9": {
+    "is": {
+      "n_trades": 3037,
+      "win_rate": 30.0,
+      "avg_win": 9.027,
+      "avg_loss": -2.459,
+      "expectancy": 0.983,
+      "profit_factor": 1.57,
+      "max_drawdown": -55.79,
+      "sharpe": 0.108,
+      "trades_per_year": 2750.6,
+      "start": "2024-12-02",
+      "end": "2026-01-09"
+    },
+    "oos": {
+      "n_trades": 2184,
+      "win_rate": 24.7,
+      "avg_win": 11.332,
+      "avg_loss": -2.719,
+      "expectancy": 0.749,
+      "profit_factor": 1.37,
+      "max_drawdown": -68.49,
+      "sharpe": 0.072,
+      "trades_per_year": 4555.2,
+      "start": "2026-01-12",
+      "end": "2026-07-06"
+    }
+  },
+  "oos_cutoff": "2026-01-12",
+  "verdict": {
+    "winner": "v10",
+    "v10_oos_expectancy": 3.336,
+    "v9_oos_expectancy": 0.749
+  },
+  "counts": {
+    "panel": 2511,
+    "v10_trades": 244,
+    "v9_trades": 5221
+  }
+}

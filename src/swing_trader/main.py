@@ -1270,18 +1270,21 @@ def run_reject(cfg: Config, pid: str) -> dict:
     return _EV.reject(cfg, pid)
 
 
-def build_v10_compare(v10_trades, v9_trades, oos_frac: float = 0.3, min_oos: int = 100) -> dict:
+def build_v10_compare(v10_trades, v9_trades, oos_frac: float = 0.3, min_oos: int = 100,
+                      position_frac: float = 0.2) -> dict:
     """v10 vs v9 IS/OOS 성과 비교 dict. 승자는 OOS 기대값(표본 충족 시)으로 판정.
     두 arm 모두 UNION 거래의 공통 컷 날짜로 분할 — v10은 히스토리 요구(≈252봉) 때문에
     거래 시작이 v9보다 늦어, 각자 자기 스팬으로 나누면 OOS가 서로 다른 달력구간을 가리켜
-    편향된 비교가 된다."""
+    편향된 비교가 된다.
+    position_frac=거래당 자본분율(MDD 복리곡선) — run_version_compare(0.2)와 동일 기준으로
+    통일해야 앱 버전비교에서 v1~v9와 v10 MDD가 사과-대-사과가 된다(1.0이면 v10만 과대 낙폭)."""
     from .strategy.harness import oos_cutoff, report_from_trades, split_at
 
     cut = oos_cutoff(v10_trades + v9_trades, oos_frac)
 
     def side(trades):
         is_t, oos_t = split_at(trades, cut)
-        r_is, r_oos = report_from_trades(is_t), report_from_trades(oos_t)
+        r_is, r_oos = report_from_trades(is_t, position_frac), report_from_trades(oos_t, position_frac)
         return {"is": r_is.__dict__, "oos": r_oos.__dict__}
 
     a, b = side(v10_trades), side(v9_trades)
@@ -1338,7 +1341,8 @@ def run_v10_backtest(cfg: Config) -> dict:
 
     oos_frac = float(cfg.get("backtest", "oos_fraction", default=0.3))
     min_oos = int(cfg.get("backtest", "min_oos_trades", default=100))
-    compare = build_v10_compare(v10_trades, v9_trades, oos_frac, min_oos)
+    pfrac = float(cfg.get("backtest", "position_frac", default=0.2))   # v1~v9 버전비교와 동일 MDD 기준
+    compare = build_v10_compare(v10_trades, v9_trades, oos_frac, min_oos, pfrac)
     compare["counts"] = {"panel": len(panel), "v10_trades": len(v10_trades),
                          "v9_trades": len(v9_trades)}
     (state_dir / "v10_compare.json").write_text(
