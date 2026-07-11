@@ -5,10 +5,13 @@ adopt/reject : 사람 승인/거절(버전 적용·학습 기록).
 """
 from __future__ import annotations
 
+from ..config import load_config
 from ..models import now_kst
 from ..notify.discord import notify
 from ..state.daily_marker import today_kst
 from ..strategy import harness as HN
+from ..strategy import logic_version as LV
+from ..strategy.config_writer import set_config_value
 from . import logic_reviewer as LR
 from . import proposals as P
 from .learning_log import LearningLog
@@ -77,3 +80,39 @@ def _notify(cfg, proposed, t2) -> bool:
         lines.append(f"👀 관찰필요 `{s.get('config_key')}` {s.get('current')}→{s.get('suggested')} "
                      f"— 정량검증 불가(페이퍼 관찰)")
     return notify(cfg.creds.discord_webhook_url, "**🔁 스윙 자가개선 제안**\n" + "\n".join(lines))
+
+
+def adopt(cfg, pid, config_path) -> dict:
+    prop = P.find(cfg.state_dir, pid)
+    if not prop:
+        return {"ok": False, "reason": f"제안 #{pid} 없음"}
+    if prop.get("status") != "pending":
+        return {"ok": False, "reason": f"제안 #{pid} 이미 {prop.get('status')}"}
+    set_config_value(config_path, prop["config_key"], prop["suggested"],
+                     expected_current=prop["current"])
+    new_cfg = load_config(str(config_path))
+    note = (f"자가개선 채택 #{pid}: {prop['config_key']} "
+            f"{prop['current']}→{prop['suggested']} (OOS 검증)")
+    vnum = LV.save_version(cfg.state_dir, LV.snapshot(new_cfg), note)
+    ll = LearningLog(cfg.state_dir)
+    ll.learn(f"accept:{prop['config_key']}:{P.direction(prop['current'], prop['suggested'])}",
+             f"{prop['config_key']} {prop['current']}→{prop['suggested']} OOS개선 검증 후 채택",
+             today_kst().isoformat())
+    ll.save()
+    P.set_status(cfg.state_dir, pid, "adopted")
+    notify(cfg.creds.discord_webhook_url, f"✅ 제안 #{pid} 채택 — {note} → 로직 v{vnum}")
+    return {"ok": True, "version": vnum, "note": note}
+
+
+def reject(cfg, pid) -> dict:
+    prop = P.find(cfg.state_dir, pid)
+    if not prop:
+        return {"ok": False, "reason": f"제안 #{pid} 없음"}
+    P.set_status(cfg.state_dir, pid, "rejected")
+    ll = LearningLog(cfg.state_dir)
+    ll.learn(f"reject:{prop['config_key']}:{P.direction(prop['current'], prop['suggested'])}",
+             f"{prop['config_key']} {prop['current']}→{prop['suggested']} 사람이 거절",
+             today_kst().isoformat())
+    ll.save()
+    notify(cfg.creds.discord_webhook_url, f"🚫 제안 #{pid} 거절 기록")
+    return {"ok": True}
