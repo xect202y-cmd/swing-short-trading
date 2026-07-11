@@ -1217,3 +1217,27 @@ def run_scalp(cfg: Config, market: str) -> dict:
 __all__ = ["load_config", "run_scan", "run_once", "run_review", "run_backtest", "run_doctor",
            "run_brief", "run_logic", "run_logic_review", "_setup_logging", "run_harness",
            "run_version_compare", "run_scalp", "run_scalp_compare"]
+
+
+def run_evolve(cfg: Config) -> dict:
+    """자가개선 — 제안→하니스 A/B→개선이면 pending 등록+Discord(사람 승인 대기)."""
+    from .review import evolve as _EV
+    from .strategy import harness as _HN
+    reader = VaultReader(cfg)
+    provider = _HN.backtest_provider(cfg)
+    market = str(cfg.get("backtest", "universe", default="all"))
+    notes = [n for n in _load_notes(cfg, reader, None, market) if n.ticker]
+    days = int(cfg.get("backtest", "lookback_days", default=500))
+    return _EV.evaluate(cfg, provider, notes, days)
+
+
+def run_adopt(cfg: Config, pid: str, config_path: str | None) -> dict:
+    from .config import PROJECT_ROOT
+    from .review import evolve as _EV
+    cfg_path = Path(config_path) if config_path else PROJECT_ROOT / "config.yaml"
+    return _EV.adopt(cfg, pid, cfg_path)
+
+
+def run_reject(cfg: Config, pid: str) -> dict:
+    from .review import evolve as _EV
+    return _EV.reject(cfg, pid)
