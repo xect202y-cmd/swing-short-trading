@@ -623,75 +623,47 @@ def _core_logic_v8() -> list[str]:
     ]
 
 
-def _v7v9_portfolio(dfs: dict, notes: list, *, stop, max_hold, cost, min_tv,
-                    seed: float = 5_000_000.0, maxpos: int = 3) -> dict:
-    """최대 maxpos종목·seed 실계좌 리플레이 — v7 vs v9(모멘텀 +5%) 실현수익·MDD. 슬롯 제한 시 우열."""
-    from .strategy import backtest as _BT
+def _slot_replay(signals: list, price: dict, *, seed: float, maxpos: int) -> dict:
+    """리치 신호 [(진입일, 청산일, 수익률, 랭크, 티커, 진입가)] → 최대 maxpos 슬롯 실계좌 리플레이.
 
-    def _signals(mom_thr):
-        sig, price = [], {}
-        for n in notes:
-            df = dfs.get(n.ticker)
-            if df is None or len(df) < 70:
+    슬롯 경합 시 랭크(진입일 모멘텀) 높은 순 우선. 무제한 누적과 달리 슬롯 제한 실전에 가까운 곡선.
+    반환 {cum_pct, mdd_pct, n_signals, maxpos, curve}. (curve 는 첫 신호일부터 — 선행 flat 구간 제거)"""
+    by_entry: dict = {}
+    for s in signals:
+        by_entry.setdefault(s[0], []).append(s)
+    start = min((s[0] for s in signals), default=None)
+    all_dates = sorted({d for tk in price for d in price[tk]})
+    if start is not None:
+        all_dates = [d for d in all_dates if d >= start]
+    cash, openpos, curve = seed, [], []
+    for d in all_dates:
+        openpos2 = []
+        for pos in openpos:
+            if pos["exit_date"] == d:
+                cash += pos["alloc"] * (1 + pos["ret"])
+            else:
+                openpos2.append(pos)
+        openpos = openpos2
+        equity = cash + sum(pos["alloc"] * (price[pos["ticker"]].get(d, pos["entry_price"]) / pos["entry_price"]) for pos in openpos)
+        held = {pos["ticker"] for pos in openpos}
+        for (ed, xd, ret, rank, tk, epx) in sorted(by_entry.get(d, []), key=lambda s: s[3], reverse=True):
+            if len(openpos) >= maxpos or tk in held:
                 continue
-            c = _BT._col(df, "close").to_numpy(dtype=float); o = _BT._col(df, "open").to_numpy(dtype=float)
-            v = _BT._col(df, "volume").to_numpy(dtype=float)
-            ma5 = _BT._col(df, "close").rolling(5, min_periods=1).mean().to_numpy(dtype=float)
-            ma20 = _BT._col(df, "close").rolling(20, min_periods=1).mean().to_numpy(dtype=float)
-            ma60 = _BT._col(df, "close").rolling(60, min_periods=1).mean().to_numpy(dtype=float)
-            va20 = _BT._col(df, "volume").rolling(20, min_periods=5).mean().to_numpy(dtype=float)
-            dts = [d.strftime("%Y-%m-%d") for d in df.index]
-            price[n.ticker] = dict(zip(dts, c))
-            i, nn = 20, len(c)
-            while i < nn - 2:
-                up = c[i] > ma60[i] and ma20[i] > ma60[i]
-                mom = (c[i] / ma60[i] - 1) if ma60[i] > 0 else 0
-                if (c[i] <= ma20[i] * 1.01 and c[i] > c[i - 1] and c[i] * v[i] / 1e8 >= min_tv
-                        and o[i + 1] > 0 and up and (mom_thr <= 0 or mom * 100 >= mom_thr)):
-                    ret, jend = _BT._v7_exit(c, o, v, ma5, va20, i + 1, o[i + 1], stop=stop,
-                                             take1=None, volspike=2.5, max_hold=max_hold)
-                    sig.append((dts[i + 1], dts[jend], float(ret) - cost, mom, n.ticker, float(o[i + 1])))
-                    i = max(jend, i + 1)
-                i += 1
-        return sig, price
-
-    def _replay(mom_thr):
-        sig, price = _signals(mom_thr)
-        by_entry: dict = {}
-        for s in sig:
-            by_entry.setdefault(s[0], []).append(s)
-        all_dates = sorted({d for tk in price for d in price[tk]})
-        cash, openpos, curve = seed, [], []
-        for d in all_dates:
-            openpos2 = []
-            for pos in openpos:
-                if pos["exit_date"] == d:
-                    cash += pos["alloc"] * (1 + pos["ret"])
-                else:
-                    openpos2.append(pos)
-            openpos = openpos2
-            equity = cash + sum(pos["alloc"] * (price[pos["ticker"]].get(d, pos["entry_price"]) / pos["entry_price"]) for pos in openpos)
-            held = {pos["ticker"] for pos in openpos}
-            for (ed, xd, ret, mom, tk, epx) in sorted(by_entry.get(d, []), key=lambda s: s[3], reverse=True):
-                if len(openpos) >= maxpos or tk in held:
-                    continue
-                alloc = min(cash, equity / maxpos)
-                if alloc < 1:
-                    continue
-                cash -= alloc
-                openpos.append({"ticker": tk, "alloc": alloc, "entry_price": epx, "exit_date": xd, "ret": ret})
-                held.add(tk)
-            curve.append(cash + sum(pos["alloc"] * (price[pos["ticker"]].get(d, pos["entry_price"]) / pos["entry_price"]) for pos in openpos))
-        if not curve:
-            return {"cum_pct": None, "mdd_pct": None, "n_signals": len(sig), "curve": []}
-        peak = curve[0]; mdd = 0.0
-        for e in curve:
-            peak = max(peak, e); mdd = min(mdd, e / peak - 1)
-        dated = [{"date": dt, "equity": round(e)} for dt, e in zip(all_dates, curve)]
-        return {"cum_pct": round((curve[-1] / seed - 1) * 100, 1), "mdd_pct": round(mdd * 100, 1),
-                "n_signals": len(sig), "curve": dated}
-
-    return {"seed": seed, "maxpos": maxpos, "v7": _replay(0.0), "v9": _replay(5.0)}
+            alloc = min(cash, equity / maxpos)
+            if alloc < 1:
+                continue
+            cash -= alloc
+            openpos.append({"ticker": tk, "alloc": alloc, "entry_price": epx, "exit_date": xd, "ret": ret})
+            held.add(tk)
+        curve.append(cash + sum(pos["alloc"] * (price[pos["ticker"]].get(d, pos["entry_price"]) / pos["entry_price"]) for pos in openpos))
+    if not curve:
+        return {"cum_pct": None, "mdd_pct": None, "n_signals": len(signals), "maxpos": maxpos, "curve": []}
+    peak = curve[0]; mdd = 0.0
+    for e in curve:
+        peak = max(peak, e); mdd = min(mdd, e / peak - 1)
+    dated = [{"date": dt, "equity": round(e)} for dt, e in zip(all_dates, curve)]
+    return {"cum_pct": round((curve[-1] / seed - 1) * 100, 1), "mdd_pct": round(mdd * 100, 1),
+            "n_signals": len(signals), "maxpos": maxpos, "curve": dated}
 
 
 def run_version_compare(cfg: Config) -> Path:
@@ -711,6 +683,15 @@ def run_version_compare(cfg: Config) -> Path:
     pfrac = float(cfg.get("backtest", "position_frac", default=0.2))
     seed = float(cfg.get("capital", "seed", default=5_000_000))
     dfs = {n.ticker: provider.get_ohlcv(n.ticker)[0].tail(days) for n in notes}
+    # 슬롯제한 리플레이용 종가 시계열(티커→{날짜:종가}) — 버전 무관, 1회 구축.
+    price_map: dict = {}
+    for n in notes:
+        df0 = dfs.get(n.ticker)
+        if df0 is None or len(df0) == 0:
+            continue
+        c0 = _BT._col(df0, "close").to_numpy(dtype=float)
+        price_map[n.ticker] = dict(zip([d.strftime("%Y-%m-%d") for d in df0.index], c0))
+    maxpos = int(cfg.get("capital", "max_positions", default=3))   # 실계좌 동시보유 슬롯
 
     reg_maps: dict | None = None   # v6 있을 때만 지수 국면 시계열 lazy fetch {kr,us}
     out = []
@@ -722,22 +703,27 @@ def run_version_compare(cfg: Config) -> Path:
         is_v8 = str(snap.get("regime.logic_mode") or "") == "v8"
         p = _params_from_snapshot(snap, cfg)
         trades = []
+        rich: list = []   # (진입일, 청산일, 수익률, 랭크, 티커, 진입가) — 슬롯 리플레이용(with_meta)
+
+        def _collect(tk, rows):
+            for (ed, ret, xd, epx, rank) in rows:
+                trades.append(_HN.Trade(tk, ed, ret))
+                rich.append((ed, xd, ret, rank, tk, epx))
+
         if is_v8:
             # v8 파라미터는 스냅샷의 v8.* 키에서(divisions·사이클상한·익절). 없으면 기본값.
             for n in notes:
-                for d, r in _BT._v8_stock_trades(
+                _collect(n.ticker, _BT._v8_stock_trades(
                         dfs[n.ticker], take=float(snap.get("v8.take_pct", 10.0)) / 100,
                         divisions=int(snap.get("v8.divisions", 40)),
                         max_cycle_days=int(snap.get("v8.max_cycle_days", 60)),
-                        cost=p["cost"], min_tv_eok=p["min_tv_eok"], require_uptrend=True):
-                    trades.append(_HN.Trade(n.ticker, d, r))
+                        cost=p["cost"], min_tv_eok=p["min_tv_eok"], require_uptrend=True, with_meta=True))
         elif is_v7:
             for n in notes:
-                for d, r in _BT._v7_stock_trades(
+                _collect(n.ticker, _BT._v7_stock_trades(
                         dfs[n.ticker], stop=p["stop"], take1=None, volspike=2.5,
                         max_hold=p["max_hold"], cost=p["cost"], min_tv_eok=p["min_tv_eok"],
-                        require_uptrend=True, momentum_min_pct=p["momentum_min_pct"]):
-                    trades.append(_HN.Trade(n.ticker, d, r))
+                        require_uptrend=True, momentum_min_pct=p["momentum_min_pct"], with_meta=True))
         elif is_v6:
             if reg_maps is None:
                 reg_maps = {}
@@ -749,18 +735,19 @@ def run_version_compare(cfg: Config) -> Path:
                         reg_maps[mk] = {}
             for n in notes:
                 reg = reg_maps.get(_market_of_ticker(n.ticker), {})
-                for d, r, _rg, _hd in _BT._v6_stock_trades(
+                _collect(n.ticker, _BT._v6_stock_trades(
                         dfs[n.ticker], reg, take=p["take"], default_stop=p["stop"],
-                        take2=p["take2"], cost=p["cost"], min_tv_eok=p["min_tv_eok"]):
-                    trades.append(_HN.Trade(n.ticker, d, r))
+                        take2=p["take2"], cost=p["cost"], min_tv_eok=p["min_tv_eok"], with_meta=True))
         else:
             for n in notes:
-                for d, r in _BT._stock_trades(dfs[n.ticker], take=p["take"], stop=p["stop"],
+                _collect(n.ticker, _BT._stock_trades(dfs[n.ticker], take=p["take"], stop=p["stop"],
                                               max_hold=p["max_hold"], runner=p["runner"], take2=p["take2"],
                                               trail=p["trail"], cost=p["cost"], min_tv_eok=p["min_tv_eok"],
-                                              require_uptrend=p["require_uptrend"]):
-                    trades.append(_HN.Trade(n.ticker, d, r))
+                                              require_uptrend=p["require_uptrend"], with_meta=True))
         _is, oos = _HN.split_oos(trades, frac)
+        oos_keys = {(t.ticker, t.entry) for t in oos}   # OOS 홀드아웃 거래만 리플레이(무제한 곡선과 동일 구간)
+        replay = _slot_replay([s for s in rich if (s[4], s[0]) in oos_keys],
+                              price_map, seed=seed, maxpos=maxpos)
         rep = _HN.report_from_trades(oos, pfrac)
         eq, curve = seed, []
         for t in sorted(oos, key=lambda t: t.entry):
@@ -777,6 +764,7 @@ def run_version_compare(cfg: Config) -> Path:
                     "max_drawdown": rep.max_drawdown, "sharpe": rep.sharpe, "win_rate": rep.win_rate,
                     "n_trades": rep.n_trades, "cum_return_pct": round((eq / seed - 1) * 100, 2) if oos else None},
             "equity": curve,
+            "replay": replay,   # 슬롯제한(maxpos) 실계좌 리플레이 — 정본 곡선(무제한 equity 는 참고용)
         })
     # OOS 검증기간(곡선 커버 범위) — 버전 통합 최소~최대 진입일.
     dates = [pt["date"] for v in out for pt in v["equity"]]
@@ -785,23 +773,12 @@ def run_version_compare(cfg: Config) -> Path:
     lookback = int(cfg.get("backtest", "lookback_days", default=500))
     path = cfg.state_dir / "version_compare.json"
     adopted = str(cfg.get("regime", "adopted_version", default="") or "").strip() or None
-    # 최대 3종목 실계좌 리플레이(v7 vs v9) — 슬롯 제한 시 우열(무제한 누적과 뒤집힘) 증명용.
-    try:
-        _fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
-        _slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
-        portfolio_replay = _v7v9_portfolio(
-            dfs, notes, stop=float(cfg.get("risk", "default_stop_pct", default=-3.0)) / 100,
-            max_hold=int(cfg.get("risk", "max_hold_days", default=40)), cost=2 * (_fee + _slip),
-            min_tv=float(cfg.get("risk", "min_trading_value_eok", default=30)), seed=seed)
-    except Exception as e:  # noqa: BLE001
-        log.warning("portfolio_replay 실패: %s", e)
-        portfolio_replay = None
     path.write_text(json.dumps({
         "as_of": _DM.today_kst().isoformat(), "seed": seed,
         "oos_start": oos_start, "oos_end": oos_end, "oos_days": oos_days, "lookback_days": lookback,
         "adopted": adopted,   # 실전 채택 버전(대시보드 '채택됨' 배지)
+        "maxpos": maxpos,     # 실계좌 슬롯 수 — 각 버전 replay 곡선의 동시보유 상한
         "versions": out,
-        "portfolio_replay": portfolio_replay,   # 최대3종목 실계좌 v7 vs v9
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     log.info("version_compare → %s (버전 %d개, OOS %s~%s, 채택 %s)", path, len(out), oos_start, oos_end, adopted)
     return path

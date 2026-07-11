@@ -58,10 +58,11 @@ def _exit_return(close, entry_idx: int, entry: float, take: float, stop: float, 
 
 
 def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_tv_eok,
-                  require_uptrend=False):
+                  require_uptrend=False, with_meta=False):
     """단일 종목 df에서 (진입일 'YYYY-MM-DD', 청산수익률 소수, 비용차감) 리스트.
 
-    require_uptrend=True 면 종가>60일선 AND 20일선>60일선(상승배열)에서만 진입(Phase3 필터)."""
+    require_uptrend=True 면 종가>60일선 AND 20일선>60일선(상승배열)에서만 진입(Phase3 필터).
+    with_meta=True 면 슬롯제한 포트폴리오 리플레이용 5-튜플 (진입일, 수익률, 청산일, 진입가, 모멘텀)."""
     close = _col(df, "close").to_numpy(dtype=float)
     open_ = _col(df, "open").to_numpy(dtype=float)
     vol = _col(df, "volume").to_numpy(dtype=float)
@@ -78,7 +79,11 @@ def _stock_trades(df, *, take, stop, max_hold, runner, take2, trail, cost, min_t
             entry = float(open_[i + 1])           # 다음 봉 시가 체결(0/결측가 방어)
             ret, jend = _exit_return(close, i + 1, entry, take, stop, max_hold,
                                      runner=runner, take2=take2, trail=trail)
-            out.append((dates[i + 1], float(ret) - cost))
+            if with_meta:
+                mom = (close[i] / ma60[i] - 1) if ma60[i] > 0 else 0.0
+                out.append((dates[i + 1], float(ret) - cost, dates[jend], entry, float(mom)))
+            else:
+                out.append((dates[i + 1], float(ret) - cost))
             i = max(jend, i + 1)
         i += 1
     return out
@@ -105,7 +110,7 @@ def _v7_exit(close, open_, vol, ma5, va20, entry_idx: int, entry: float,
 
 
 def _v7_stock_trades(df, *, stop, take1, volspike, max_hold, cost, min_tv_eok,
-                     require_uptrend=True, momentum_min_pct=0.0):
+                     require_uptrend=True, momentum_min_pct=0.0, with_meta=False):
     """v7 — 강세(정배열) 종목의 20일선 눌림 반등 진입 → 5일선 이탈/대량거래량 음봉까지 홀딩.
 
     유튜브 스윙 3편(Farley 마스터 스윙·성경호 신고가 눌림) 수렴 기법:
@@ -134,14 +139,18 @@ def _v7_stock_trades(df, *, stop, take1, volspike, max_hold, cost, min_tv_eok,
             entry = float(open_[i + 1])
             ret, jend = _v7_exit(close, open_, vol, ma5, va20, i + 1, entry,
                                  stop=stop, take1=take1, volspike=volspike, max_hold=max_hold)
-            out.append((dates[i + 1], float(ret) - cost))
+            if with_meta:
+                mom = (close[i] / ma60[i] - 1) if ma60[i] > 0 else 0.0
+                out.append((dates[i + 1], float(ret) - cost, dates[jend], entry, float(mom)))
+            else:
+                out.append((dates[i + 1], float(ret) - cost))
             i = max(jend, i + 1)
         i += 1
     return out
 
 
 def _v8_stock_trades(df, *, take, divisions, max_cycle_days, cost, min_tv_eok,
-                     require_uptrend=True):
+                     require_uptrend=True, with_meta=False):
     """v8 — v7 진입(정배열·20일선 눌림 반등) 후 '무한매수법'(라오어) 운용.
 
     유튜브 무한매수법 규칙(2026-07-06, JkkJd4Wdb_A 10:26~14:00):
@@ -184,7 +193,11 @@ def _v8_stock_trades(df, *, take, divisions, max_cycle_days, cost, min_tv_eok,
                     buys += 1
             if ret is None:                                 # 사이클 상한/데이터 끝 → 종가 청산
                 ret = close[end_idx] / (invested / shares) - 1
-            out.append((dates[start], float(ret) - cost))
+            if with_meta:
+                mom = (close[i] / ma60[i] - 1) if ma60[i] > 0 else 0.0
+                out.append((dates[start], float(ret) - cost, dates[end_idx], float(open_[start]), float(mom)))
+            else:
+                out.append((dates[start], float(ret) - cost))
             i = max(end_idx, i + 1)
         i += 1
     return out
@@ -202,11 +215,12 @@ def _v6_ohlc(df):
 
 
 def _v6_stock_trades(df, regime_by_date, *, take, default_stop, take2,
-                     cost, min_tv_eok, policy_table=None):
+                     cost, min_tv_eok, policy_table=None, with_meta=False):
     """v6 를 '독립 전략'으로 백테스트 — 진입일 regime 으로 차단/트레일 가변.
 
     차단 봉에서는 포지션이 없으므로 i+=1 로 계속 스캔(다음 유효 setup 을 놓치지 않음).
-    반환: [(entry_date, ret, regime, hold_days)].
+    반환: [(entry_date, ret, regime, hold_days)]. with_meta=True 면 슬롯 리플레이용
+    5-튜플 (진입일, 수익률, 청산일, 진입가, 모멘텀).
     """
     from .market_regime import Regime
     from .regime_policy import policy_for
@@ -226,7 +240,11 @@ def _v6_stock_trades(df, regime_by_date, *, take, default_stop, take2,
                 entry = float(open_[i + 1])
                 ret6, jend6 = _exit_return(close, i + 1, entry, take, default_stop, 20,
                                            runner=True, take2=take2, trail=pol.trail_pct)
-                trades.append((dates[i + 1], float(ret6) - cost, reg.value, int(jend6 - (i + 1))))
+                if with_meta:
+                    mom = (close[i] / ma60[i] - 1) if ma60[i] > 0 else 0.0
+                    trades.append((dates[i + 1], float(ret6) - cost, dates[jend6], entry, float(mom)))
+                else:
+                    trades.append((dates[i + 1], float(ret6) - cost, reg.value, int(jend6 - (i + 1))))
                 i = max(jend6, i + 1)
                 i += 1
                 continue
