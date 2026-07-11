@@ -6,6 +6,8 @@
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import numpy as np
 import pandas as pd
 
@@ -66,3 +68,38 @@ def find_geogamjjareum(df: pd.DataFrame, breakout_idx: int, *,
         if down and dry and short and trend:
             return j
     return None
+
+
+@dataclass
+class Candidate:
+    ticker: str
+    breakout: str        # 돌파일 'YYYY-MM-DD'
+    entry_date: str      # 거감짜름 진입일 'YYYY-MM-DD'
+    entry_idx: int
+    entry_price: float   # 진입일 종가
+    all_time: bool       # 역사적 신고가 가점
+    hist_vol: bool       # 역사적 거래량 가점
+
+
+def scan_candidates(df: pd.DataFrame, ticker: str, *, high_n: int, vol_x: float,
+                    body_min: float, min_tv_eok: float, window: int,
+                    vol_dry: float, body_max: float) -> list[Candidate]:
+    """돌파봉마다 거감짜름 진입봉을 찾아 Candidate 생성. 룩어헤드 없음(≤진입봉 데이터만)."""
+    bmask = breakout_mask(df, high_n=high_n, vol_x=vol_x, body_min=body_min, min_tv_eok=min_tv_eok)
+    ath = all_time_high_mask(df)
+    hvol = hist_vol_mask(df)
+    c = _arr(df, "close")
+    dates = [d.strftime("%Y-%m-%d") for d in df.index]
+    out: list[Candidate] = []
+    i = 0
+    n = len(c)
+    while i < n:
+        if bmask[i]:
+            j = find_geogamjjareum(df, i, window=window, vol_dry=vol_dry, body_max=body_max)
+            if j is not None:
+                out.append(Candidate(ticker, dates[i], dates[j], j, float(c[j]),
+                                     bool(ath[i]), bool(hvol[i])))
+                i = j + 1                    # 진입 후 다음 돌파부터 재스캔
+                continue
+        i += 1
+    return out

@@ -69,3 +69,37 @@ def test_find_geogamjjareum_none_when_no_dry_candle():
     vols   = [1e6, 3e6, 3e6, 3e6, 3e6]        # 거래량 안 마름
     df = _df(closes, opens, vols)
     assert v10.find_geogamjjareum(df, 1, window=3, vol_dry=0.7, body_max=0.03) is None
+
+
+def test_scan_candidates_builds_entry_at_dry_candle_close():
+    base = list(100 + np.sin(np.linspace(0, 12, 260)) * 2)
+    tail_c = [110.0, 111.0, 109.5]            # 260돌파, 261양봉, 262거감짜름
+    tail_o = [105.0, 110.0, 110.0]
+    tail_v = [3e6, 2e6, 5e5]
+    closes = base + tail_c
+    opens = list(closes[:260]) + tail_o
+    vols = [1e6] * 260 + tail_v
+    df = _df(closes, opens, vols)
+    cands = v10.scan_candidates(df, "005930", high_n=252, vol_x=2.0, body_min=0.03,
+                                min_tv_eok=0, window=3, vol_dry=0.7, body_max=0.03)
+    assert len(cands) == 1
+    c0 = cands[0]
+    assert c0.ticker == "005930"
+    assert c0.entry_idx == 262
+    assert c0.entry_price == 109.5           # 거감짜름일 종가
+    assert c0.entry_date == df.index[262].strftime("%Y-%m-%d")
+
+
+def test_scan_candidates_no_lookahead():
+    # 진입봉 인덱스까지의 데이터만으로 후보가 결정되어야 — 뒤 데이터를 바꿔도 후보 동일.
+    base = list(100 + np.sin(np.linspace(0, 12, 260)) * 2)
+    closes = base + [110.0, 111.0, 109.5, 999.0]
+    opens = list(closes[:260]) + [105.0, 110.0, 110.0, 500.0]
+    vols = [1e6] * 260 + [3e6, 2e6, 5e5, 9e6]
+    df = _df(closes, opens, vols)
+    a = v10.scan_candidates(df, "T", high_n=252, vol_x=2.0, body_min=0.03,
+                            min_tv_eok=0, window=3, vol_dry=0.7, body_max=0.03)
+    df2 = df.copy(); df2.iloc[263] = df2.iloc[263] * 0.001    # 미래봉 변형
+    b = v10.scan_candidates(df2, "T", high_n=252, vol_x=2.0, body_min=0.03,
+                            min_tv_eok=0, window=3, vol_dry=0.7, body_max=0.03)
+    assert [(x.entry_idx, x.entry_price) for x in a] == [(x.entry_idx, x.entry_price) for x in b]
