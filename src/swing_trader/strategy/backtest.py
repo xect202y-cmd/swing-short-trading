@@ -297,7 +297,8 @@ def _v6_entries_and_blocks(df, regime_by_date, *, take, default_stop, take2,
 
 
 def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool | None = None,
-                    take2_pct=None, trail_pct=None) -> dict:
+                    take2_pct=None, trail_pct=None,
+                    max_hold=None, require_uptrend=None, min_tv_eok=None) -> dict:
     """config + 오버라이드 → simulate/_stock_trades 공용 파라미터.
 
     runner 미지정(None)이면 라이브 청산과 동기화 — position_manager 가 partial_exit_pct>0 일 때
@@ -308,11 +309,12 @@ def _resolve_params(cfg, *, take_pct=None, stop_pct=None, runner: bool | None = 
     trail = float(trail_pct if trail_pct is not None else cfg.get("risk", "trail_pct", default=3.0))
     if runner is None:
         runner = float(cfg.get("risk", "partial_exit_pct", default=0.5)) > 0
-    max_hold = int(cfg.get("risk", "max_hold_days", default=20))
+    max_hold = int(max_hold if max_hold is not None else cfg.get("risk", "max_hold_days", default=20))
     fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
     slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
-    min_tv_eok = float(cfg.get("risk", "min_trading_value_eok", default=30))
-    require_uptrend = bool(cfg.get("risk", "require_uptrend", default=False))
+    min_tv_eok = float(min_tv_eok if min_tv_eok is not None else cfg.get("risk", "min_trading_value_eok", default=30))
+    require_uptrend = bool(require_uptrend if require_uptrend is not None
+                           else cfg.get("risk", "require_uptrend", default=False))
     return {"take": take, "stop": stop, "take2": take2, "trail": trail, "max_hold": max_hold,
             "cost": 2 * (fee + slip), "min_tv_eok": min_tv_eok, "runner": runner,
             "require_uptrend": require_uptrend}
