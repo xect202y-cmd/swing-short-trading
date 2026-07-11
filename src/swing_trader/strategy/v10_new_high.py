@@ -157,3 +157,41 @@ def ticker_trades(df, ticker, market, netbuy, kospi_up, kosdaq_up, *,
                               volspike=params["volspike"], max_hold=params["max_hold"])
         out.append(Trade(ticker, cand.entry_date, float(ret) - cost))
     return out
+
+
+def _params_from_cfg(cfg) -> dict:
+    v = cfg.get("v10", default={})
+    return dict(
+        high_n=int(v.get("high_n", 252)), vol_x=float(v.get("vol_x", 2.0)),
+        body_min=float(v.get("body_min", 0.03)), min_tv_eok=float(v.get("min_tv_eok", 50)),
+        window=int(v.get("window", 3)), vol_dry=float(v.get("vol_dry", 0.7)),
+        body_max=float(v.get("body_max", 0.03)), supply_days=int(v.get("supply_days", 3)),
+        stop=float(cfg.get("risk", "default_stop_pct", default=-3.0)) / 100,
+        take1=None, volspike=2.5,
+        max_hold=int(cfg.get("risk", "max_hold_days", default=40)))
+
+
+def v10_market_trades(panel: dict, market_of: dict, supply, cfg, *,
+                      mode: str = "backtest", kospi_up=None, kosdaq_up=None) -> list[Trade]:
+    """전시장 패널 v10 리플레이. 후보 있는 종목에만 수급 조회(접근법 A)."""
+    params = _params_from_cfg(cfg)
+    fee = float(cfg.get("paper", "fee_bps", default=1.5)) / 10000
+    slip = float(cfg.get("paper", "slippage_bps", default=5.0)) / 10000
+    cost = 2 * (fee + slip)
+    out: list[Trade] = []
+    for ticker, df in panel.items():
+        if df is None or len(df) < params["high_n"] + params["window"] + 5:
+            continue
+        # 1단계: 값싼 가격 셋업으로 후보 유무만 확인(수급 조회 전)
+        cands = scan_candidates(
+            df, ticker, high_n=params["high_n"], vol_x=params["vol_x"],
+            body_min=params["body_min"], min_tv_eok=params["min_tv_eok"],
+            window=params["window"], vol_dry=params["vol_dry"], body_max=params["body_max"])
+        if not cands:
+            continue
+        # 2단계: 후보 종목만 수급 조회
+        netbuy = supply.institution_netbuy(ticker) if supply is not None else None
+        out += ticker_trades(df, ticker, market_of.get(ticker, "KOSPI"),
+                             netbuy, kospi_up, kosdaq_up,
+                             params=params, mode=mode, cost=cost)
+    return out

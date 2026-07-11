@@ -62,3 +62,34 @@ def test_ticker_trades_supply_gate_passes_with_buying():
     trades = v10.ticker_trades(df, "T", "KOSPI", netbuy, None, None,
                                params=_PARAMS, mode="backtest", cost=0.0)
     assert len(trades) == 1
+
+
+class _FakeCfg:
+    def get(self, *keys, default=None):
+        table = {
+            ("v10",): dict(high_n=252, vol_x=2.0, body_min=0.03, min_tv_eok=0, window=3,
+                           vol_dry=0.7, body_max=0.03, supply_days=3),
+            ("risk", "default_stop_pct"): -3.0, ("risk", "max_hold_days"): 40,
+            ("paper", "fee_bps"): 0.0, ("paper", "slippage_bps"): 0.0,
+        }
+        return table.get(tuple(keys), default)
+
+
+class _FakeSupply:
+    def __init__(self, series_by_ticker): self.d = series_by_ticker; self.calls = []
+    def institution_netbuy(self, ticker):
+        self.calls.append(ticker); return self.d.get(ticker)
+
+
+def test_v10_market_trades_fetches_supply_only_for_candidates():
+    df = _setup_df()
+    flat = _df([100] * 60, [100] * 60, [1e6] * 60)          # 후보 없는 종목
+    dates = [d.strftime("%Y-%m-%d") for d in df.index]
+    netbuy = pd.Series({dates[260]: 100.0, dates[261]: 200.0, dates[262]: 300.0})
+    supply = _FakeSupply({"CAND": netbuy})
+    panel = {"CAND": df, "FLAT": flat}
+    market_of = {"CAND": "KOSPI", "FLAT": "KOSDAQ"}
+    trades = v10.v10_market_trades(panel, market_of, supply, _FakeCfg(),
+                                   mode="backtest", kospi_up=None, kosdaq_up=None)
+    assert len(trades) == 1 and trades[0].ticker == "CAND"
+    assert supply.calls == ["CAND"]                          # FLAT은 후보 없어 수급 미조회
