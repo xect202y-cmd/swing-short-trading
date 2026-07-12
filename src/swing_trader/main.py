@@ -676,7 +676,10 @@ def _v10_versions_entry(state_dir) -> dict | None:
         d = json.loads(p.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return None
-    oos = (d.get("v10") or {}).get("oos") or {}
+    v10d = d.get("v10") or {}
+    oos = v10d.get("oos") or {}
+    curve = v10d.get("oos_curve") or []          # 대시보드 비교 차트용 OOS 자산곡선
+    cum = v10d.get("oos_cum_pct")
     return {
         "label": "v10", "title": "v10 · 신고가 거감짜름",
         "core_logic": ["52주 신고가 장대양봉 대량거래 돌파 → 첫 거감짜름(거래량 마름 짧은음봉) 종가 매수",
@@ -685,8 +688,11 @@ def _v10_versions_entry(state_dir) -> dict | None:
         "oos": {"expectancy": oos.get("expectancy"), "profit_factor": oos.get("profit_factor"),
                 "max_drawdown": oos.get("max_drawdown"), "sharpe": oos.get("sharpe"),
                 "win_rate": oos.get("win_rate"), "n_trades": oos.get("n_trades"),
-                "cum_return_pct": None},
-        "equity": [], "replay": None,
+                "cum_return_pct": cum},
+        "equity": curve,
+        # v10 거래기록엔 청산일·랭크가 없어 슬롯제한 리플레이를 별도 산출 못함 → 사이징중립 곡선을
+        # 슬롯 모드에도 재사용(차트가 두 모드 모두 그려지게). 곡선 모양은 대표성 있음.
+        "replay": ({"curve": curve, "cum_pct": cum} if curve else None),
     }
 
 
@@ -1271,7 +1277,7 @@ def run_reject(cfg: Config, pid: str) -> dict:
 
 
 def build_v10_compare(v10_trades, v9_trades, oos_frac: float = 0.3, min_oos: int = 100,
-                      position_frac: float = 0.2) -> dict:
+                      position_frac: float = 0.2, seed: float = 5_000_000) -> dict:
     """v10 vs v9 IS/OOS 성과 비교 dict. 승자는 OOS 기대값(표본 충족 시)으로 판정.
     두 arm 모두 UNION 거래의 공통 컷 날짜로 분할 — v10은 히스토리 요구(≈252봉) 때문에
     거래 시작이 v9보다 늦어, 각자 자기 스팬으로 나누면 OOS가 서로 다른 달력구간을 가리켜
@@ -1285,7 +1291,13 @@ def build_v10_compare(v10_trades, v9_trades, oos_frac: float = 0.3, min_oos: int
     def side(trades):
         is_t, oos_t = split_at(trades, cut)
         r_is, r_oos = report_from_trades(is_t, position_frac), report_from_trades(oos_t, position_frac)
-        return {"is": r_is.__dict__, "oos": r_oos.__dict__}
+        # OOS 자산곡선(대시보드 버전비교 차트용) — v1~v9와 동일 방식(시드에서 pfrac 복리).
+        eq, curve = seed, []
+        for t in sorted(oos_t, key=lambda t: t.entry):
+            eq *= (1 + position_frac * t.ret)
+            curve.append({"date": t.entry, "equity": round(eq)})
+        cum = round((eq / seed - 1) * 100, 2) if oos_t else None
+        return {"is": r_is.__dict__, "oos": r_oos.__dict__, "oos_curve": curve, "oos_cum_pct": cum}
 
     a, b = side(v10_trades), side(v9_trades)
     av, bv = a["oos"]["expectancy"], b["oos"]["expectancy"]
@@ -1342,7 +1354,8 @@ def run_v10_backtest(cfg: Config) -> dict:
     oos_frac = float(cfg.get("backtest", "oos_fraction", default=0.3))
     min_oos = int(cfg.get("backtest", "min_oos_trades", default=100))
     pfrac = float(cfg.get("backtest", "position_frac", default=0.2))   # v1~v9 버전비교와 동일 MDD 기준
-    compare = build_v10_compare(v10_trades, v9_trades, oos_frac, min_oos, pfrac)
+    seed = float(cfg.get("capital", "seed", default=5_000_000))
+    compare = build_v10_compare(v10_trades, v9_trades, oos_frac, min_oos, pfrac, seed)
     compare["counts"] = {"panel": len(panel), "v10_trades": len(v10_trades),
                          "v9_trades": len(v9_trades)}
     (state_dir / "v10_compare.json").write_text(

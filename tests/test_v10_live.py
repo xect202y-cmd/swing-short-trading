@@ -19,7 +19,9 @@ def test_paper_account_reconciled_flat():
     broker = PaperBroker(seed_cash=5_000_000, state_path=root / "state" / "paper_state.json")
     o = json.loads((root / "state" / "open_positions.json").read_text(encoding="utf-8"))
     assert broker.get_positions() == []
-    assert broker.get_cash_balance() == round(float(o["cash"]), 2)
+    # open_positions.json 의 cash 는 대시보드 표시용으로 원 단위 반올림(_save_open_positions) →
+    # 브로커(소수 유지)와 표시 반올림 오차(<1원) 이내면 일치로 본다.
+    assert abs(broker.get_cash_balance() - float(o["cash"])) < 1.0
 
 
 def test_v10_config_live_knobs():
@@ -164,9 +166,16 @@ def test_version_compare_includes_v10_entry(tmp_path):
     (tmp_path).mkdir(exist_ok=True)
     (tmp_path / "v10_compare.json").write_text(json.dumps({
         "v10": {"oos": {"expectancy": 3.34, "profit_factor": 3.0, "max_drawdown": -45.1,
-                        "win_rate": 33.3, "n_trades": 183, "sharpe": None}},
+                        "win_rate": 33.3, "n_trades": 183, "sharpe": None},
+                "oos_curve": [{"date": "2026-01-15", "equity": 5100000},
+                              {"date": "2026-02-01", "equity": 5300000}],
+                "oos_cum_pct": 6.0},
         "verdict": {"winner": "v10"}}), encoding="utf-8")
     entry = m._v10_versions_entry(tmp_path)     # 신규 순수 헬퍼
     assert entry is not None
     assert entry["label"] == "v10"
     assert entry["oos"]["expectancy"] == 3.34 and entry["oos"]["n_trades"] == 183
+    # 차트가 그려지려면 equity 곡선이 채워져야(빈 곡선이면 대시보드 그래프 안 나옴)
+    assert len(entry["equity"]) == 2 and entry["equity"][0]["equity"] == 5100000
+    assert entry["oos"]["cum_return_pct"] == 6.0
+    assert entry["replay"] and len(entry["replay"]["curve"]) == 2
