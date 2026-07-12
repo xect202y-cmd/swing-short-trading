@@ -1,0 +1,23 @@
+{
+  "proposals": [
+    {
+      "id": "F7B",
+      "created": "2026-07-11T14:47:19+09:00",
+      "config_key": "risk.take1_pct",
+      "current": 6.0,
+      "suggested": 8.0,
+      "tier": "T1",
+      "title": "손익 비율 개선",
+      "insight": "손익비가 0.32로 마이너스 영역에 있으며, 이는 장기적인 수익을 위협할 수 있음.",
+      "verdict": "improve",
+      "oos": {
+        "base_expectancy": 0.591,
+        "cand_expectancy": 0.748,
+        "n_oos": 414,
+        "base_sharpe": 0.125,
+        "cand_sharpe": 0.143
+      },
+      "status": "pending"
+    }
+  ]
+}
