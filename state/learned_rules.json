@@ -1,1 +1,9 @@
-{}
+{
+  "reject:risk.require_uptrend:=false": {
+    "note": "risk.require_uptrend =false 방향은 OOS neutral(기대값 0.526→0.389)",
+    "hits": 1,
+    "cases": [
+      "2026-07-14"
+    ]
+  }
+}
