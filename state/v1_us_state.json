@@ -10,7 +10,7 @@
       "qty": 7,
       "bars_held": 1,
       "cur_usd": 46.84,
-      "mark_fx": 1477.64,
+      "mark_fx": 1479.39,
       "name": "MGM Resorts"
     },
     {
@@ -21,7 +21,7 @@
       "qty": 1,
       "bars_held": 1,
       "cur_usd": 222.84,
-      "mark_fx": 1477.64,
+      "mark_fx": 1479.39,
       "name": "Williams-Sonoma, Inc."
     },
     {
@@ -32,7 +32,7 @@
       "qty": 13,
       "bars_held": 1,
       "cur_usd": 25.15,
-      "mark_fx": 1477.64,
+      "mark_fx": 1479.39,
       "name": "Hormel Foods"
     },
     {
@@ -43,7 +43,7 @@
       "qty": 4,
       "bars_held": 0,
       "cur_usd": 68.28,
-      "mark_fx": 1477.64,
+      "mark_fx": 1479.39,
       "name": "Moderna"
     },
     {
@@ -54,7 +54,7 @@
       "qty": 6,
       "bars_held": 0,
       "cur_usd": 49.25,
-      "mark_fx": 1477.64,
+      "mark_fx": 1479.39,
       "name": "Southwest Airlines"
     }
   ],
