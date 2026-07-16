@@ -5,5 +5,19 @@
     "cases": [
       "2026-07-14"
     ]
+  },
+  "reject:risk.default_stop_pct:down": {
+    "note": "risk.default_stop_pct down 방향은 OOS worse(기대값 0.413→0.067)",
+    "hits": 1,
+    "cases": [
+      "2026-07-15"
+    ]
+  },
+  "reject:risk.max_hold_days:up": {
+    "note": "risk.max_hold_days up 방향은 OOS neutral(기대값 0.413→0.425)",
+    "hits": 1,
+    "cases": [
+      "2026-07-15"
+    ]
   }
 }
