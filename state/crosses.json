@@ -1,25 +1,25 @@
 {
-  "as_of": "2026-07-10",
+  "as_of": "2026-07-17",
   "rule": "50/200일 이평 골든크로스 · 보강: 거래량 20일평균↑·200일선 기울기·50일선 위",
   "golden_top": [
     {
-      "ticker": "GD",
-      "name": "General Dynamics",
+      "ticker": "ES",
+      "name": "Eversource Energy",
       "market": "US",
       "kind": "golden",
-      "close": 373.9949951171875,
-      "ma50": 346.13,
-      "ma200": 345.66,
-      "vol_ratio": 0.18,
-      "slope200_pct": 0.3,
+      "close": 73.79000091552734,
+      "ma50": 70.26,
+      "ma200": 70.25,
+      "vol_ratio": 0.86,
+      "slope200_pct": 0.22,
       "above50": true,
-      "high120": 380.7099914550781,
-      "date": "2026-07-07",
-      "score": 3.41,
-      "buyLow": 346.13,
-      "buyHigh": 373.99,
-      "stop": 345.66,
-      "target": 430.09,
+      "high120": 76.41000366210938,
+      "date": "2026-07-15",
+      "score": 4.8,
+      "buyLow": 70.26,
+      "buyHigh": 73.79,
+      "stop": 70.25,
+      "target": 84.86,
       "upside_pct": 15.0
     }
   ],
@@ -29,24 +29,24 @@
   "hold_dead": [],
   "dead_all": [
     {
-      "ticker": "005070",
-      "name": "코스모신소재",
+      "ticker": "010140",
+      "name": "삼성중공업",
       "market": "KR"
     },
     {
-      "ticker": "017960",
-      "name": "한국카본",
+      "ticker": "003670",
+      "name": "포스코퓨처엠",
       "market": "KR"
     },
     {
-      "ticker": "450080",
-      "name": "에코프로머티",
-      "market": "KR"
+      "ticker": "HAS",
+      "name": "Hasbro",
+      "market": "US"
     },
     {
-      "ticker": "022100",
-      "name": "포스코DX",
-      "market": "KR"
+      "ticker": "NEM",
+      "name": "Newmont",
+      "market": "US"
     }
   ]
 }
