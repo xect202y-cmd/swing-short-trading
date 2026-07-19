@@ -14,7 +14,8 @@ IS·OOS 양쪽 개선(2026-07-08 검증, MA 30~60 견고). 손대는 건 '진입
   3) 브리핑 — 디스코드 ⚡ + 옵시디언(Scalp 노트).
 
 사실/판단 분리: 계획 수량은 스캔 시점 현재가, 정산 손익은 확정 일봉만 사용.
-비거래일(주말·휴장)은 스캔을 건너뛴다(삼성전자 당일 일봉 존재로 판정).
+비거래일(주말·휴장)은 스캔을 건너뛴다(pykrx 캘린더 우선, 폴백은 삼성전자 최근 일봉).
+무신호 대기 사유(비거래일/국면게이트/셋업없음)는 scalp_state.json의 idle 필드로 노출한다.
 """
 from __future__ import annotations
 
@@ -150,12 +151,41 @@ def _fdr_hist(code: str, days: int = 160):
         return None
 
 
+def _krx_business_day(today: date) -> bool | None:
+    """pykrx 거래일 캘린더로 판정 — 성공하면 True/False, 미설치·호출실패면 None(다음 폴백에 위임)."""
+    try:
+        from pykrx import stock
+        ymd = today.strftime("%Y%m%d")
+        return stock.get_nearest_business_day_in_a_week(ymd, prev=True) == ymd
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _prev_business_day(d: date) -> date:
+    p = d - timedelta(days=1)
+    while p.weekday() >= 5:
+        p -= timedelta(days=1)
+    return p
+
+
 def is_trading_day(today: date) -> bool:
-    """오늘이 KR 거래일인지 — 삼성전자 당일 일봉 존재로 판정(장중엔 당일 봉이 잡힘)."""
+    """오늘이 KR 거래일인지 3단 폴백으로 판정(P3-2c — 당일봉 미발행 오판 견고화).
+
+    1) pykrx 거래일 캘린더(휴장일 정확 반영) — 호출 실패면 다음 단계.
+    2) 평일 && 삼성전자 최근 일봉이 today 또는 직전 영업일(15:05 장중 스캔 시 당일봉
+       발행 지연을 거래일로 인정 — 기존엔 당일봉 부재를 곧장 비거래일로 오판했다).
+    3) 외부호출 전부 실패 — 페일세이프로 평일이면 True(비거래일 오판이 더 위험).
+    """
     if today.weekday() >= 5:
         return False
+    krx = _krx_business_day(today)
+    if krx is not None:
+        return krx
     df = _fdr_hist("005930", days=10)
-    return df is not None and len(df) > 0 and df.index[-1].date() == today
+    if df is None or len(df) == 0:
+        return True   # 평일인데 외부호출 전부 실패 — 페일세이프
+    last = df.index[-1].date()
+    return last == today or last == _prev_business_day(today)
 
 
 V6_REGIME_MA = 50   # 코스닥 국면 게이트 이동평균(일) — 백테스트서 30~60 견고, 중앙값 채택
@@ -173,6 +203,22 @@ def kosdaq_uptrend(ma: int = V6_REGIME_MA) -> bool | None:
         return bool(s.iloc[-1] >= s.tail(ma).mean())
     except Exception:  # noqa: BLE001
         return None
+
+
+def _idle_status(trading: bool, already, items: list, regime: bool | None,
+                 scanned: bool) -> tuple[str | None, str | None]:
+    """무신호 대기 사유 판정(P3-2a) — (idle_kind, reason). 정상 진입 계획이 서면 (None, None)."""
+    if not trading:
+        return "non_trading_day", "비거래일 — 스캔 생략"
+    if already or items:
+        return None, None
+    if regime is False:
+        return "regime_gate", f"코스닥 {V6_REGIME_MA}일선 하회(약세 국면) — v6 게이트로 신규 진입 보류"
+    if regime is None:
+        return "skipped_scan", "코스닥 국면 데이터 미확보 — 게이트 페일오픈"
+    if scanned:
+        return "skipped_scan", "스캔 완료 — 조건 충족 셋업 없음"
+    return None, None
 
 
 def run_scalp_v6(cfg) -> dict:
@@ -236,6 +282,11 @@ def run_scalp_v6(cfg) -> dict:
                                 why=f"+{c['chg_pct']}% · 거래량 {c['vol_x']}배 · 대금 {c['tv_eok']:,.0f}억 · 60일 신고가"))
         if items:
             save_plan(cfg.state_dir, today.isoformat(), items, now_hm)
+
+    idle_kind, idle_reason = _idle_status(trading, already, items, regime, scanned)
+    state.idle = {"kind": idle_kind, "reason": idle_reason, "regime": regime,
+                  "lastScan": today.isoformat() if scanned else state.idle.get("lastScan")}
+    state.save(cfg.state_dir)
 
     # 3) 브리핑(디스코드 ⚡ + 옵시디언)
     day_pnl = sum(r["pnl"] for r in settled_rows)

@@ -25,12 +25,17 @@ def _blank() -> dict:
     return {"cash": float(SEED_PER_MODEL), "realized": 0.0, "shadow_realized": 0.0}
 
 
+def _blank_idle() -> dict:
+    return {"kind": None, "reason": None, "regime": None, "lastScan": None}
+
+
 @dataclass
 class ScalpState:
     models: dict = field(default_factory=dict)
     daily: list = field(default_factory=list)
     trades: list = field(default_factory=list)
     asOf: str = ""
+    idle: dict = field(default_factory=_blank_idle)   # 무신호 대기 사유(P3-2a) — kind/reason/regime/lastScan
     model_names: tuple = _DEFAULT_MODELS
 
     @classmethod
@@ -48,6 +53,7 @@ class ScalpState:
         m = {name: (prev.get(name) or _blank()) for name in models}
         return cls(models=m, daily=list(raw.get("daily") or []),
                    trades=list(raw.get("trades") or []), asOf=str(raw.get("asOf") or ""),
+                   idle=dict(raw.get("idle") or _blank_idle()),
                    model_names=models)
 
     def apply_day(self, d: str, market: str, results: dict) -> None:
@@ -79,4 +85,5 @@ class ScalpState:
         p.write_text(json.dumps({
             "asOf": self.asOf, "seed_per_model": SEED_PER_MODEL,
             "models": self.models, "daily": self.daily, "trades": self.trades[-400:],
+            "idle": self.idle,
         }, ensure_ascii=False, indent=2), encoding="utf-8")

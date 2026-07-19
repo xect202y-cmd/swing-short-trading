@@ -6,9 +6,13 @@
 from __future__ import annotations
 
 import json
+import logging
+import math
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+log = logging.getLogger(__name__)
 
 
 def _load(path: Path) -> list[dict[str, Any]]:
@@ -25,7 +29,14 @@ def _save(path: Path, rows: list[dict]) -> None:
     path.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def record_equity(state_dir: Path, d: str, cash: float, holdings_value: float, seed: float) -> None:
+def record_equity(state_dir: Path, d: str, cash: float, holdings_value: float, seed: float, *,
+                  positions_exist: bool | None = None) -> None:
+    """positions_exist=True 인데 holdings_value 가 0/NaN 이면 명백한 데이터 이상(공식 누락 등)
+    으로 보고 새 행을 쓰지 않는다(직전 상태 유지) — 가짜 폭락 곡선 오염 방지.
+    실제 큰 변동(급락 등)은 holdings_value 자체가 정상값이므로 그대로 기록한다(위조 금지)."""
+    if positions_exist and (holdings_value == 0 or math.isnan(holdings_value)):
+        log.warning("record_equity(%s) 스킵: 보유 존재인데 holdings_value=%r(이상치) — 직전 상태 유지", d, holdings_value)
+        return
     path = state_dir / "equity_history.json"
     rows = _load(path)
     equity = round(cash + holdings_value, 0)

@@ -332,11 +332,18 @@ def _us_sleeve_krw(state_dir) -> float:
         return 0.0
 
 
+def holdings_value_krw(state_dir, hv: float) -> float:
+    """스윙 자산곡선/보유평가 표준 보유가치(원) = KR 마크(hv) + US 슬리브. 단일 원천 —
+    daily_brief·v10_live 둘 다 이걸 호출해야 공식 비대칭(US 슬리브 누락)이 재발하지 않는다."""
+    return hv + _us_sleeve_krw(state_dir)
+
+
 # ── Daily ──
 def daily_brief(cfg: Config, broker, provider, signals: list[Signal], activity: dict) -> tuple[dict, str]:
     d = today_kst().isoformat()
     pos, hv = _positions_data(cfg, broker, provider)
-    A.record_equity(cfg.state_dir, d, broker.get_cash_balance(), hv + _us_sleeve_krw(cfg.state_dir), _seed(cfg))
+    A.record_equity(cfg.state_dir, d, broker.get_cash_balance(), holdings_value_krw(cfg.state_dir, hv), _seed(cfg),
+                    positions_exist=bool(pos))
     m = A.compute_metrics(A.load_closed(cfg.state_dir), A.load_equity(cfg.state_dir), _seed(cfg))
     blocked = activity.get("blocked", [])
     cash = broker.get_cash_balance()

@@ -160,6 +160,37 @@ def test_run_v10_live_two_same_day_candidates_both_placed(tmp_path, monkeypatch)
     assert r1["entered"] == 2 and r1["held"] == 2
 
 
+def test_run_v10_live_includes_us_sleeve_in_equity(tmp_path, monkeypatch):
+    """회귀(P3-1): 공유현금 풀에서 US 슬리브 보유가 있으면 v10 사이클의 equity_history 에
+    KR 보유(hv)뿐 아니라 US 마크가치도 합산돼야 한다(누락 시 US 배치액만큼 과소평가 → 가짜 폭락)."""
+    from swing_trader.market import fx as _FX
+    monkeypatch.setitem(_FX._cache, "rate", 1400.0)
+
+    df, d = _panel_with_todays_entry()
+    from swing_trader.strategy import v10_live as VL
+    monkeypatch.setattr(VL, "_load_panel", lambda cfg: ({"005930": df}, {"005930": "KOSPI"}, d))
+    monkeypatch.setattr(VL, "_regime_updays", lambda cfg, ma: (None, None))
+    monkeypatch.setattr(VL, "_supply_provider", lambda cfg: None)
+    monkeypatch.setattr(VL, "build_v10_signals", lambda *a, **k: [])   # KR 무진입 → US 슬리브 기여만 격리
+    monkeypatch.setattr(VL, "_notify", lambda *a, **k: None)
+    monkeypatch.setattr(VL, "_write_vault", lambda *a, **k: None)
+
+    cfg = _live_cfg(tmp_path)
+    us_state = {"asOf": d, "realized_krw": 0.0,
+                "open": [{"ticker": "AAPL", "entry_date": d, "entry_usd": 200.0, "fx_entry": 1380.0,
+                          "qty": 5, "bars_held": 3, "cur_usd": 210.0, "mark_fx": 1400.0}],
+                "trades": [], "equity_hist": []}
+    (tmp_path / "v1_us_state.json").write_text(json.dumps(us_state), encoding="utf-8")
+
+    VL.run_v10_live(cfg)
+
+    rows = json.loads((tmp_path / "equity_history.json").read_text(encoding="utf-8"))
+    last = rows[-1]
+    us_sleeve_krw = 5 * 210.0 * 1400.0
+    assert last["holdings"] == round(us_sleeve_krw, 0)             # KR 보유 0 → holdings 전부 US 슬리브
+    assert last["equity"] == round(5_000_000 + us_sleeve_krw, 0)   # cash(seed, 무거래) + US 슬리브
+
+
 def test_version_compare_includes_v10_entry(tmp_path):
     from swing_trader import main as m
     # v10_compare.json 최소본 준비

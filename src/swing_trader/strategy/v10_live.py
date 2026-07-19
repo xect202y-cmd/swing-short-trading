@@ -155,7 +155,10 @@ def run_v10_live(cfg) -> dict:
 
     # 영속화 — 대시보드 파일 전부 단일 브로커에서 파생(청산/진입 유무와 무관하게 매 사이클 갱신)
     pos, hv = _B._positions_data(cfg, broker, provider)          # open_positions.json
-    _A.record_equity(cfg.state_dir, d, broker.get_cash_balance(), hv, seed)  # equity_history.json
+    # holdings_value_krw = 단일 원천(daily_brief와 공식 일치) — US 슬리브 누락으로 인한
+    # equity 과소평가(가짜 폭락, 2026-07-07) 재발 방지.
+    _A.record_equity(cfg.state_dir, d, broker.get_cash_balance(), _B.holdings_value_krw(cfg.state_dir, hv), seed,
+                     positions_exist=bool(pos))  # equity_history.json
 
     # 브리핑(디스코드 + 옵시디언)
     op_lines = [f"  · {p['name']}({p['ticker']}) {p['qty']}주 · {p['ret']:+.1f}% · {p['days']}일"

@@ -1,4 +1,6 @@
 """단타 가상계좌 — 라이브는 채택 모델 1개(300만), 정산 멱등·멀티모델 적재."""
+import json
+
 from swing_trader.scalp.account import SEED_PER_MODEL, ScalpState
 
 M3 = ("v1", "v2", "v3")   # 정산 메커니즘 검증용(라이브는 단일이지만 로직은 모델-무관)
@@ -47,3 +49,21 @@ def test_save_load_roundtrip(tmp_path):
     again = ScalpState.load(tmp_path, M3)
     assert again.models["v1"]["cash"] == SEED_PER_MODEL + 500.0
     assert again.daily == st.daily
+
+
+def test_fresh_state_idle_defaults_blank(tmp_path):
+    st = ScalpState.load(tmp_path)
+    assert st.idle == {"kind": None, "reason": None, "regime": None, "lastScan": None}
+
+
+def test_idle_roundtrips_through_save_load(tmp_path):
+    # P3-2a: 무신호 대기 사유(idle)가 저장·재로드에서 보존돼야 앱이 정직하게 노출할 수 있다.
+    st = ScalpState.load(tmp_path)
+    st.idle = {"kind": "regime_gate",
+               "reason": "코스닥 50일선 하회(약세 국면) — v6 게이트로 신규 진입 보류",
+               "regime": False, "lastScan": "2026-07-19"}
+    st.save(tmp_path)
+    raw = json.loads((tmp_path / "scalp_state.json").read_text(encoding="utf-8"))
+    assert raw["idle"] == st.idle
+    again = ScalpState.load(tmp_path)
+    assert again.idle == st.idle
