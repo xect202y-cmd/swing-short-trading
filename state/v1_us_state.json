@@ -1,27 +1,16 @@
 {
-  "asOf": "2026-07-15",
-  "realized_krw": -32796.893508869165,
+  "asOf": "2026-07-17",
+  "realized_krw": -61028.38734276121,
   "open": [
-    {
-      "ticker": "MGM",
-      "entry_date": "2026-07-10",
-      "entry_usd": 46.880001068115234,
-      "fx_entry": 1498.87,
-      "qty": 7,
-      "bars_held": 1,
-      "cur_usd": 46.84,
-      "mark_fx": 1479.39,
-      "name": "MGM Resorts"
-    },
     {
       "ticker": "WSM",
       "entry_date": "2026-07-10",
       "entry_usd": 221.75,
       "fx_entry": 1498.87,
       "qty": 1,
-      "bars_held": 1,
-      "cur_usd": 222.84,
-      "mark_fx": 1479.39,
+      "bars_held": 2,
+      "cur_usd": 228.41,
+      "mark_fx": 1488.87,
       "name": "Williams-Sonoma, Inc."
     },
     {
@@ -30,32 +19,43 @@
       "entry_usd": 24.729999542236328,
       "fx_entry": 1498.87,
       "qty": 13,
-      "bars_held": 1,
-      "cur_usd": 25.15,
-      "mark_fx": 1479.39,
+      "bars_held": 2,
+      "cur_usd": 25.39,
+      "mark_fx": 1488.87,
       "name": "Hormel Foods"
     },
     {
-      "ticker": "MRNA",
-      "entry_date": "2026-07-15",
-      "entry_usd": 68.27999877929688,
-      "fx_entry": 1477.64,
-      "qty": 4,
+      "ticker": "HPE",
+      "entry_date": "2026-07-17",
+      "entry_usd": 45.81999969482422,
+      "fx_entry": 1488.87,
+      "qty": 7,
       "bars_held": 0,
-      "cur_usd": 68.28,
-      "mark_fx": 1479.39,
-      "name": "Moderna"
+      "cur_usd": 45.82,
+      "mark_fx": 1488.87,
+      "name": "Hewlett Packard Enterprise"
     },
     {
-      "ticker": "LUV",
-      "entry_date": "2026-07-15",
-      "entry_usd": 49.25,
-      "fx_entry": 1477.64,
-      "qty": 6,
+      "ticker": "JNJ",
+      "entry_date": "2026-07-17",
+      "entry_usd": 253.0399932861328,
+      "fx_entry": 1488.87,
+      "qty": 1,
       "bars_held": 0,
-      "cur_usd": 49.25,
-      "mark_fx": 1479.39,
-      "name": "Southwest Airlines"
+      "cur_usd": 253.04,
+      "mark_fx": 1488.87,
+      "name": "Johnson & Johnson"
+    },
+    {
+      "ticker": "LYV",
+      "entry_date": "2026-07-17",
+      "entry_usd": 180.22000122070312,
+      "fx_entry": 1488.87,
+      "qty": 1,
+      "bars_held": 0,
+      "cur_usd": 180.22,
+      "mark_fx": 1488.87,
+      "name": "Live Nation Entertainment"
     }
   ],
   "trades": [
@@ -74,6 +74,30 @@
       "ret_pct": -3.0,
       "pnl_krw": -15401,
       "reason": "손절 −3%"
+    },
+    {
+      "ticker": "MGM",
+      "entry_date": "2026-07-10",
+      "exit_date": "2026-07-17",
+      "ret_pct": -1.6,
+      "pnl_krw": -11416,
+      "reason": "5일선 이탈"
+    },
+    {
+      "ticker": "MRNA",
+      "entry_date": "2026-07-15",
+      "exit_date": "2026-07-17",
+      "ret_pct": -3.0,
+      "pnl_krw": -9396,
+      "reason": "손절 −3%"
+    },
+    {
+      "ticker": "LUV",
+      "entry_date": "2026-07-15",
+      "exit_date": "2026-07-17",
+      "ret_pct": -2.38,
+      "pnl_krw": -7419,
+      "reason": "5일선 이탈"
     }
   ],
   "equity_hist": [
@@ -88,6 +112,10 @@
     {
       "date": "2026-07-15",
       "equity": 2104299
+    },
+    {
+      "date": "2026-07-17",
+      "equity": 1893084
     }
   ]
 }
