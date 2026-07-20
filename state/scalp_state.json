@@ -9,5 +9,11 @@
     }
   },
   "daily": [],
-  "trades": []
+  "trades": [],
+  "idle": {
+    "kind": "regime_gate",
+    "reason": "코스닥 50일선 하회(약세 국면) — v6 게이트로 신규 진입 보류",
+    "regime": false,
+    "lastScan": null
+  }
 }
