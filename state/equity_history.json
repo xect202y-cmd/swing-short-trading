@@ -110,5 +110,12 @@
     "holdings": 2139627.0,
     "equity": 5140068.0,
     "return_pct": 2.8
+  },
+  {
+    "date": "2026-07-20",
+    "cash": 77207.0,
+    "holdings": 4875447.0,
+    "equity": 4952654.0,
+    "return_pct": -0.95
   }
 ]
