@@ -20,7 +20,7 @@ from .execution.position_manager import PositionManager
 from .macro.event_filter import parse_events
 from .macro.regime import assess_macro
 from .market.data_provider import DataProvider
-from .models import Order, Signal
+from .models import Order, Signal, SignalKind
 from .obsidian.reader import VaultReader
 from .obsidian.writer import VaultWriter
 from .review.trade_reviewer import TradeOutcome, TradeReviewer
@@ -205,6 +205,14 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
     _hz = _H.assess([provider.sources.get(n.ticker) for n in notes])
     if not _hz.ok:
         _H.alert(cfg.creds.discord_webhook_url, f"일일 스캔[{market}]", _hz.reason)
+        # 총체적 수집 실패(전부 synthetic/대상 0건) → 가짜 시세로 매매(청산 포함)하지 않도록
+        # 매매 사이클 전체를 스킵. record_done 은 남기지 않아 데이터 회복 시 같은 날 재시도 가능.
+        log.warning("데이터 수집 불건전[%s] → 매매 사이클 스킵(가짜 시세 매매 방지): %s", market, _hz.reason)
+        return {
+            "signals": sig_path, "trades": None,
+            "bought": 0, "sold": 0, "blocked": [],
+            "cash": None, "realized": None, "data_unhealthy": True,
+        }
 
     broker = PaperBroker(
         seed_cash=float(cfg.get("capital", "seed", default=1_000_000)),
@@ -231,6 +239,15 @@ def run_once(cfg: Config, limit: int | None = None, market: str = "all", do_brie
     realized_week = _A.realized_since(cfg.state_dir, _week_start, _closed_now)
     om = OrderManager(cfg, broker, realized_today=realized_today, realized_total=realized_week,
                       regime=regime)   # regime 은 스캔 전에 산출됨(위)
+    # 종목별 방어: 일부만 synthetic 인 날에도 그 종목만은 신규매수 금지(가짜 시세로 매수 방지).
+    synthetic_buys = [s.ticker for s in signals
+                      if s.kind == SignalKind.BUY and provider.sources.get(s.ticker) == "synthetic"]
+    if synthetic_buys:
+        log.warning("synthetic 시세 매수 차단[%s]: %s", market, ", ".join(synthetic_buys))
+        for s in signals:
+            if s.ticker in synthetic_buys and s.kind == SignalKind.BUY:
+                s.kind = SignalKind.BUY_WATCH
+                s.blocked_reasons.append("데이터 출처 synthetic(가짜) — 매수 차단(real-data-only)")
     result = om.execute_signals(signals)
     broker.save()
 
