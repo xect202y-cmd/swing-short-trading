@@ -8,13 +8,10 @@ cd /d "%~dp0"
 >> "%~dp0swing.log" echo.
 >> "%~dp0swing.log" echo ===== %date% %time% EVOLVE run =====
 "%~dp0.venv\Scripts\swing-trader.exe" evolve >> "%~dp0swing.log" 2>&1
-REM push state (pending_proposals, learned_rules) so dashboard/Discord/cloud share same truth.
-REM GUARDED: only push when on main, so an unmerged feature branch is never pushed to main.
-for /f %%b in ('git rev-parse --abbrev-ref HEAD') do set BRANCH=%%b
-if "%BRANCH%"=="main" (
-  git fetch origin main
-  git merge --ff-only origin/main
-  git add -f state
-  git diff --cached --quiet || ( git commit -m "chore(state): evolve proposals [skip ci]" && git push origin HEAD:main )
+REM push state (pending_proposals, learned_rules) to origin/main via dedicated worktree.
+REM Was guarded to main-only (feature branch skipped push); the worktree helper pushes state
+REM to main regardless of checked-out branch, so the guard is no longer needed. Fail-loud.
+call "%~dp0sync_state_to_main.bat"
+if not errorlevel 1 (
+    echo %date% %time% EVOLVE DONE> "%~dp0evolve_heartbeat.txt"
 )
-echo %date% %time% EVOLVE DONE> "%~dp0evolve_heartbeat.txt"

@@ -12,10 +12,9 @@ REM scalp paper cycle: settle yesterday's plan + build today's plan (Discord ora
 "%~dp0.venv\Scripts\swing-trader.exe" scalp-run --market us >> "%~dp0swing.log" 2>&1
 REM V1 US swing: v7 trend-following applied to S&P500 market scan (momentum ranking, MOC fills)
 "%~dp0.venv\Scripts\swing-trader.exe" swing-v1-us >> "%~dp0swing.log" 2>&1
-REM sync local main to origin so the marker commit fast-forwards (self-heal after a cloud fallback day)
-git fetch origin main
-git merge --ff-only origin/main
-REM push full state (account, position, harness) so dashboard/Discord/cloud share same truth
-git add -f state
-git diff --cached --quiet || ( git commit -m "chore(state): local run state sync [skip ci]" && git push origin HEAD:main )
-echo %date% %time% SWING US DONE> "%~dp0swing_heartbeat.txt"
+REM push full state (account, position, harness) to origin/main via dedicated worktree --
+REM branch-independent, fail-loud (see sync_state_to_main.bat)
+call "%~dp0sync_state_to_main.bat"
+if not errorlevel 1 (
+    echo %date% %time% SWING US DONE> "%~dp0swing_heartbeat.txt"
+)

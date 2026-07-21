@@ -30,4 +30,6 @@ dist/
 # 런타임 로그/하트비트
 swing.log
 swing_heartbeat.txt
+state_sync_heartbeat.txt
+state_sync_FAILED.txt
 *.log
