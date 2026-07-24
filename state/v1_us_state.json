@@ -1,61 +1,61 @@
 {
-  "asOf": "2026-07-20",
-  "realized_krw": -91578.71675083885,
+  "asOf": "2026-07-23",
+  "realized_krw": -128131.5859191998,
   "open": [
-    {
-      "ticker": "HRL",
-      "entry_date": "2026-07-10",
-      "entry_usd": 24.729999542236328,
-      "fx_entry": 1498.87,
-      "qty": 13,
-      "bars_held": 3,
-      "cur_usd": 25.28,
-      "mark_fx": 1475.45,
-      "name": "Hormel Foods"
-    },
-    {
-      "ticker": "LYV",
-      "entry_date": "2026-07-17",
-      "entry_usd": 180.22000122070312,
-      "fx_entry": 1488.87,
-      "qty": 1,
-      "bars_held": 1,
-      "cur_usd": 180.86,
-      "mark_fx": 1475.45,
-      "name": "Live Nation Entertainment"
-    },
-    {
-      "ticker": "LUV",
-      "entry_date": "2026-07-20",
-      "entry_usd": 48.34000015258789,
-      "fx_entry": 1475.45,
-      "qty": 7,
-      "bars_held": 0,
-      "cur_usd": 48.34,
-      "mark_fx": 1475.45,
-      "name": "Southwest Airlines"
-    },
-    {
-      "ticker": "UAL",
-      "entry_date": "2026-07-20",
-      "entry_usd": 117.5199966430664,
-      "fx_entry": 1475.45,
-      "qty": 2,
-      "bars_held": 0,
-      "cur_usd": 117.52,
-      "mark_fx": 1475.45,
-      "name": "United Airlines Holdings"
-    },
     {
       "ticker": "RTX",
       "entry_date": "2026-07-20",
       "entry_usd": 194.44000244140625,
       "fx_entry": 1475.45,
       "qty": 1,
-      "bars_held": 0,
-      "cur_usd": 194.44,
-      "mark_fx": 1475.45,
+      "bars_held": 1,
+      "cur_usd": 209.16,
+      "mark_fx": 1472.05,
       "name": "RTX Corporation"
+    },
+    {
+      "ticker": "BRO",
+      "entry_date": "2026-07-23",
+      "entry_usd": 65.73999786376953,
+      "fx_entry": 1472.05,
+      "qty": 5,
+      "bars_held": 0,
+      "cur_usd": 65.74,
+      "mark_fx": 1472.05,
+      "name": "Brown & Brown"
+    },
+    {
+      "ticker": "BXP",
+      "entry_date": "2026-07-23",
+      "entry_usd": 67.83999633789062,
+      "fx_entry": 1472.05,
+      "qty": 5,
+      "bars_held": 0,
+      "cur_usd": 67.84,
+      "mark_fx": 1472.05,
+      "name": "BXP, Inc."
+    },
+    {
+      "ticker": "AIZ",
+      "entry_date": "2026-07-23",
+      "entry_usd": 273.79998779296875,
+      "fx_entry": 1472.05,
+      "qty": 1,
+      "bars_held": 0,
+      "cur_usd": 273.8,
+      "mark_fx": 1472.05,
+      "name": "Assurant"
+    },
+    {
+      "ticker": "CAH",
+      "entry_date": "2026-07-23",
+      "entry_usd": 225.97999572753906,
+      "fx_entry": 1472.05,
+      "qty": 1,
+      "bars_held": 0,
+      "cur_usd": 225.98,
+      "mark_fx": 1472.05,
+      "name": "Cardinal Health"
     }
   ],
   "trades": [
@@ -122,6 +122,38 @@
       "ret_pct": -1.67,
       "pnl_krw": -9865,
       "reason": "5일선 이탈"
+    },
+    {
+      "ticker": "HRL",
+      "entry_date": "2026-07-10",
+      "exit_date": "2026-07-23",
+      "ret_pct": 1.17,
+      "pnl_krw": -3380,
+      "reason": "5일선 이탈"
+    },
+    {
+      "ticker": "LYV",
+      "entry_date": "2026-07-17",
+      "exit_date": "2026-07-23",
+      "ret_pct": -2.31,
+      "pnl_krw": -9327,
+      "reason": "5일선 이탈"
+    },
+    {
+      "ticker": "LUV",
+      "entry_date": "2026-07-20",
+      "exit_date": "2026-07-23",
+      "ret_pct": -3.0,
+      "pnl_krw": -16418,
+      "reason": "손절 −3%"
+    },
+    {
+      "ticker": "UAL",
+      "entry_date": "2026-07-20",
+      "exit_date": "2026-07-23",
+      "ret_pct": -1.85,
+      "pnl_krw": -7427,
+      "reason": "5일선 이탈"
     }
   ],
   "equity_hist": [
@@ -144,6 +176,10 @@
     {
       "date": "2026-07-20",
       "equity": 1793102
+    },
+    {
+      "date": "2026-07-23",
+      "equity": 1898646
     }
   ]
 }
