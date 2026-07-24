@@ -1,41 +1,41 @@
 {
   "ok": true,
-  "date": "2026-07-24",
-  "n_closed": 16,
+  "date": "2026-07-17",
+  "n_closed": 14,
   "headline": {
-    "win_rate": 37.5,
-    "profit_factor": 22.8,
-    "return_pct": 506.72
+    "win_rate": 28.6,
+    "profit_factor": 0.32,
+    "return_pct": 2.8
   },
   "suggestions": [
     {
       "title": "승률 개선 필요",
-      "insight": "현재 승률이 37.5%로 저조하며, 이는 단기 스윙 트레이딩에서 지속 가능성이 낮음. 손익비를 높이기 위한 매매 접근법 조정 필요.",
-      "config_key": "risk.min_reward_risk",
-      "current": 1.75,
-      "suggested": 2.0
+      "insight": "현재 승률이 28.6%로 낮으며, 이는 매매 전략의 근본적인 문제를 나타낼 수 있습니다. 개선을 통해 수익성을 높여야 합니다.",
+      "config_key": "ai.min_score",
+      "current": 70,
+      "suggested": 60
     },
     {
-      "title": "차단 사유 분석",
-      "insight": "대부분의 차단 사유가 추세 미충족으로 인한 것임. 진입 기회를 늘리기 위해 추세 조건을 다소 완화할 필요가 있음.",
+      "title": "손익비 기준 완화",
+      "insight": "손익비 조건으로 인해 많은 매매 기회가 차단되고 있으며, 승률을 높이기 위한 유동성을 확보해야 합니다.",
+      "config_key": "risk.min_reward_risk",
+      "current": 1.75,
+      "suggested": 1.5
+    },
+    {
+      "title": "상승 배열 기준 재조정",
+      "insight": "상승 배열에서만 진입하도록 설정되어 있어 매매 기회가 제한됩니다. 더 많은 신호를 수용할 필요가 있습니다.",
       "config_key": "risk.require_uptrend",
       "current": true,
       "suggested": false
     },
     {
-      "title": "익절 비율 조정",
-      "insight": "현재 익절 비율이 다소 낮아 평균수익률을 높일 수 있는 기회가 있음, 익절 타겟을 상향조정하여 수익성을 개선 가능.",
-      "config_key": "risk.take1_pct",
-      "current": 6.0,
-      "suggested": 8.0
-    },
-    {
-      "title": "손절 비율 최적화",
-      "insight": "손실이 평균적으로 크고(평균손실 -5.85%), 손절 비율을 최적화하여 손실 통제를 더욱 효과적으로 할 필요.",
+      "title": "진입 후 손절 대응 수정",
+      "insight": "MDD가 -40.96%로 매우 높으므로, 손절 기준을 보다 적극적으로 조정해야합니다. 손절 비율을 하향 조정함으로써 리스크 관리가 필요합니다.",
       "config_key": "risk.max_stop_pct",
       "current": -7.0,
       "suggested": -5.0
     }
   ],
-  "next_action": "각 제안사항을 반영하여 로직 설정을 조정하라."
+  "next_action": "제안된 수치를 바탕으로 매매 시스템을 조정하세요."
 }
