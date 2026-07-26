@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-07-23",
+  "asOf": "2026-07-24",
   "realized_krw": -128131.5859191998,
   "open": [
     {
@@ -8,9 +8,9 @@
       "entry_usd": 194.44000244140625,
       "fx_entry": 1475.45,
       "qty": 1,
-      "bars_held": 1,
-      "cur_usd": 209.16,
-      "mark_fx": 1472.05,
+      "bars_held": 2,
+      "cur_usd": 212.79,
+      "mark_fx": 1459.42,
       "name": "RTX Corporation"
     },
     {
@@ -19,9 +19,9 @@
       "entry_usd": 65.73999786376953,
       "fx_entry": 1472.05,
       "qty": 5,
-      "bars_held": 0,
-      "cur_usd": 65.74,
-      "mark_fx": 1472.05,
+      "bars_held": 1,
+      "cur_usd": 67.66,
+      "mark_fx": 1459.42,
       "name": "Brown & Brown"
     },
     {
@@ -30,9 +30,9 @@
       "entry_usd": 67.83999633789062,
       "fx_entry": 1472.05,
       "qty": 5,
-      "bars_held": 0,
-      "cur_usd": 67.84,
-      "mark_fx": 1472.05,
+      "bars_held": 1,
+      "cur_usd": 69.11,
+      "mark_fx": 1459.42,
       "name": "BXP, Inc."
     },
     {
@@ -41,9 +41,9 @@
       "entry_usd": 273.79998779296875,
       "fx_entry": 1472.05,
       "qty": 1,
-      "bars_held": 0,
-      "cur_usd": 273.8,
-      "mark_fx": 1472.05,
+      "bars_held": 1,
+      "cur_usd": 276.94,
+      "mark_fx": 1459.42,
       "name": "Assurant"
     },
     {
@@ -52,9 +52,9 @@
       "entry_usd": 225.97999572753906,
       "fx_entry": 1472.05,
       "qty": 1,
-      "bars_held": 0,
-      "cur_usd": 225.98,
-      "mark_fx": 1472.05,
+      "bars_held": 1,
+      "cur_usd": 228.03,
+      "mark_fx": 1459.42,
       "name": "Cardinal Health"
     }
   ],
@@ -180,6 +180,10 @@
     {
       "date": "2026-07-23",
       "equity": 1898646
+    },
+    {
+      "date": "2026-07-24",
+      "equity": 1917406
     }
   ]
 }
