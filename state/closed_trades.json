@@ -303,5 +303,27 @@
     "hold_days": 1,
     "exit_reason": "5일선 이탈 — 추세 종료",
     "stop_respected": true
+  },
+  {
+    "ticker": "105560",
+    "name": "KB금융",
+    "qty": 5,
+    "partial": false,
+    "entry": 173686.8,
+    "exit": 167116.4,
+    "pnl": -32977.0,
+    "return_pct": -3.78,
+    "entry_score": 78.4,
+    "entry_date": "2026-07-27",
+    "entry_reasons": [
+      "20일선 근처 반등 구간",
+      "목표가까지 상승여력 5%+",
+      "🎯 기법 부합: 눌림목매매, 스윙트레이딩"
+    ],
+    "sector": null,
+    "exit_date": "2026-07-29",
+    "hold_days": 1,
+    "exit_reason": "손절가 도달",
+    "stop_respected": true
   }
 ]
