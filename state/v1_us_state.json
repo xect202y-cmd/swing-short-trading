@@ -10,7 +10,7 @@
       "qty": 1,
       "bars_held": 3,
       "cur_usd": 218.42,
-      "mark_fx": 1453.21,
+      "mark_fx": 1442.5,
       "name": "RTX Corporation"
     },
     {
@@ -21,7 +21,7 @@
       "qty": 5,
       "bars_held": 2,
       "cur_usd": 69.7,
-      "mark_fx": 1453.21,
+      "mark_fx": 1442.5,
       "name": "Brown & Brown"
     },
     {
@@ -32,7 +32,7 @@
       "qty": 5,
       "bars_held": 2,
       "cur_usd": 69.21,
-      "mark_fx": 1453.21,
+      "mark_fx": 1442.5,
       "name": "BXP, Inc."
     },
     {
@@ -43,7 +43,7 @@
       "qty": 1,
       "bars_held": 2,
       "cur_usd": 276.87,
-      "mark_fx": 1453.21,
+      "mark_fx": 1442.5,
       "name": "Assurant"
     },
     {
@@ -54,7 +54,7 @@
       "qty": 1,
       "bars_held": 2,
       "cur_usd": 229.35,
-      "mark_fx": 1453.21,
+      "mark_fx": 1442.5,
       "name": "Cardinal Health"
     }
   ],
