@@ -1,38 +1,16 @@
 {
-  "asOf": "2026-07-28",
-  "realized_krw": -128131.5859191998,
+  "asOf": "2026-07-30",
+  "realized_krw": -100138.25262993481,
   "open": [
-    {
-      "ticker": "RTX",
-      "entry_date": "2026-07-20",
-      "entry_usd": 194.44000244140625,
-      "fx_entry": 1475.45,
-      "qty": 1,
-      "bars_held": 3,
-      "cur_usd": 218.42,
-      "mark_fx": 1442.5,
-      "name": "RTX Corporation"
-    },
-    {
-      "ticker": "BRO",
-      "entry_date": "2026-07-23",
-      "entry_usd": 65.73999786376953,
-      "fx_entry": 1472.05,
-      "qty": 5,
-      "bars_held": 2,
-      "cur_usd": 69.7,
-      "mark_fx": 1442.5,
-      "name": "Brown & Brown"
-    },
     {
       "ticker": "BXP",
       "entry_date": "2026-07-23",
       "entry_usd": 67.83999633789062,
       "fx_entry": 1472.05,
       "qty": 5,
-      "bars_held": 2,
-      "cur_usd": 69.21,
-      "mark_fx": 1442.5,
+      "bars_held": 3,
+      "cur_usd": 71.67,
+      "mark_fx": 1422.58,
       "name": "BXP, Inc."
     },
     {
@@ -41,21 +19,43 @@
       "entry_usd": 273.79998779296875,
       "fx_entry": 1472.05,
       "qty": 1,
-      "bars_held": 2,
-      "cur_usd": 276.87,
-      "mark_fx": 1442.5,
+      "bars_held": 3,
+      "cur_usd": 282.46,
+      "mark_fx": 1422.58,
       "name": "Assurant"
     },
     {
-      "ticker": "CAH",
-      "entry_date": "2026-07-23",
-      "entry_usd": 225.97999572753906,
-      "fx_entry": 1472.05,
+      "ticker": "PANW",
+      "entry_date": "2026-07-30",
+      "entry_usd": 325.67999267578125,
+      "fx_entry": 1422.58,
       "qty": 1,
-      "bars_held": 2,
-      "cur_usd": 229.35,
-      "mark_fx": 1442.5,
-      "name": "Cardinal Health"
+      "bars_held": 0,
+      "cur_usd": 325.68,
+      "mark_fx": 1422.58,
+      "name": "Palo Alto Networks"
+    },
+    {
+      "ticker": "STT",
+      "entry_date": "2026-07-30",
+      "entry_usd": 182.82000732421875,
+      "fx_entry": 1422.58,
+      "qty": 1,
+      "bars_held": 0,
+      "cur_usd": 182.82,
+      "mark_fx": 1422.58,
+      "name": "State Street Corporation"
+    },
+    {
+      "ticker": "FTNT",
+      "entry_date": "2026-07-30",
+      "entry_usd": 154.25,
+      "fx_entry": 1422.58,
+      "qty": 2,
+      "bars_held": 0,
+      "cur_usd": 154.25,
+      "mark_fx": 1422.58,
+      "name": "Fortinet"
     }
   ],
   "trades": [
@@ -154,6 +154,30 @@
       "ret_pct": -1.85,
       "pnl_krw": -7427,
       "reason": "5일선 이탈"
+    },
+    {
+      "ticker": "RTX",
+      "entry_date": "2026-07-20",
+      "exit_date": "2026-07-30",
+      "ret_pct": 10.26,
+      "pnl_krw": 17906,
+      "reason": "5일선 이탈"
+    },
+    {
+      "ticker": "BRO",
+      "entry_date": "2026-07-23",
+      "exit_date": "2026-07-30",
+      "ret_pct": 7.8,
+      "pnl_krw": 19924,
+      "reason": "5일선 이탈"
+    },
+    {
+      "ticker": "CAH",
+      "entry_date": "2026-07-23",
+      "exit_date": "2026-07-30",
+      "ret_pct": 0.48,
+      "pnl_krw": -9838,
+      "reason": "5일선 이탈"
     }
   ],
   "equity_hist": [
@@ -192,6 +216,10 @@
     {
       "date": "2026-07-28",
       "equity": 1934250
+    },
+    {
+      "date": "2026-07-30",
+      "equity": 1973713
     }
   ]
 }
