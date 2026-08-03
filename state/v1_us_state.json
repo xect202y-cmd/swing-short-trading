@@ -1,5 +1,5 @@
 {
-  "asOf": "2026-07-31",
+  "asOf": "2026-08-03",
   "realized_krw": -98320.93371201406,
   "open": [
     {
@@ -8,9 +8,9 @@
       "entry_usd": 325.67999267578125,
       "fx_entry": 1422.58,
       "qty": 1,
-      "bars_held": 1,
-      "cur_usd": 331.83,
-      "mark_fx": 1436.6,
+      "bars_held": 2,
+      "cur_usd": 347.13,
+      "mark_fx": 1429.24,
       "name": "Palo Alto Networks"
     },
     {
@@ -19,9 +19,9 @@
       "entry_usd": 182.82000732421875,
       "fx_entry": 1422.58,
       "qty": 1,
-      "bars_held": 1,
-      "cur_usd": 184.16,
-      "mark_fx": 1436.6,
+      "bars_held": 2,
+      "cur_usd": 183.67,
+      "mark_fx": 1429.24,
       "name": "State Street Corporation"
     },
     {
@@ -30,9 +30,9 @@
       "entry_usd": 154.25,
       "fx_entry": 1422.58,
       "qty": 2,
-      "bars_held": 1,
-      "cur_usd": 161.95,
-      "mark_fx": 1436.6,
+      "bars_held": 2,
+      "cur_usd": 163.21,
+      "mark_fx": 1429.24,
       "name": "Fortinet"
     },
     {
@@ -41,9 +41,9 @@
       "entry_usd": 72.08999633789062,
       "fx_entry": 1436.6,
       "qty": 4,
-      "bars_held": 0,
-      "cur_usd": 72.09,
-      "mark_fx": 1436.6,
+      "bars_held": 1,
+      "cur_usd": 72.14,
+      "mark_fx": 1429.24,
       "name": "Bio-Techne"
     },
     {
@@ -52,9 +52,9 @@
       "entry_usd": 190.86000061035156,
       "fx_entry": 1436.6,
       "qty": 1,
-      "bars_held": 0,
-      "cur_usd": 190.86,
-      "mark_fx": 1436.6,
+      "bars_held": 1,
+      "cur_usd": 202.54,
+      "mark_fx": 1429.24,
       "name": "CrowdStrike"
     }
   ],
@@ -240,6 +240,10 @@
     {
       "date": "2026-07-31",
       "equity": 1796712
+    },
+    {
+      "date": "2026-08-03",
+      "equity": 1828752
     }
   ]
 }
