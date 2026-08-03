@@ -1,87 +1,91 @@
 {
-  "as_of": "2026-07-30",
+  "as_of": "2026-08-03",
   "rule": "50/200일 이평 골든크로스 · 보강: 거래량 20일평균↑·200일선 기울기·50일선 위",
   "golden_top": [
     {
-      "ticker": "RTX",
-      "name": "RTX Corporation",
+      "ticker": "WY",
+      "name": "Weyerhaeuser",
       "market": "US",
       "kind": "golden",
-      "close": 218.4199981689453,
-      "ma50": 187.12,
-      "ma200": 186.77,
-      "vol_ratio": 1.32,
-      "slope200_pct": 0.51,
+      "close": 25.030000686645508,
+      "ma50": 24.13,
+      "ma200": 24.11,
+      "vol_ratio": 2.27,
+      "slope200_pct": 0.0,
       "above50": true,
-      "high120": 220.38999938964844,
-      "date": "2026-07-27",
-      "score": 6.32,
-      "buyLow": 187.12,
-      "buyHigh": 218.42,
-      "stop": 186.77,
-      "target": 251.18,
+      "high120": 27.75,
+      "date": "2026-07-31",
+      "score": 7.68,
+      "buyLow": 24.13,
+      "buyHigh": 25.03,
+      "stop": 24.11,
+      "target": 28.78,
       "upside_pct": 15.0
     },
     {
-      "ticker": "AON",
-      "name": "Aon plc",
+      "ticker": "FE",
+      "name": "FirstEnergy",
       "market": "US",
       "kind": "golden",
-      "close": 367.1700134277344,
-      "ma50": 336.55,
-      "ma200": 336.33,
-      "vol_ratio": 0.66,
-      "slope200_pct": -0.03,
+      "close": 48.310001373291016,
+      "ma50": 47.5,
+      "ma200": 47.47,
+      "vol_ratio": 1.7,
+      "slope200_pct": 0.12,
       "above50": true,
-      "high120": 375.9200134277344,
-      "date": "2026-07-27",
-      "score": 2.49,
-      "buyLow": 336.55,
-      "buyHigh": 367.17,
-      "stop": 336.33,
-      "target": 422.25,
+      "high120": 52.34000015258789,
+      "date": "2026-07-31",
+      "score": 6.58,
+      "buyLow": 47.5,
+      "buyHigh": 48.31,
+      "stop": 47.47,
+      "target": 55.56,
       "upside_pct": 15.0
     }
   ],
   "golden_count": 2,
-  "dead_count": 3,
-  "watch_golden": [
-    {
-      "ticker": "RTX",
-      "name": "RTX Corporation",
-      "market": "US",
-      "kind": "golden",
-      "close": 218.4199981689453,
-      "ma50": 187.12,
-      "ma200": 186.77,
-      "vol_ratio": 1.32,
-      "slope200_pct": 0.51,
-      "above50": true,
-      "high120": 220.38999938964844,
-      "date": "2026-07-27",
-      "score": 6.32,
-      "buyLow": 187.12,
-      "buyHigh": 218.42,
-      "stop": 186.77,
-      "target": 251.18,
-      "upside_pct": 15.0
-    }
-  ],
+  "dead_count": 8,
+  "watch_golden": [],
   "hold_dead": [],
   "dead_all": [
     {
-      "ticker": "267250",
-      "name": "HD현대",
+      "ticker": "005490",
+      "name": "POSCO홀딩스",
       "market": "KR"
     },
     {
-      "ticker": "006910",
-      "name": "보성파워텍",
+      "ticker": "005830",
+      "name": "DB손해보험",
       "market": "KR"
     },
     {
-      "ticker": "298020",
-      "name": "효성티앤씨",
+      "ticker": "108490",
+      "name": "로보티즈",
+      "market": "KR"
+    },
+    {
+      "ticker": "189300",
+      "name": "인텔리안테크",
+      "market": "KR"
+    },
+    {
+      "ticker": "111770",
+      "name": "영원무역",
+      "market": "KR"
+    },
+    {
+      "ticker": "126340",
+      "name": "비나텍",
+      "market": "KR"
+    },
+    {
+      "ticker": "950160",
+      "name": "코오롱티슈진",
+      "market": "KR"
+    },
+    {
+      "ticker": "014680",
+      "name": "한솔케미칼",
       "market": "KR"
     }
   ]
