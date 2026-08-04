@@ -1,6 +1,25 @@
 {
-  "asOf": "2026-08-03",
-  "cash": 2967333.0,
-  "holdingsValue": 0.0,
-  "positions": []
+  "asOf": "2026-08-04",
+  "cash": 1984395.0,
+  "holdingsValue": 982300.0,
+  "positions": [
+    {
+      "flag": "🇰🇷",
+      "mkt": "KR",
+      "name": "HMM",
+      "ticker": "011200",
+      "avg": 20910.45,
+      "cur": 20900.0,
+      "ret": -0.049975012493756604,
+      "pnl": -491.1500000000342,
+      "qty": 47,
+      "days": 0,
+      "stop": 20273.0,
+      "target": 22154.0,
+      "entry_date": "2026-08-04",
+      "entry_score": 70.8,
+      "review": "진입 71점 → 재점검",
+      "fx": 1432.68
+    }
+  ]
 }
