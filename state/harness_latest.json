@@ -1,33 +1,33 @@
 {
   "version": "a215228a",
-  "date": "2026-11-13",
+  "date": "2026-11-20",
   "n_stocks": 113,
   "position_frac": 0.2,
   "is": {
-    "n_trades": 1013,
-    "win_rate": 46.4,
-    "avg_win": 6.484,
+    "n_trades": 986,
+    "win_rate": 45.6,
+    "avg_win": 6.474,
     "avg_loss": -3.123,
-    "expectancy": 1.334,
-    "profit_factor": 1.8,
-    "max_drawdown": -26.74,
-    "sharpe": 0.275,
-    "trades_per_year": 745.5,
-    "start": "2024-11-29",
-    "end": "2026-04-09"
+    "expectancy": 1.257,
+    "profit_factor": 1.74,
+    "max_drawdown": -28.08,
+    "sharpe": 0.26,
+    "trades_per_year": 719.8,
+    "start": "2024-12-03",
+    "end": "2026-04-17"
   },
   "oos": {
-    "n_trades": 403,
-    "win_rate": 28.8,
-    "avg_win": 6.342,
+    "n_trades": 407,
+    "win_rate": 30.5,
+    "avg_win": 6.087,
     "avg_loss": -3.121,
-    "expectancy": -0.397,
-    "profit_factor": 0.82,
-    "max_drawdown": -36.04,
-    "sharpe": -0.092,
-    "trades_per_year": 697.1,
-    "start": "2026-04-13",
-    "end": "2026-11-10"
+    "expectancy": -0.316,
+    "profit_factor": 0.85,
+    "max_drawdown": -34.32,
+    "sharpe": -0.073,
+    "trades_per_year": 700.7,
+    "start": "2026-04-21",
+    "end": "2026-11-19"
   },
-  "gap": -1.731
+  "gap": -1.573
 }
